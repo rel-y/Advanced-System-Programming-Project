@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "Rle.cpp"
+#include "../../src/Rle.cpp"
 string decompress(std::string input); // Assume this function is defined elsewhere
 
 TEST(SaintyDecompressionTest, BasicDecompression) {
