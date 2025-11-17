@@ -1,9 +1,8 @@
-
 FROM gcc:latest
 
 RUN apt-get update && apt-get install -y cmake
 
-
+# Copy entire project (src + tests) into container
 WORKDIR /usr/src/myapp
 COPY . .
 
