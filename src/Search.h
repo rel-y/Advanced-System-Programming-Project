@@ -1,4 +1,6 @@
 #include "ICommand.h"
+#include "Rle.h"
+#include <filesystem>
 #include <iostream>
 #include <fstream> 
 #include <string>

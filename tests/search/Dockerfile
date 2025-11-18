@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y cmake
 WORKDIR /usr/src/myapp
 COPY . .
 
-ENV FolderName=../files
+ENV FolderName=/usr/src/myapp/files
 
 RUN mkdir build
 WORKDIR /usr/src/myapp/build

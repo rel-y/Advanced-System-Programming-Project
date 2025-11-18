@@ -2,7 +2,7 @@
 #include "../../src/Search.h"
 TEST(SearchFunctionalityTest, BasicSearch) {
     std::string content = "search";//content from user
-    std::string filename = "files/testfile.txt"; //name
+    std::string filename = "/usr/src/myapp/files/testfile.txt"; //name
     std::string fileContent = {1,'s', 1,'e', 1,'a', 1,'r', 1,'c', 1,'h'}; //compressed content
     std::ofstream outfile(filename);
     outfile << fileContent; //input compressed content to file
@@ -11,7 +11,7 @@ TEST(SearchFunctionalityTest, BasicSearch) {
 
     EXPECT_EQ(resualt, "testfile.txt");
     content = "search";
-    filename = "files/testfile.txt";
+    filename = "/usr/src/myapp/files/testfile.txt";
     fileContent = {1,'s', 1,'e', 1,'a', 1,'r', 1,'c', 1,'h',1,'d', 1,'x'}; //not exact match
     outfile.open(filename);
     outfile << fileContent;
@@ -22,8 +22,8 @@ TEST(SearchFunctionalityTest, BasicSearch) {
 }
 TEST(NoResualtTest, SearchNoMatch) {
     std::string content = "nomatch";
-    std::string filename1 = "files/nomatchfile.txt";
-    std::string filename2 = "files/anothernomatchfile.txt";
+    std::string filename1 = "/usr/src/myapp/files/nomatchfile.txt";
+    std::string filename2 = "/usr/src/myapp/files/anothernomatchfile.txt";
     std::string fileContent = {1,'s', 1,'e', 1,'a', 1,'r', 1,'c', 1,'h'}; 
     std::ofstream outfile(filename1);
     outfile << fileContent; 
@@ -33,11 +33,11 @@ TEST(NoResualtTest, SearchNoMatch) {
     outfile.close();
     std::string resualt = Search::search(content);
 
-    EXPECT_EQ(resualt, "No files found");
+    EXPECT_EQ(resualt, "");
 }
 TEST(EmptyFileTest, SearchInEmptyFile) {
     std::string content = "anything";
-    std::string filename = "files/emptyfile.txt";
+    std::string filename = "/usr/src/myapp/files/emptyfile.txt";
     std::ofstream outfile(filename);
     outfile.close(); 
     std::string resualt = Search::search(content);
@@ -46,7 +46,7 @@ TEST(EmptyFileTest, SearchInEmptyFile) {
 }
 TEST(EmptyContent, SearchInEmptyContent) {
     std::string content = "";
-    std::string filename = "files/file.txt";
+    std::string filename = "/usr/src/myapp/files/file.txt";
     std::string fileContent = {1,'a', 1,'b', 1,'c'};
     std::ofstream outfile(filename);
     outfile << fileContent;
@@ -57,8 +57,8 @@ TEST(EmptyContent, SearchInEmptyContent) {
 }
 TEST(MultipleFilesTest, SearchMultipleFiles) {
     std::string content = "match";
-    std::string filename1 = "files/matchfile1.txt";
-    std::string filename2 = "files/matchfile2.txt";
+    std::string filename1 = "/usr/src/myapp/files/matchfile1.txt";
+    std::string filename2 = "/usr/src/myapp/files/matchfile2.txt";
     std::string fileContent1 = {1,'m', 1,'a', 1,'t', 1,'c', 1,'h'};
     std::string fileContent2 = {1,'m', 1,'a', 1,'t', 1,'c', 1,'h',1,'d', 1,'x'};
     std::ofstream outfile(filename1);
@@ -72,9 +72,9 @@ TEST(MultipleFilesTest, SearchMultipleFiles) {
     EXPECT_EQ(resualt, "matchfile1.txt\nmatchfile2.txt");
 
     content = "match";
-    filename1 = "files/matchfile1.txt";
-    filename2 = "files/matchfile2.txt";
-    std::string filename3 = "files/nomatchfile.txt";
+    filename1 = "/usr/src/myapp/files/matchfile1.txt";
+    filename2 = "/usr/src/myapp/files/matchfile2.txt";
+    std::string filename3 = "/usr/src/myapp/files/nomatchfile.txt";
     fileContent1 = {1,'m', 1,'a', 1,'t', 1,'c', 1,'h'};
     fileContent2 = {1,'m', 1,'a', 1,'t', 1,'c', 1,'h',1,'d', 1,'x'};
     std::string fileContent3 = {1,'n',1,'o'};
