@@ -7,7 +7,7 @@ std::string Search::search(std::string content) {
         return "";
     }
     std::string path = getenv("FolderName");
-    std::cout << path << std::endl;
+    std::vector<std::string> files;
     std::string result = "";
     try{
         for (const auto& entry : fs::directory_iterator(path)) {//go over files in the directory
@@ -21,12 +21,20 @@ std::string Search::search(std::string content) {
                 inputFile.close();//we know the content is 1 line
                 std::string decompressedContent = Rle::decompress(line);//decompress the content to compare it with the query
                 if(decompressedContent.find(content) != std::string::npos) {
-                    result += entry.path().filename().string() + "\n";//if found add the file name to the result
+                    files.push_back(entry.path().filename().string() + "\n");//if found add the file name to the files vector
                 }
             }
         }
     } catch (...) {
         return "";
+    }
+    //order vector files alphabetically and push the resualt to the string
+    if(files.empty()) {
+        return "";
+    }
+std::sort(files.begin(), files.end());
+    for(const auto& fileName : files) {
+        result += fileName;
     }
     result.pop_back(); //remove the last new line
     return result;
