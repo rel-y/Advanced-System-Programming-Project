@@ -39,3 +39,10 @@ std::sort(files.begin(), files.end());
     result.pop_back(); //remove the last new line
     return result;
 }
+
+void Search::execute(std::string argv) {
+    std::string resualt = search(argv);
+    if(!resualt.empty()) {
+        std::cout << resualt << std::endl;
+    }
+}
