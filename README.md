@@ -5,7 +5,7 @@ docker build -t myimage .
 to compile
 docker run -v mydata:/usr/src/files myimage
 
-#delte before submition
+#delte before final submition
 if your docker file for the test isn't in the base folder 
 use flag -f PathToDocker 
 exmple:
