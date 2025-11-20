@@ -71,7 +71,7 @@ TEST(MultipleFilesTest, SearchMultipleFiles) {
     std::string resualt = Search::search(content);
     std::filesystem::remove(filename1); //make sure file is removed after test
     std::filesystem::remove(filename2); //make sure file is removed after test
-    EXPECT_EQ(resualt, "matchfile1.txt\nmatchfile2.txt");
+    EXPECT_EQ(resualt, "matchfile1.txt matchfile2.txt");
 
     content = "match";
     filename1 = "/usr/src/files/matchfile1.txt";
@@ -93,7 +93,7 @@ TEST(MultipleFilesTest, SearchMultipleFiles) {
     std::filesystem::remove(filename1); //make sure file is removed after test
     std::filesystem::remove(filename2); //make sure file is removed after test
     std::filesystem::remove(filename3); //make sure file is removed after test
-    EXPECT_EQ(resualt, "matchfile1.txt\nmatchfile2.txt");
+    EXPECT_EQ(resualt, "matchfile1.txt matchfile2.txt");
 }
 
 int main(int argc, char **argv) {

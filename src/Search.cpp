@@ -21,7 +21,7 @@ std::string Search::search(std::string content) {
                 inputFile.close();//we know the content is 1 line
                 std::string decompressedContent = Rle::decompress(line);//decompress the content to compare it with the query
                 if(decompressedContent.find(content) != std::string::npos) {
-                    files.push_back(entry.path().filename().string() + "\n");//if found add the file name to the files vector
+                    files.push_back(entry.path().filename().string() + " ");//if found add the file name to the files vector
                 }
             }
         }
@@ -36,7 +36,7 @@ std::sort(files.begin(), files.end());
     for(const auto& fileName : files) {
         result += fileName;
     }
-    result.pop_back(); //remove the last new line
+    result.pop_back(); //remove the last space
     return result;
 }
 
