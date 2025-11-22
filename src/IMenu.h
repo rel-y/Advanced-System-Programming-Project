@@ -1,6 +1,6 @@
-#include <vector>
+#include <utility>
 #include <string>
 class IMenu {
 public:
-    virtual std::vector<std::string> nextCommand() = 0;
+    virtual std::pair<std::string, std::string> nextCommand() = 0;
 };

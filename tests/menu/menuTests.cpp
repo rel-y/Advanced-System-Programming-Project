@@ -2,111 +2,117 @@
 #include "../../src/CommandLineMenu.h"
 
 TEST(SaintyMenuTest, EmptyCommand) {
-    Imenu CLIMenu;
+    IMenu* menu = new CommandLineMenu();
     std::string command = "";
     //creating a stream for the input
     std::istringstream inputString(command);
     //saving the cin stream
-    auto savecin = cin.rebug();
+    auto savecin = std::cin.rdbuf();
 
     //changing cin stream to be inputString
-    cin.rebuf(inputString.rebuf());
+    std::cin.rdbuf(inputString.rdbuf());
 
-    std:vector<string> commandResult = CLIMenu.nextCommand();
+    std::pair<std::string, std::string> commandResult = menu->nextCommand();
     //restoring stdin stream
-    cin.rebuf(savecin);
-    EXPECT_EQ(commandResult.at(0), "");
-    EXPECT_EQ(commandResult.at(1), "");
+    std::cin.rdbuf(savecin);
+    EXPECT_EQ(commandResult.first, "");
+    EXPECT_EQ(commandResult.second, "");
+    delete menu;
 }
 
 TEST(SaintyMenuTest, AddCommand) {
-    Imenu CLIMenu;
+    IMenu* menu = new CommandLineMenu();
     std::string command = "add file1 hello world";
     //creating a stream for the input
     std::istringstream inputString(command);
     //saving the cin stream
-    auto savecin = cin.rebug();
+    auto savecin = std::cin.rdbuf();
 
     //changing cin stream to be inputString
-    cin.rebuf(inputString.rebuf());
+    std::cin.rdbuf(inputString.rdbuf());
 
-    std:vector<string> commandResult = CLIMenu.nextCommand();
+    std::pair<std::string, std::string> commandResult = menu->nextCommand();
     //restoring stdin stream
-    cin.rebuf(savecin);
-    EXPECT_EQ(commandResult.at(0), "add");
-    EXPECT_EQ(commandResult.at(1), "file1 hello world");
+    std::cin.rdbuf(savecin);
+    EXPECT_EQ(commandResult.first, "add");
+    EXPECT_EQ(commandResult.second, "file1 hello world");
+    delete menu;
 }
 
 TEST(SaintyMenuTest, GetCommand) {
-    Imenu CLIMenu;
-    std::string command = "get file1"
+    IMenu* menu = new CommandLineMenu();
+    std::string command = "get file1";
     //creating a stream for the input
     std::istringstream inputString(command);
     //saving the cin stream
-    auto savecin = cin.rebug();
+    auto savecin = std::cin.rdbuf();
 
     //changing cin stream to be inputString
-    cin.rebuf(inputString.rebuf());
+    std::cin.rdbuf(inputString.rdbuf());
 
-    std:vector<string> commandResult = CLIMenu.nextCommand();
+    std::pair<std::string, std::string> commandResult = menu->nextCommand();
     //restoring stdin stream
-    cin.rebuf(savecin);
-    EXPECT_EQ(commandResult.at(0), "get");
-    EXPECT_EQ(commandResult.at(1), "file1");
+    std::cin.rdbuf(savecin);
+    EXPECT_EQ(commandResult.first, "get");
+    EXPECT_EQ(commandResult.second, "file1");
+    delete menu;
 }
 
 TEST(SaintyMenuTest, SearchCommand) {
-    Imenu CLIMenu;
-    std::string command = "search world"
+    IMenu* menu = new CommandLineMenu();
+    std::string command = "search world";
     //creating a stream for the input
     std::istringstream inputString(command);
     //saving the cin stream
-    auto savecin = cin.rebug();
+    auto savecin = std::cin.rdbuf();
 
     //changing cin stream to be inputString
-    cin.rebuf(inputString.rebuf());
+    std::cin.rdbuf(inputString.rdbuf());
 
-    std:vector<string> commandResult = CLIMenu.nextCommand();
+    std::pair<std::string, std::string> commandResult = menu->nextCommand();
     //restoring stdin stream
-    cin.rebuf(savecin);
-    EXPECT_EQ(commandResult.at(0), "search");
-    EXPECT_EQ(commandResult.at(1), "world");
+    std::cin.rdbuf(savecin);
+    EXPECT_EQ(commandResult.first, "search");
+    EXPECT_EQ(commandResult.second, "world");
+    delete menu;
 }
 
 TEST(SaintyMenuTest, SpaceSearchCommand) {
-    Imenu CLIMenu;
-    std::string command = "search  "
+    IMenu* menu = new CommandLineMenu();
+    std::string command = "search  ";
     //creating a stream for the input
     std::istringstream inputString(command);
     //saving the cin stream
-    auto savecin = cin.rebug();
+    auto savecin = std::cin.rdbuf();
 
     //changing cin stream to be inputString
-    cin.rebuf(inputString.rebuf());
+    std::cin.rdbuf(inputString.rdbuf());
 
-    std:vector<string> commandResult = CLIMenu.nextCommand();
+    std::pair<std::string, std::string> commandResult = menu->nextCommand();
     //restoring stdin stream
-    cin.rebuf(savecin);
-    EXPECT_EQ(commandResult.at(0), "search");
-    EXPECT_EQ(commandResult.at(1), " ");
+    std::cin.rdbuf(savecin);
+    EXPECT_EQ(commandResult.first, "search");
+    EXPECT_EQ(commandResult.second, " ");
+    delete menu;
 }
 
 TEST(SaintyMenuTest, EmptyAddFileCommand) {
-    Imenu CLIMenu;
-    std::string command = "add file "
+    IMenu* menu = new CommandLineMenu();
+    std::string command = "add file "; 
     //creating a stream for the input
     std::istringstream inputString(command);
     //saving the cin stream
-    auto savecin = cin.rebug();
+    auto savecin = std::cin.rdbuf();
 
     //changing cin stream to be inputString
-    cin.rebuf(inputString.rebuf());
+    std::cin.rdbuf(inputString.rdbuf());
 
-    std:vector<string> commandResult = CLIMenu.nextCommand();
+    std::pair<std::string, std::string> commandResult = menu->nextCommand();
     //restoring stdin stream
-    cin.rebuf(savecin);
-    EXPECT_EQ(commandResult.at(0), "add");
-    EXPECT_EQ(commandResult.at(1), "file ");
+    std::cin.rdbuf(savecin);
+    EXPECT_EQ(commandResult.first, "add");
+    EXPECT_EQ(commandResult.second, "file ");
+    delete menu;
 }
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -1,7 +1,8 @@
 #ifndef COMMANDLINEMENU_H
 #include "IMenu.h"
+#include <iostream>
 class CommandLineMenu: public IMenu{
 public:
-    std::vector<std::string> nextCommand() override;
+    std::pair<std::string, std::string> nextCommand() override;
 };
 #endif  //COMMANDLINEMENU_H
