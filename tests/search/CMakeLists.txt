@@ -14,6 +14,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(runTests ../../src/Rle.cpp decompressionTest.cpp)
+add_executable(runTests ../../src/Search.cpp ../../src/Rle.cpp searchTest.cpp )
 
 target_link_libraries(runTests gtest_main)
