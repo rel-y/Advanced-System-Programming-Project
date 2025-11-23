@@ -1,5 +1,12 @@
 #include "Get.h"
 std::string Get::get(std::string name){
+    //checking the name of the file isn't empty and doens't contain any spaces
+    if(name.empty()){
+        return "";
+    }
+    if(name.find_first_of(' ') != std::string::npos){
+        return "";
+    }
     //name of the file
     std::filesystem::path dirName(getenv("FolderName"));
     std::filesystem::path pathName = dirName / name;
@@ -30,13 +37,6 @@ std::string Get::get(std::string name){
 }
 
 void Get::execute(std::string argv){
-    //checking the name of the file isn't empty and doens't contain any spaces
-    if(argv.empty()){
-        return;
-    }
-    if(argv.find_first_not_of(' ') == std::string::npos){
-        return;
-    }
     std::string content = get(argv);
     if(!content.empty()){
         std::cout << content << std::endl;
