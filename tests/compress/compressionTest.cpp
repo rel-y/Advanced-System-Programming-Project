@@ -27,13 +27,13 @@ TEST(EmptyStrTest, EmptyStrings) {
 
 TEST(LengthTest, LongStrings) {
     std::string data = "aabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccc";
-    std::string expected = {2, 'a', 255, 'b', 3, 'c'};
+    std::string expected = {2, 'a', (char)255, 'b', 3, 'c'};
     EXPECT_EQ(Rle::compress(data), expected);
     data = "22666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666644444";
-    expected = {2, '2', 255, '6', 1, '6', 5, '4'};
+    expected = {2, '2', (char)255, '6', 1, '6', 5, '4'};
     EXPECT_EQ(Rle::compress(data), expected);
     data = "22                                                                                                                                                                                                                                                                                                            33444";
-    expected = {2, '2', 255, ' ', 45, ' ', 2, '3', 3, '4'};
+    expected = {2, '2', (char)255, ' ', 45, ' ', 2, '3', 3, '4'};
     EXPECT_EQ(Rle::compress(data), expected);
 }
 
