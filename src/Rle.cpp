@@ -12,5 +12,22 @@ std::string Rle::decompress(std::string input) {
     return output;
 }
 std::string Rle::compress(std::string input) {
-    return "";
+    std::string output = "";
+    while (input.size() != 0)
+    {
+        char c = input[0];
+        int sum = 0;
+        for (int i = 0; i < 255; i++)
+        {
+            if (input[i] != c)
+            {
+                break;
+            }
+            sum++;
+        }
+        output.append(1, (char)sum);
+        output.append(1, c);
+        input.erase(0, sum);
+    }
+    return output;
 }
