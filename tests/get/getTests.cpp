@@ -6,14 +6,14 @@
 TEST(GetSanityTests, EmptyFileContent) {
     std::string file = "file.txt"; //file name received from user 
     std::string filename = "/usr/src/files/file.txt"; //name
-    std::ofstream outfile(filename);
-    outfile.close();
+    std::ofstream outfile(filename); //stream to file
+    outfile.close(); //closing stream
     std::string resualt = Get::get(file);
-    std::filesystem::remove(filename); //deliting file after using it
+    std::filesystem::remove(filename); //deleting file after using it
     EXPECT_EQ(resualt, "");
 }
 TEST(GetSanityTests, ShortFileContent) {
-    std::string file = "file.txte";
+    std::string file = "file.txt";
     std::string filename = "/usr/src/files/file.txt"; 
     std::string fileContent = {1,'a'};
     std::ofstream outfile(filename);
@@ -58,7 +58,7 @@ TEST(GetSanityTests, MultipleFiles) {
     EXPECT_EQ(resualt, "abc");
 }
 TEST(EdgeCaseTests, MultipleWordName) {
-    std::string file = "file name";
+    std::string file = "file.txt name.txt";
     std::string filename1 = "/usr/src/files/file.txt";
     std::string filename2 = "/usr/src/files/name.txt";
     std::string fileContent1 = {1,'f', 1,'i', 1,'l', 1,'e'};

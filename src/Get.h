@@ -1,9 +1,14 @@
+#include "ICommand.h"
+#include "Rle.h"
+#include <filesystem>
+#include <iostream>
+#include <fstream> 
 #include <string>
-#include"ICommand.h"
-#ifndef SEARCH_H
-#define SEARCH_H
-class Search: public ICommand {
-public: static std::string search(std::string content);
+#ifndef GET_H
+#define GET_H
+class Get: public ICommand {
+public: 
+    static std::string get(std::string name);
     void execute(std::string argv) override;
 };
-#endif // SEARCH_H
+#endif // GET_H
