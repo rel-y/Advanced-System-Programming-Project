@@ -95,6 +95,29 @@ TEST(LongTest, LongInput) {
     fileReader.close();
 }
 
+TEST(WeirdRequestTest, BadInputs) {
+    
+    std::string filename = "/usr/src/files/testfile.txt";
+    Add addObject;
+    addObject.execute("testfile.txt");
+    
+    std::ifstream fileReader(filename);
+    ASSERT_FALSE(fileReader.good());
+
+    fileReader.close();
+
+
+    std::string filename2 = "/usr/src/files/testfile2.txt";
+    Add addObject2;
+    addObject2.execute("testfile2.txt ");
+    
+
+    std::ifstream fileReader2(filename2);
+    ASSERT_FALSE(fileReader2.good());
+
+    fileReader2.close();
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
