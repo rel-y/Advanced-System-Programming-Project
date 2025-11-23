@@ -8,6 +8,6 @@ COPY . .
 RUN mkdir build
 WORKDIR /usr/src/myapp/build
 
-RUN cmake ../tests/decomp && make
+RUN cmake ../tests/compress && make
 
 CMD [ "./runTests" ]
