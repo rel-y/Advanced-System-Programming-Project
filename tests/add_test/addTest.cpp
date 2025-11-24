@@ -97,14 +97,14 @@ TEST(LongTest, LongInput) {
 
 TEST(WeirdRequestTest, BadInputs) {
     
-    std::string filename = "/usr/src/files/testfile.txt";
-    Add addObject;
-    addObject.execute("testfile.txt");
+    std::string filename50 = "/usr/src/files/testfile50.txt";
+    Add addObject5;
+    addObject5.execute("testfile50.txt");
     
-    std::ifstream fileReader(filename);
-    ASSERT_FALSE(fileReader.good());
+    std::ifstream fileReader5(filename50);
+    ASSERT_FALSE(fileReader5.good());
 
-    fileReader.close();
+    fileReader5.close();
 
 
     std::string filename2 = "/usr/src/files/testfile2.txt";
