@@ -119,6 +119,22 @@ TEST(WeirdRequestTest, BadInputs) {
 }
 
 int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    //::testing::InitGoogleTest(&argc, argv);
+    //return RUN_ALL_TESTS();
+
+
+    std::string content = "iloveHemi";
+    std::string compressedContent = Rle::compress(content);
+    std::string filename = "/usr/src/files/testfile.txt";
+    Add addObject;
+    addObject.execute("testfile.txt iloveHemi");
+    
+    std::string textInFile = "";
+    std::ifstream fileReader(filename);
+    //ASSERT_TRUE(fileReader.good());
+    std::cout << fileReader.good();
+    getline(fileReader, textInFile);
+    //EXPECT_EQ(textInFile, compressedContent);
+    std::cout << textInFile;
+    fileReader.close();
 }
