@@ -13,7 +13,7 @@ Our app is a file compression & backup system, offering several commands for int
 - Filenames may not contain spaces.
 - Adding a File which already exists results in no action being completed, the original file will remain unchanged.
 
-**Syntax:**
+Syntax:
 ```
 add [file name] [text]
 ```
@@ -21,7 +21,7 @@ add [file name] [text]
 - This commands outputs the content of an existing file to the screen.
 - If the file doesnt exist, the command outputs nothing.
 
-**Syntax:**
+Syntax:
 ```
 get [file name]
 ```
@@ -29,7 +29,7 @@ get [file name]
 - This command outputs a list of all files currently in the system, which contain the given content.
 - If no files match, the command outputs nothing.
 
-**Syntax:**
+Syntax:
 ```
 search [file content]
 ```
@@ -59,6 +59,7 @@ docker start -ai myapp
 **The following pictures are of an example run of the code.**
 
 ![WhatsApp Image 2025-11-24 at 22 57 26](https://github.com/user-attachments/assets/6ae4a7b1-9ec5-4072-8f78-58d52e587212)
+
 
 
 
