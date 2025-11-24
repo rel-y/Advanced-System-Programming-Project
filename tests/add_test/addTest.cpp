@@ -122,44 +122,4 @@ int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 
-    /*
-    std::string content = "iloveHemi";
-    std::string compressedContent = Rle::compress(content);
-    std::string filename = "/usr/src/files/testfile.txt";
-    Add addObject;
-    addObject.execute("testfile.txt iloveHemi");
-    
-    std::string textInFile = "";
-    std::ifstream fileReader(filename);
-    //ASSERT_TRUE(fileReader.good());
-    std::cout << fileReader.good();
-    getline(fileReader, textInFile);
-    //EXPECT_EQ(textInFile, compressedContent);
-    std::cout << textInFile;
-    std::cout << compressedContent;
-    fileReader.close();
-    
-
-    std::string filename50 = "/usr/src/files/testfile50.txt";
-    Add addObject5;
-    addObject5.execute("testfile50.txt");
-    
-    std::ifstream fileReader5(filename50);
-    //ASSERT_FALSE(fileReader5.good());
-    std::cout << fileReader5.good();
-
-    fileReader5.close();
-
-
-    std::string filename2 = "/usr/src/files/testfile2.txt";
-    Add addObject2;
-    addObject2.execute("testfile2.txt ");
-    
-
-    std::ifstream fileReader2(filename2);
-    //ASSERT_FALSE(fileReader2.good());
-    std::cout << fileReader2.good();
-
-    fileReader2.close();
-    */
 }
