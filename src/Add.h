@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream> 
 #include <string>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #ifndef ADD_H
 #define ADD_H
