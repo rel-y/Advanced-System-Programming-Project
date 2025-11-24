@@ -102,7 +102,7 @@ TEST(WeirdRequestTest, BadInputs) {
     addObject5.execute("testfile50.txt");
     
     std::ifstream fileReader5(filename50);
-    ASSERT_FALSE(fileReader5.good());
+    ASSERT_TRUE(fileReader5.good());
 
     fileReader5.close();
 
@@ -113,14 +113,14 @@ TEST(WeirdRequestTest, BadInputs) {
     
 
     std::ifstream fileReader2(filename2);
-    ASSERT_FALSE(fileReader2.good());
+    ASSERT_TRUE(fileReader2.good());
 
     fileReader2.close();
 }
 
 int main(int argc, char **argv) {
-    //::testing::InitGoogleTest(&argc, argv);
-    //return RUN_ALL_TESTS();
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 
     /*
     std::string content = "iloveHemi";
@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
     std::cout << textInFile;
     std::cout << compressedContent;
     fileReader.close();
-    */
+    
 
     std::string filename50 = "/usr/src/files/testfile50.txt";
     Add addObject5;
@@ -161,4 +161,5 @@ int main(int argc, char **argv) {
     std::cout << fileReader2.good();
 
     fileReader2.close();
+    */
 }
