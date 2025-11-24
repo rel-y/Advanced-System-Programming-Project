@@ -46,9 +46,19 @@ search [file content]
 ```
 
 ### How To Run The App
-
+On the main folder (Advanced-System-Programming-Project):
+**To Build:**
+```
+docker build -f ./src/Dockerfile -t project .
+```
+**To Run:**
+```
+docker run -it project
+```
 
 ### Example Run
 **The following pictures are of an example run of the code.**
+
+![WhatsApp Image 2025-11-24 at 22 57 26](https://github.com/user-attachments/assets/6ae4a7b1-9ec5-4072-8f78-58d52e587212)
 
 
