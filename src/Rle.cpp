@@ -2,7 +2,7 @@
 std::string Rle::decompress(std::string input) {
     std::string output = "";
     while(input.size() != 0) {
-        int count = (int)input[0];
+        int count = (int)((unsigned char)input[0]);
         char ch = input[1];
         // Remove the first 2 characters
         input.erase(0,2);
