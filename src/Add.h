@@ -1,3 +1,5 @@
+#ifndef ADD_H
+#define ADD_H
 #include "ICommand.h"
 #include "Rle.h"
 #include <filesystem>
@@ -7,8 +9,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#ifndef ADD_H
-#define ADD_H
 class Add: public ICommand {
     public:
     void execute(std::string argv) override;
