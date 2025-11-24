@@ -11,8 +11,11 @@ void Add::execute(std::string argv) {
     {
         return;
     }
-    
-    
+
+    if (argv[0] == ' ') // space in filename
+    {
+        return;
+    }
     
     if (fileName == argv) // no spaces
     {
