@@ -6,6 +6,7 @@ WORKDIR /usr/src/myapp
 COPY . .
 
 ENV FolderName=/usr/src/files
+RUN mkdir ${FolderName}
 
 RUN mkdir build
 WORKDIR /usr/src/myapp/build
@@ -13,3 +14,4 @@ WORKDIR /usr/src/myapp/build
 RUN cmake ../tests/add_test && make
 
 CMD [ "./runTests" ]
+
