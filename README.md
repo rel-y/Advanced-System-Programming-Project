@@ -23,6 +23,7 @@ Our app is a file compression & backup system, offering several commands for int
 - It outputs no text to the screen.
 - Filenames may not contain spaces.
 - Adding a File which already exists results in no action being completed, the original file will remain unchanged.
+
 **Syntax:**
 ```
 add [file name] [text]
@@ -30,6 +31,7 @@ add [file name] [text]
 #### Get
 - This commands outputs the content of an existing file to the screen.
 - If the file doesnt exist, the command outputs nothing.
+
 **Syntax:**
 ```
 get [file name]
@@ -37,6 +39,7 @@ get [file name]
 #### Search
 - This command outputs a list of all files currently in the system, which contain the given content.
 - If no files match, the command outputs nothing.
+
 **Syntax:**
 ```
 search [file content]
@@ -47,4 +50,5 @@ search [file content]
 
 ### Example Run
 **The following pictures are of an example run of the code.**
+
 
