@@ -46,11 +46,20 @@ docker build -f ./src/Dockerfile -t project .
 ```
 docker run -it project
 ```
+To run with persistence between runs, first run with
+```
+docker run --name myapp -it project
+```
+and on every subsequent run, run with
+```
+docker start -ai myapp
+```
 
 ### Example Run
 **The following pictures are of an example run of the code.**
 
 ![WhatsApp Image 2025-11-24 at 22 57 26](https://github.com/user-attachments/assets/6ae4a7b1-9ec5-4072-8f78-58d52e587212)
+
 
 
 
