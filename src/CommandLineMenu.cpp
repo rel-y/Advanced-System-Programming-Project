@@ -5,7 +5,9 @@ std::pair<std::string, std::string> CommandLineMenu::nextCommand(){
     std::string command;
     std::string parameters;
     std::cin >> command; //reading first word given from user (the commnad)
-    std::cin.ignore(); //ignoring first space in command
     getline(std::cin, parameters);
+    if(!(parameters.empty()) && parameters.front() == ' '){ //checking if the parameter start with a space and removes it
+        parameters.erase(0,1);
+    }
     return {command,parameters};
 }

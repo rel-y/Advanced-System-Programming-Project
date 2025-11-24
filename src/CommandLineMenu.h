@@ -1,4 +1,5 @@
 #ifndef COMMANDLINEMENU_H
+#define COMMANDLINEMENU_H
 #include "IMenu.h"
 #include <iostream>
 class CommandLineMenu: public IMenu{
