@@ -9,13 +9,18 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <vector>
 
 class TCPDevice : public IIODevice {
 private:
     int socketID;
 public:
+    std::string rest;
     TCPDevice(int sock);
     std::string getInput() override;
     void sendOutput(const std::string& output) override;
+    ~TCPDevice() {
+        close(socketID);
+    }
 };
 #endif
