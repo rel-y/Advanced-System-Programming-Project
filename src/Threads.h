@@ -3,7 +3,11 @@
 #include "IThreadManager.h"
 #include <thread>
 #include <functional>
+#include <vector>
 class Threads : public IThreadManager {
+private:
+    std::unordered_map<std::size_t, std::thread> threads;
+    std::size_t nextId = 0;
 public:
     Threads() = default;
     ~Threads() override = default;         // ok to default

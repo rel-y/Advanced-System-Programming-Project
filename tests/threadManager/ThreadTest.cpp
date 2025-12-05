@@ -40,7 +40,6 @@ TEST(sianty, JoinAllWaitsForAllThreads) {
 
     threadManager.joinAll();
 
-    // All 5 threads should have finished
     EXPECT_EQ(counter.load(), 5);
 
     // Joining an already joined thread should fail
