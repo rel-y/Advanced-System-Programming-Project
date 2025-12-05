@@ -19,6 +19,7 @@ TEST(AddTests, BasicInputs) {
     EXPECT_EQ(result.first, 201);
     EXPECT_EQ(result.second, "");
     fileReader.close();
+    std::filesystem::remove(filename);
 }
 
 TEST(AddTests, WhiteSpaceInputs) {
@@ -35,8 +36,8 @@ TEST(AddTests, WhiteSpaceInputs) {
     EXPECT_EQ(result.first, 201);
     EXPECT_EQ(result.second, "");
     EXPECT_EQ(textInFile, compressedContent);
-
     fileReader.close();
+    std::filesystem::remove(filename);
 }
 
 TEST(AddTests, OnlyWhiteSpaceInputs) {
@@ -54,6 +55,7 @@ TEST(AddTests, OnlyWhiteSpaceInputs) {
     EXPECT_EQ(result1.first, 201);
     EXPECT_EQ(result1.second, "");
     fileReader.close();
+    std::filesystem::remove(filename);
 
     std::string content2 = "        ";
     std::string compressedContent2 = Rle::compress(content2);
@@ -69,6 +71,7 @@ TEST(AddTests, OnlyWhiteSpaceInputs) {
     EXPECT_EQ(result2.first, 201);
     EXPECT_EQ(result2.second, "");
     fileReader2.close();
+    std::filesystem::remove(filename2);
 }
 
 TEST(AddTests, NubersInputs) {
@@ -86,6 +89,7 @@ TEST(AddTests, NubersInputs) {
     EXPECT_EQ(result1.first, 201);
     EXPECT_EQ(result1.second, "");
     fileReader.close();
+    std::filesystem::remove(filename);
 }
 
 TEST(AddTests, LongInput) {
@@ -103,6 +107,7 @@ TEST(AddTests, LongInput) {
     EXPECT_EQ(result.first, 201);
     EXPECT_EQ(result.second, "");
     fileReader.close();
+    std::filesystem::remove(filename);
 }
 
 TEST(AddTests, BadInputs) {

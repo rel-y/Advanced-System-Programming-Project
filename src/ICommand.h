@@ -3,7 +3,6 @@
 #include <string>
 class ICommand {
 public:
-    virtual void execute(std::string argv) = 0;
+    virtual std::pair<int, std::string> execute(std::string argv) = 0;
 };
-
-#endif
+#endif //ICOMMAND_H

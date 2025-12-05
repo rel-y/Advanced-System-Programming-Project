@@ -11,6 +11,6 @@
 
 class Add: public ICommand {
     public:
-    void execute(std::string argv) override;
+    std::pair<int, std::string> execute(std::string argv) override;
 };
 #endif // ADD_H

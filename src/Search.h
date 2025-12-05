@@ -9,7 +9,9 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 class Search: public ICommand {
-public: static std::string search(std::string content);
-    void execute(std::string argv) override;
+private:
+    int searchFile(std::filesystem::directory_entry file, std::string content);
+public:
+    std::pair<int, std::string> execute(std::string argv) override;
 };
 #endif // SEARCH_H
