@@ -1,10 +1,14 @@
-#ifndef Threads_H
-#define Threads_H
+#ifndef THREADS_H
+#define THREADS_H
 #include "IThreadManager.h"
 #include <thread>
+#include <functional>
 class Threads : public IThreadManager {
 public:
-    std::thread CrateThread() override;
-public:    int deleteThread(std::thread t) override;
+    Threads() = default;
+    ~Threads() override = default;         // ok to default
+    int runThread(std::function<void()> func) override;
+    int joinThread(size_t id) override;
+    void joinAll() override;
 };
 #endif

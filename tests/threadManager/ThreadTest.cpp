@@ -1,72 +1,81 @@
 #include <gtest/gtest.h>
+#include <atomic>
+#include <chrono>
+#include <functional>
+#include <thread>
+
 #include "../../src/Threads.h"
 
-TEST(SanityTest, Create1Delete1) {
-    Threads threadManager;
-    std::thread t = threadManager.CrateThread();
-    EXPECT_TRUE(t.joinable());
+TEST(sianty, thread_run_join) {
+    auto func = []() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    };
 
-    int deleteResult = threadManager.deleteThread(std::move(t));
-    EXPECT_EQ(deleteResult, 0);
+    Threads threadManager;
+
+    int threadId = threadManager.runThread(func);
+    EXPECT_GE(threadId, 0);
+
+    int joinResult = threadManager.joinThread(threadId);
+    EXPECT_EQ(joinResult, 0);
 }
 
-TEST(BadDeleteTest, DeleteNotJoinable) {
-    Threads threadManager;
-    std::thread t = threadManager.CrateThread();
-    t.join(); // make it non-joinable
+TEST(sianty, JoinAllWaitsForAllThreads) {
+    std::atomic<int> counter{0};
 
-    int result = threadManager.deleteThread(std::move(t));
-    EXPECT_EQ(result, -1);
-}
+    auto func = [&counter]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        counter++;
+    };
 
-TEST(BadDeleteTest2, DeleteOnMovedFromThreadFails) {
-    Threads threadManager;
-    std::thread t = threadManager.CrateThread();
-
-    int result1 = threadManager.deleteThread(std::move(t));
-    EXPECT_EQ(result1, 0);
-
-    // t is now moved-from (empty)
-    int result2 = threadManager.deleteThread(std::move(t));
-    EXPECT_EQ(result2, -1);
-}
-
-TEST(BadDeleteTest3, DeleteThreadNotCreatedByManager) {
     Threads threadManager;
 
-    // Thread not created by any manager
-    std::thread t([]() {
-        // Do nothing
-    });
+    int lastId = -1;
 
-    int result = threadManager.deleteThread(std::move(t));
-    EXPECT_EQ(result, -1);
-
-    // Thread created by another manager
-    Threads threadManager2;
-    std::thread t2 = threadManager2.CrateThread();
-
-    int result2 = threadManager.deleteThread(std::move(t2));
-    EXPECT_EQ(result2, -1);
-}
-
-TEST(MultipleThreadsTest, CreateAndDeleteMultiple) {
-    Threads threadManager;
-    const int numThreads = 10;
-    std::thread threads[numThreads];
-
-    for (int i = 0; i < numThreads; ++i) {
-        threads[i] = threadManager.CrateThread();
-        
-    }
-    for(int i = 0; i < numThreads; ++i) {
-        EXPECT_TRUE(threads[i].joinable());
+    // Launch several threads
+    for (int i = 0; i < 5; i++) {
+        lastId = threadManager.runThread(func);
+        EXPECT_GE(lastId, 0);
     }
 
-    for (int i = 0; i < numThreads; ++i) {
-        int result = threadManager.deleteThread(std::move(threads[i]));
-        EXPECT_EQ(result, 0);
-    }
+    threadManager.joinAll();
+
+    // All 5 threads should have finished
+    EXPECT_EQ(counter.load(), 5);
+
+    // Joining an already joined thread should fail
+    int res = threadManager.joinThread(lastId);
+    EXPECT_EQ(res, -1);
+}
+
+TEST(joinwise, joinwise) {
+    auto func = []() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    };
+
+    Threads threadManager;
+
+    int threadId = threadManager.runThread(func);
+    EXPECT_GE(threadId, 0);
+
+    int joinResult = threadManager.joinThread(threadId);
+    EXPECT_EQ(joinResult, 0);
+
+    // Second join on same id should fail
+    joinResult = threadManager.joinThread(threadId);
+    EXPECT_EQ(joinResult, -1);
+}
+
+TEST(NOID, noid) {
+    auto func = []() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    };
+
+    Threads threadManager;
+
+    // Joining an id that was never created should fail
+    int joinResult = threadManager.joinThread(999);
+    EXPECT_EQ(joinResult, -1);
 }
 
 int main(int argc, char **argv) {

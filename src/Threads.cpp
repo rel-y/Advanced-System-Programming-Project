@@ -1,9 +1,13 @@
 #include "Threads.h"
-std::thread Threads::CrateThread() {
-    return std::thread([](){
-        // Do nothing
-    });//placeholder
+
+int Threads::runThread(std::function<void()> func) {
+    return 0;
 }
-int Threads::deleteThread(std::thread t) {
-    return -1; //placeholder
+int Threads::joinThread(size_t id){
+    return 0;
 }
+void Threads::joinAll(){
+
+}
+
+
