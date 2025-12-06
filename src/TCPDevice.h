@@ -18,9 +18,7 @@ public:
     std::string rest;
     TCPDevice(int sock);
     std::string getInput() override;
-    void sendOutput(const std::string& output) override;
-    ~TCPDevice() {
-        close(socketID);
-    }
+    void sendOutput(std::string output) override;
+    ~TCPDevice();
 };
 #endif

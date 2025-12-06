@@ -18,22 +18,27 @@ std::string TCPDevice::getInput() {
 
         ssize_t received_bytes = recv(socketID, buffer, buffer_size, 0);
         if (received_bytes < 0) {
-            throw std::runtime_error("Error receiving data from TCP socket");
+            throw std::runtime_error("Error receiving data from TCP socket");//error while receiving massage
         } else if (received_bytes == 0) {
-            return "";
+            return "";//client disconnected
         }
-        //append rest of data
+        //append the rest of the data to be recessed next time
         this->rest.append(buffer, received_bytes);
     }
 }
-void TCPDevice::sendOutput(const std::string& output) {
-    std::string dataToSend = output;
-    dataToSend += '\n';  // Append newline to indicate end of message
-    int read_bytes = dataToSend.size();
-    int sent_bytes = send(socketID, dataToSend.c_str(), read_bytes, 0);
+void TCPDevice::sendOutput(std::string output) {
+    output += '\n';  // Append newline to indicate end of message
+    int read_bytes = output.size();
+    int sent_bytes = send(socketID, output.c_str(), read_bytes, 0);
     if (sent_bytes < 0) {
         throw std::runtime_error("Error sending data over TCP socket");
     }
 }
 TCPDevice::TCPDevice(int sock): socketID(sock) { 
+}
+TCPDevice::~TCPDevice() {
+    if(socketID >=0)
+        close(socketID);
+    else
+        throw std::runtime_error("Invalid socket ID on TCPDevice destruction");
 }
