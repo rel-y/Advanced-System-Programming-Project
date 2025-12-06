@@ -1,44 +1,52 @@
 #include "Get.h"
-std::string Get::get(std::string name){
+
+std::pair<int, std::string> Get::execute(std::string name){
     //checking the name of the file isn't empty and doens't contain any spaces
     if(name.empty()){
-        return "";
+        return {400, ""};
     }
     if(name.find_first_of(' ') != std::string::npos){
-        return "";
+        return {400, ""};
     }
     //name of the file
     std::filesystem::path dirName(getenv("FolderName"));
     std::filesystem::path pathName = dirName / name;
     
-    if(std::filesystem::exists(pathName) == false){
-        //the file doesn't exists
-        return "";
-    }else if(!(std::filesystem::is_regular_file(pathName))){
-        //the file isn't a regular file.
-        return "";
-    }   
+    std::error_code ec;
+    bool exists = std::filesystem::exists(pathName, ec);
+    if (ec){ //an error occurred
+        return {501, ""}; 
+    }else if(!exists){ //the file doesn't exists
+        return {404, ""};
+    }
+    bool is_regular = std::filesystem::is_regular_file(pathName, ec);
+    if(ec){
+        return {502, ""};
+    }else if(!is_regular){
+        return {404, ""}; //the file isn't a regular file
+    }
+
     std::string content;
-    try{
-        std::ifstream fileStream(pathName);
-        if (!fileStream.is_open()) //verifying the stream opened correctly
-            return "";
-        std::string line;
-        while(std::getline(fileStream, line)){ // reading the file line by line
+    std::ifstream fileStream(pathName);
+    if(!fileStream){
+        return {503, ""}; //couldn't open the file
+    }
+
+    std::string line;
+    while(true){ // reading the file line by line
+        if(std::getline(fileStream, line)){
             std::string decompressedContent = Rle::decompress(line);
             content = content + decompressedContent;
+        }else if(fileStream.eof()){ //end of file
+            break;
+        }else{ // i/o error
+            return {504, ""};
         }
-        fileStream.close();
-    }catch(...){
-        return "";
-        //there is an error we ignore the command
     }
-    return content;
-}
-
-void Get::execute(std::string argv){
-    std::string content = get(argv);
-    if(!content.empty()){
-        std::cout << content << std::endl;
+    fileStream.clear(); //removing failbit that was set on by doing getline on eof
+    fileStream.close();
+    if(fileStream.fail()){ //failed to close
+        return {505, ""};
     }
+    return {200 ,content};
 }
