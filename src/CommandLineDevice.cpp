@@ -1,6 +1,11 @@
 #include "CommandLineDevice.h"
 std::string CommandLineDevice::getInput()
 {
-    return ""; //plcaeholder
+    std::string line;
+    std::getline(std::cin, line);
+    return line;
 }
-void CommandLineDevice::sendOutput(std::string output){}//placeholder
+void CommandLineDevice::sendOutput(std::string output)
+{
+    std::cout << output;
+}
