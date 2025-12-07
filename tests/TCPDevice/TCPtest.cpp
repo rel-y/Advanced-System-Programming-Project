@@ -127,11 +127,19 @@ TEST_F(TestClass, LargeMessage) {
     EXPECT_EQ(received.size(), big.size());
     EXPECT_EQ(received, big);
 }
-// TEST_F(TestClass, newline){ //the test is wrong input should only be 1 line
-//     client->sendOutput("Hello\nWorld\n");
-//     std::string received = server->getInput();
-//     EXPECT_EQ(received, "Hello\nWorld\n");
-// }
+TEST_F(TestClass, newline){ //the test is wrong input should only be 1 line
+     client->sendOutput("Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+     std::string received = server->getInput();
+     EXPECT_EQ(received,"Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+}
+TEST_F(TestClass, multnewline){ //the test is wrong input should only be 1 line
+     client->sendOutput("Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+     client->sendOutput("Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+     std::string received = server->getInput();
+     EXPECT_EQ(received,"Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+     received = server->getInput();
+     EXPECT_EQ(received,"Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+}
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

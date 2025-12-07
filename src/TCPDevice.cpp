@@ -3,10 +3,21 @@ std::string TCPDevice::getInput() {
     while (true) {
         // Check if we already have a full line in the buffer
         size_t pos = this->rest.find('\n');
-        if (pos != std::string::npos) {
+        while(pos != std::string::npos) {
+            if(pos > 0 && this->rest[pos - 1] == '\\') {
+                // Escaped newline, continue searching
+                pos = this->rest.find('\n', pos + 1);
+                continue;
+            }
+            
             // Extract one line
             std::string line = this->rest.substr(0, pos);  // up to '\n', not including
-
+            for(int i =0; i<line.size(); i++){
+                if(line[i] == '\\' && (i + 1 < line.size()) && (line[i + 1] == '\n' || line[i + 1] == '\\'))
+                {
+                    line.erase(i,1);
+                }
+            }
             // Remove this line (and the '\n') from buffer
             this->rest.erase(0, pos + 1);
             return line;
@@ -27,7 +38,14 @@ std::string TCPDevice::getInput() {
     }
 }
 void TCPDevice::sendOutput(std::string output) {
-    output += '\n';  // Append newline to indicate end of message
+    for(int i =0; i<output.size(); i++){
+        if(output[i] == '\n' || output[i] == '\\')
+        {
+            output.insert(i,1,'\\');
+            i++;
+        }
+    }
+    output += '\n'; // Append newline without \ to indicate end of message
     int read_bytes = output.size();
     int sent_bytes = send(socketID, output.c_str(), read_bytes, 0);
     if (sent_bytes < 0) {
