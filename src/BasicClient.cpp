@@ -18,7 +18,7 @@ BasicClient::BasicClient(std::string ip, int portNum) {
     sin.sin_port = htons(portNum);
 
     if (connect(sock, (struct sockaddr *) &sin, sizeof(sin)) < 0) { // connect to server. private socket connection will be set in sin
-        perror("error connecting to server");
+        perror("error connecting to server1234");
     }
 
     this->tcpDevice = TCPDevice(sock);
@@ -34,4 +34,8 @@ void BasicClient::run() {
         std::string received = tcpDevice.getInput();
         cliDevice.sendOutput(received);
     }
+}
+
+BasicClient::~BasicClient() {
+    delete &tcpDevice;
 }

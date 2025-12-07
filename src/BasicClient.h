@@ -21,6 +21,7 @@ class BasicClient {
 
     public:
     BasicClient(std::string ip, int portNum);
+    ~BasicClient();
     void run();
 };
 #endif  //BASICCLIENT_H
