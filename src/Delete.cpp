@@ -21,14 +21,35 @@ std::pair<int, std::string> Delete::execute(std::string name){
     bool is_regular = std::filesystem::is_regular_file(pathName, ec);
     if(ec){
         return {502, ""};
-    }else if(!is_regular){
-        return {404, ""}; //the file isn't a regular file
+    }else if(is_regular){
+        //the file is regular file
+        return deleteRegFile(pathName);
     }
+    bool is_dir = std::filesystem::is_directory(pathName, ec);
+    if(ec){
+        return {502, ""};
+    }else if(is_regular){
+        //the file is directory file
+        return deleteDir(pathName);
+    }
+    return deleteNotDirOrRegFile(pathName);
+}
 
-    bool removed = std::filesystem::remove(pathName, ec);
+std::pair<int, std::string> Delete::deleteRegFile(std::filesystem::path name){
+    //the given file is a regular file
+    std::error_code ec;
+    bool removed = std::filesystem::remove(name);
     if(ec){ //an error occurred
         return {500, ""};
     }
     //the file was deleted
     return {204 , ""};
+}
+std::pair<int, std::string> Delete::deleteDir(std::filesystem::path name){
+    //we don't support directories yet
+    return {404, ""};
+}
+std::pair<int, std::string> Delete::deleteNotDirOrRegFile(std::filesystem::path name){
+    //not supported
+    return {404, ""};
 }
