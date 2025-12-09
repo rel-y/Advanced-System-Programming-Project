@@ -31,8 +31,14 @@ protected:
     }
 
     void TearDown() override {
-        delete client.release();
-        delete server.release();
+        if(client->socketID >=0)
+            close(client->socketID);
+        else
+            throw std::runtime_error("Invalid socket ID on TCPDevice destruction");
+        if(server->socketID >=0)
+            close(server->socketID);
+        else
+            throw std::runtime_error("Invalid socket ID on TCPDevice destruction");
         if (listen_sock >= 0) {
             close(listen_sock);
             listen_sock = -1;

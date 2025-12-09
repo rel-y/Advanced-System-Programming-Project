@@ -54,9 +54,3 @@ void TCPDevice::sendOutput(std::string output) {
 }
 TCPDevice::TCPDevice(int sock): socketID(sock) { 
 }
-TCPDevice::~TCPDevice() {
-    if(socketID >=0)
-        close(socketID);
-    else
-        throw std::runtime_error("Invalid socket ID on TCPDevice destruction");
-}
