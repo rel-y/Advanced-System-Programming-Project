@@ -14,6 +14,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(runTests ../../src/Threads.cpp ../../src/TCPServer.cpp ServerTests.cpp )
+add_executable(runTests ../../src/Threads.cpp ../../src/TCPServer.cpp ../../src/TCPDevice.cpp ../../src/ServerApp.cpp
+../../src/Search.cpp ../../src/Get.cpp ../../src/Add.cpp ../../src/Rle.cpp ../../src/Delete.cpp ServerTests.cpp )
 
 target_link_libraries(runTests gtest_main)

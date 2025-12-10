@@ -34,7 +34,7 @@ TEST(ServerTests, CreatingAConnection) {
 }
 TEST(ServerTests, MultipelClientConnection) {
     IThreadManager* threadManager = new Threads();
-    int port = 12345;
+    int port = 23456;
     TCPServer server(*threadManager, port);
     std::thread serverThread(&TCPServer::run, &server);
 
@@ -67,7 +67,7 @@ TEST(ServerTests, MultipelClientConnection) {
 }
 TEST(ServerTests, SendingTextsAndRecivingBack) {
     IThreadManager* threadManager = new Threads();
-    int port = 12345;
+    int port = 34567;
     TCPServer server(*threadManager, port);
     std::thread serverThread(&TCPServer::run, &server);
 
@@ -100,7 +100,7 @@ TEST(ServerTests, SendingTextsAndRecivingBack) {
 }
 TEST(ServerTests, MultipelClientsSendingAndReciving) {
     IThreadManager* threadManager = new Threads();
-    int port = 12345;
+    int port = 45678;
     TCPServer server(*threadManager, port);
     std::thread serverThread(&TCPServer::run, &server);
 
