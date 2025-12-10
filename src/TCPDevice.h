@@ -12,13 +12,11 @@
 #include <vector>
 
 class TCPDevice : public IIODevice {
-private:
-    int socketID;
 public:
+    int socketID;
     std::string rest;
     TCPDevice(int sock);
     std::string getInput() override;
     void sendOutput(std::string output) override;
-    ~TCPDevice();
 };
 #endif

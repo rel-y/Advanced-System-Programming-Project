@@ -31,8 +31,14 @@ protected:
     }
 
     void TearDown() override {
-        delete client.release();
-        delete server.release();
+        if(client->socketID >=0)
+            close(client->socketID);
+        else
+            throw std::runtime_error("Invalid socket ID on TCPDevice destruction");
+        if(server->socketID >=0)
+            close(server->socketID);
+        else
+            throw std::runtime_error("Invalid socket ID on TCPDevice destruction");
         if (listen_sock >= 0) {
             close(listen_sock);
             listen_sock = -1;
@@ -127,11 +133,19 @@ TEST_F(TestClass, LargeMessage) {
     EXPECT_EQ(received.size(), big.size());
     EXPECT_EQ(received, big);
 }
-// TEST_F(TestClass, newline){ //the test is wrong input should only be 1 line
-//     client->sendOutput("Hello\nWorld\n");
-//     std::string received = server->getInput();
-//     EXPECT_EQ(received, "Hello\nWorld\n");
-// }
+TEST_F(TestClass, newline){ //the test is wrong input should only be 1 line
+     client->sendOutput("Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+     std::string received = server->getInput();
+     EXPECT_EQ(received,"Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+}
+TEST_F(TestClass, multnewline){ //the test is wrong input should only be 1 line
+     client->sendOutput("Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+     client->sendOutput("Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+     std::string received = server->getInput();
+     EXPECT_EQ(received,"Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+     received = server->getInput();
+     EXPECT_EQ(received,"Hello\nWorld\n\\\n\\dasd\n\nasd\\\n");
+}
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
