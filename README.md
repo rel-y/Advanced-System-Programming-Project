@@ -4,34 +4,47 @@
 Our app is a file compression & backup system, offering several commands for interaction with your files. 
 **The app functions as such:**
 
-1. A main console runs infinitely and accepts commands from the user, on the keyboard.
-2. The console accepts the commands: add, get, search, each having different functionality in regards to the file backup system.
+1. multiple clients can connect to a server that manages the files.
+2. On the clients' machine, a main console runs infinitely and accepts commands from the user, on the keyboard.
+3. The console accepts the commands: post, get, search,, delete each having different functionality in regards to the file backup system. Commands are not case-sensetive.
 ### The Commands
-#### Add
+#### Post
 - This commands adds a new file to the system, and some content into it.
-- It outputs no text to the screen.
+- If everything worked out, client receives 201 Created.
 - Filenames may not contain spaces.
-- Adding a File which already exists results in no action being completed, the original file will remain unchanged.
+- Adding a File which already exists results in an error code, the original file will remain unchanged.
 
 Syntax:
 ```
-add [file name] [text]
+post [file name] [text]
 ```
 #### Get
 - This commands outputs the content of an existing file to the screen.
-- If the file doesnt exist, the command outputs nothing.
+- Output is 200 Ok and then the text of the file.
+- On illegal request client receives 400 Bad Requset.
+- if no file was found client receives 404.
 
 Syntax:
 ```
 get [file name]
 ```
 #### Search
-- This command outputs a list of all files currently in the system, which contain the given content.
-- If no files match, the command outputs nothing.
+- This command outputs a list of all files currently in the system, which contain the given content or have the content in their filename.
+- on success, client receives 200 Ok and then the list of files.
 
 Syntax:
 ```
 search [file content]
+```
+
+#### Delete
+- This command deletes a given file from the system.
+- On success, client receives 204 No Content.
+- On failure client receives an error code.
+
+Syntax:
+```
+delete [file name]
 ```
 
 ### How To Run The App
@@ -66,9 +79,6 @@ docker start -ai myapp
 2. the fact that new commands were added didn't require us to touch code that's "closed for changed and open for expansion". the new command 'delete' is independent from the other commands, and we just needed to update the map to include 'delete' and the according class.
 3. the fact that command  output chaned did require us to edit code that is "closed for changed and open for expansion". we changed the Icommand signature to return a pair of a status code and an output text. the app then handles the output text after checking the status code and acts accordingly. this signature is more flexible then before where each command outputted to the console by itself.
 4. the fact that i/o changed did require us to touch code that's supposed to be "closed for changed and open for expansion". before we had the commands output directly to console, now they just process requests and return code + output string to whoever called them.
-
-
-
 
 
 
