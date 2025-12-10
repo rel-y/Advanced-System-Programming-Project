@@ -23,6 +23,7 @@ BasicClient::BasicClient(std::string ip, int portNum) {
 
     this->tcpDevice = TCPDevice(sock);
     this->cliDevice = CommandLineDevice();
+    this->sock = sock;
 }
 
 
@@ -37,5 +38,5 @@ void BasicClient::run() {
 }
 
 BasicClient::~BasicClient() {
-    delete &tcpDevice;
+    close(sock);
 }

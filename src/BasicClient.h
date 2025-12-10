@@ -18,6 +18,7 @@ class BasicClient {
     int portNum;
     CommandLineDevice cliDevice;
     TCPDevice tcpDevice = TCPDevice(-1); // no default constructor in TCPDevice. this is changed upon construction
+    int sock;
 
     public:
     BasicClient(std::string ip, int portNum);
