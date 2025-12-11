@@ -11,17 +11,22 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <iostream>
+#include <mutex>
 class TCPServer{
 private:
     IThreadManager& threadManager;
     int socketID;
+    std::atomic<bool> running{true};
+    std::vector<ServerApp*> runningApps;
+    std::mutex runningAppsMutex;
 public:
     TCPServer(IThreadManager& threadManager, int port);
     void acceptClient();
     void setUpConnection(int sock);
     void run();
-    ~TCPServer() = default;
+    ~TCPServer();
     ServerApp* setUpApp(TCPDevice* device);
+    void stop();
 };
 
 #endif //TCPSERVER_H

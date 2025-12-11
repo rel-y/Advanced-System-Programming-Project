@@ -26,7 +26,6 @@ void TCPServer::acceptClient(){
     //accepting a client
     struct sockaddr_in client_sin;
     unsigned int addr_len = sizeof(client_sin);
-    std::cout << "socketID = " << socketID << "\n";
     int client_sock = accept(socketID,  (struct sockaddr *) &client_sin,  &addr_len);
 
     if (client_sock < 0) {
@@ -42,6 +41,9 @@ void TCPServer::setUpConnection(int sock){
     //creating TCPDevices and CLIDevice for the run function and running App
     TCPDevice* device = new TCPDevice(sock);
     ServerApp* app = setUpApp(device);
+    runningAppsMutex.lock();
+    runningApps.push_back(app);
+    runningAppsMutex.unlock();
     app->run();
 
 }
@@ -63,10 +65,10 @@ ServerApp* TCPServer::setUpApp(TCPDevice* device){
     std::map<int, std::string> statusString = {
         {200, "OK\n\n"},
         {201, "Created\n"},
-        {204, "Created\n"},
+        {204, "No Content\n"},
 
-        {400, "Not Found\n"},
-        {404, "Bad Request\n"},
+        {400, "Bad Request\n"},
+        {404, "Not Found\n"},
 
         {500, "Internal Server Error\n"},
     };
@@ -76,8 +78,19 @@ ServerApp* TCPServer::setUpApp(TCPDevice* device){
     return app;
 }
 void TCPServer::run(){
-    while(true){
+    while(running){
         //accepting clients
         acceptClient();
     }
+}
+void TCPServer::stop(){
+    running = false;
+}
+TCPServer::~TCPServer(){
+    runningAppsMutex.lock();
+    for(ServerApp* app : runningApps){
+        app->stop();
+    }
+    runningAppsMutex.unlock();
+    threadManager.joinAll();
 }

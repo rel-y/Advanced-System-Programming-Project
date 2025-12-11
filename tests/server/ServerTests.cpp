@@ -11,15 +11,18 @@
 #include <string.h>
 #include <thread>
 TEST(ServerTests, CreatingAConnection) {
-    IThreadManager* threadManager = new Threads();
+    Threads threadManager;
     int port = 12345;
-    TCPServer server(*threadManager, port);
-    std::thread serverThread(&TCPServer::run, &server);
-
+    TCPServer* server = new TCPServer(threadManager, port);
+    std::thread serverThread(&TCPServer::run, server);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     const char* ip_address = "127.0.0.1";
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     EXPECT_GE(sock, 0);
-    
+
+    server->stop(); //only accepting one client
+
+
     //saving the server information in the sockaddr_in struct
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
@@ -27,21 +30,24 @@ TEST(ServerTests, CreatingAConnection) {
     sin.sin_addr.s_addr = inet_addr(ip_address);
     sin.sin_port = htons(port);
     EXPECT_GE(connect(sock, (struct sockaddr *) &sin, sizeof(sin)), 0);
+    //waiting the server finishes handeling the client
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     //closing everything
     close(sock);
-    delete(threadManager);
-    serverThread.detach();
+    server->~TCPServer();
+    serverThread.join();
+
 }
 TEST(ServerTests, MultipelClientConnection) {
-    IThreadManager* threadManager = new Threads();
+    Threads threadManager;
     int port = 23456;
-    TCPServer server(*threadManager, port);
-    std::thread serverThread(&TCPServer::run, &server);
-
+    TCPServer* server = new TCPServer(threadManager, port);
+    std::thread serverThread(&TCPServer::run, server);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     const char* ip_address = "127.0.0.1";
     int sock1 = socket(AF_INET, SOCK_STREAM, 0);
     EXPECT_GE(sock1, 0);
-    
+
     //saving the server information in the sockaddr_in struct
     struct sockaddr_in sin1;
     memset(&sin1, 0, sizeof(sin1));
@@ -49,9 +55,11 @@ TEST(ServerTests, MultipelClientConnection) {
     sin1.sin_addr.s_addr = inet_addr(ip_address);
     sin1.sin_port = htons(port);
     EXPECT_GE(connect(sock1, (struct sockaddr *) &sin1, sizeof(sin1)), 0);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    server->stop();
+
     int sock2 = socket(AF_INET, SOCK_STREAM, 0);
     EXPECT_GE(sock2, 0);
-    
     //saving the server information in the sockaddr_in struct
     struct sockaddr_in sin2;
     memset(&sin2, 0, sizeof(sin2));
@@ -60,20 +68,25 @@ TEST(ServerTests, MultipelClientConnection) {
     sin2.sin_port = htons(port);
     EXPECT_GE(connect(sock2, (struct sockaddr *) &sin2, sizeof(sin2)), 0);
     //closing everything
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     close(sock1);
     close(sock2);
-    delete(threadManager);
-    serverThread.detach();
+    server->~TCPServer();
+
+    serverThread.join();
 }
 TEST(ServerTests, SendingTextsAndRecivingBack) {
-    IThreadManager* threadManager = new Threads();
+    Threads threadManager;
     int port = 34567;
-    TCPServer server(*threadManager, port);
-    std::thread serverThread(&TCPServer::run, &server);
-
+    TCPServer* server = new TCPServer(threadManager, port);
+    std::thread serverThread(&TCPServer::run, server);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     const char* ip_address = "127.0.0.1";
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     EXPECT_GE(sock, 0);
+    
+    server->stop();
     
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
@@ -81,29 +94,39 @@ TEST(ServerTests, SendingTextsAndRecivingBack) {
     sin.sin_addr.s_addr = inet_addr(ip_address);
     sin.sin_port = htons(port);
     EXPECT_GE(connect(sock, (struct sockaddr *) &sin, sizeof(sin)), 0);
-
+    TCPDevice device(sock);
     //message that will be sent to the server
-    char data_addr[] = "a\n";
-    int data_len = strlen(data_addr);
-    int sent_bytes = send(sock, data_addr, data_len, 0);
-    EXPECT_EQ(sent_bytes, data_len);
+    std::string data = "a";
+    try{
+        device.sendOutput(data);
+    }catch(...){
+        GTEST_FAIL() << "error sending data";
+    }
+
 
     //receiving back from the server
-    char buffer[4096];
-    int expected_data_len = sizeof(buffer);
-    int read_bytes = recv(sock, buffer, expected_data_len, 0);
-    EXPECT_EQ("400 Bad Request\n", buffer); //the command sent isn't a real command the server accepts
+    std::string output;
+    try{
+        output = device.getInput();
+    }catch(...){
+        GTEST_FAIL() << "error reciving data";
+    }
+    
+    EXPECT_EQ("400 Bad Request\n", output); //the command sent isn't a real command the server accepts
     //closing everything
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     close(sock);
-    delete(threadManager);
-    serverThread.detach();
+    server->~TCPServer();
+
+    serverThread.join();
 }
 TEST(ServerTests, MultipelClientsSendingAndReciving) {
-    IThreadManager* threadManager = new Threads();
+    Threads threadManager;
     int port = 45678;
-    TCPServer server(*threadManager, port);
-    std::thread serverThread(&TCPServer::run, &server);
-
+    TCPServer* server = new TCPServer(threadManager, port);
+    std::thread serverThread(&TCPServer::run, server);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     const char* ip_address = "127.0.0.1";
     int sock1 = socket(AF_INET, SOCK_STREAM, 0);
     EXPECT_GE(sock1, 0);
@@ -118,39 +141,61 @@ TEST(ServerTests, MultipelClientsSendingAndReciving) {
     int sock2 = socket(AF_INET, SOCK_STREAM, 0);
     EXPECT_GE(sock2, 0);
     //saving the server information in the sockaddr_in struct
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    server->stop();
+
+    
     struct sockaddr_in sin2;
     memset(&sin2, 0, sizeof(sin2));
     sin2.sin_family = AF_INET;
     sin2.sin_addr.s_addr = inet_addr(ip_address);
     sin2.sin_port = htons(port);
     EXPECT_GE(connect(sock2, (struct sockaddr *) &sin2, sizeof(sin2)), 0);
+    TCPDevice device1(sock1);
+    //message that will be sent to the server
+    std::string data1 = "a";
+    try{
+        device1.sendOutput(data1);
+    }catch(...){
+        GTEST_FAIL() << "error sending data";
+    }
 
-
-    char data_addr1[] = "a\n";
-    int data_len1 = strlen(data_addr1);
-    int sent_bytes1 = send(sock1, data_addr1, data_len1, 0);
-    EXPECT_EQ(sent_bytes1, data_len1);
-
-    char data_addr2[] = "delete a\n"; //command is currect but not logical (file a dosn't exists)
-    int data_len2 = strlen(data_addr2);
-    int sent_bytes2 = send(sock2, data_addr2, data_len2, 0);
-    EXPECT_EQ(sent_bytes2, data_len2);
 
     //receiving back from the server
-    char buffer1[4096];
-    int expected_data_len1 = sizeof(buffer1);
-    int read_bytes1 = recv(sock1, buffer1, expected_data_len1, 0);
-    EXPECT_EQ("400 Bad Request\n", buffer1); //the command sent isn't a real command the server accepts
+    std::string output1;
+    try{
+        output1 = device1.getInput();
+    }catch(...){
+        GTEST_FAIL() << "error reciving data";
+    }
 
-    char buffer2[4096];
-    int expected_data_len2 = sizeof(buffer2);
-    int read_bytes2 = recv(sock2, buffer2, expected_data_len2, 0);
-    EXPECT_EQ("404 Not Found\n", buffer2); //the command sent isn't a real command the server accepts
+    TCPDevice device2(sock2);
+    std::string data2 = "delete a";
+    try{
+        device2.sendOutput(data2);
+    }catch(...){
+        GTEST_FAIL() << "error sending data";
+    }
+
+
+    //receiving back from the server
+    std::string output2;
+    try{
+        output2 = device2.getInput();
+    }catch(...){
+        GTEST_FAIL() << "error reciving data";
+    }
+
+    EXPECT_EQ("400 Bad Request\n", output1); //the command sent isn't a real command the server accepts
+
+    EXPECT_EQ("404 Not Found\n", output2); //the command sent isn't a real command the server accepts
     //closing everything
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
     close(sock1);
     close(sock2);
-    delete(threadManager);
-    serverThread.detach();
+    server->~TCPServer();
+    serverThread.join();
 }
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
