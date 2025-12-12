@@ -2,21 +2,6 @@ import socket
 import sys
 import string
 
-if __name__ == '__main__':
-    args = sys.argv[1:]
-    ip = args[0]
-    port = int(args[1])
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create IPv4 TCP socket
-    s.connect((ip, port))
-    TCPDev = TCPDevice(s)
-    while True:
-        msg = input() # read from user
-
-        s.send(bytes(msg, 'utf-8')) # send to server
-
-        print(TCPDev.getInput()) # print to user
-
 class TCPDevice:
     def __init__(self, socketID):
         self.socketID = socketID
@@ -45,7 +30,6 @@ class TCPDevice:
                     ):
                         # Remove the escape backslash
                         line = line[:i] + line[i + 1:]
-                        continue  # don't advance i, string shrank
                     i += 1
 
                 # Remove this line (and the '\n') from buffer
@@ -63,4 +47,19 @@ class TCPDevice:
                 # client disconnected
                 return ""
             
-            self.rest += buffer
+            self.rest += buffer.decode("ascii", errors="replace")
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    ip = args[0]
+    port = int(args[1])
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create IPv4 TCP socket
+    s.connect((ip, port))
+    TCPDev = TCPDevice(s)
+    while True:
+        msg = input() # read from user
+        msg += '\n'
+        s.send(bytes(msg, 'utf-8')) # send to server
+
+        print(TCPDev.getInput(), end="") # print to user
