@@ -5,4 +5,4 @@ project(my_project)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(runProject App.cpp CommandLineMenu.cpp Main.cpp Rle.cpp Search.cpp Add.cpp Get.cpp)
+add_executable(runProject Maincppclient.cpp BasicClient.cpp CommandLineDevice.cpp TCPDevice.cpp)
