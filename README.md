@@ -49,6 +49,7 @@ delete [file name]
 
 ### How To Run The App
 On the main folder (Advanced-System-Programming-Project):
+
 **To Build Server App:**
 ```
 docker build -f ./src/Dockerfile -t server .
@@ -58,6 +59,7 @@ docker build -f ./src/Dockerfile -t server .
 docker run -p 12345:12345 server 12345
 ```
 replace 12345 with whatever port you wish to use.
+
 To run with persistence between runs, first run with
 ```
 docker run --name myapp -p 12345:12345 -it server 12345
@@ -90,8 +92,13 @@ docker run -it pythonclient [server ip] 12345
 
 ### Example Run
 **The following pictures are of an example run of the code.**
+Note that the two clients were running simultaneously and were connected to the same backup system, their files are shared.
 
-![WhatsApp Image 2025-11-24 at 22 57 26](https://github.com/user-attachments/assets/6ae4a7b1-9ec5-4072-8f78-58d52e587212)
+<img width="884" height="54" alt="Screenshot 2025-12-12 203209" src="https://github.com/user-attachments/assets/60c71f52-8e80-4b92-aee8-4803af42167e" />
+
+<img width="975" height="675" alt="Screenshot 2025-12-12 203158" src="https://github.com/user-attachments/assets/45dc619b-9f85-4cca-af5e-a73e0cdab1f5" />
+
+<img width="973" height="637" alt="Screenshot 2025-12-12 203204" src="https://github.com/user-attachments/assets/3cf0d84c-c701-44a0-bda7-85363b5c9c46" />
 
 
 ### Questions from the Exercise
@@ -99,6 +106,7 @@ docker run -it pythonclient [server ip] 12345
 2. the fact that new commands were added didn't require us to touch code that's "closed for changed and open for expansion". the new command 'delete' is independent from the other commands, and we just needed to update the map to include 'delete' and the according class.
 3. the fact that command  output chaned did require us to edit code that is "closed for changed and open for expansion". we changed the Icommand signature to return a pair of a status code and an output text. the app then handles the output text after checking the status code and acts accordingly. this signature is more flexible then before where each command outputted to the console by itself.
 4. the fact that i/o changed did require us to touch code that's supposed to be "closed for changed and open for expansion". before we had the commands output directly to console, now they just process requests and return code + output string to whoever called them.
+
 
 
 
