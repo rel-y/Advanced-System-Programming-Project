@@ -15,13 +15,13 @@ std::pair<int, std::string> Get::execute(std::string name){
     std::error_code ec;
     bool exists = std::filesystem::exists(pathName, ec);
     if (ec){ //an error occurred
-        return {501, ""}; 
+        return {500, ""}; 
     }else if(!exists){ //the file doesn't exists
         return {404, ""};
     }
     bool is_regular = std::filesystem::is_regular_file(pathName, ec);
     if(ec){
-        return {502, ""};
+        return {500, ""};
     }else if(!is_regular){
         return {404, ""}; //the file isn't a regular file
     }
@@ -29,7 +29,7 @@ std::pair<int, std::string> Get::execute(std::string name){
     std::string content;
     std::ifstream fileStream(pathName);
     if(!fileStream){
-        return {503, ""}; //couldn't open the file
+        return {500, ""}; //couldn't open the file
     }
 
     std::string line;
@@ -40,13 +40,15 @@ std::pair<int, std::string> Get::execute(std::string name){
         }else if(fileStream.eof()){ //end of file
             break;
         }else{ // i/o error
-            return {504, ""};
+            return {500, ""};
         }
     }
     fileStream.clear(); //removing failbit that was set on by doing getline on eof
     fileStream.close();
     if(fileStream.fail()){ //failed to close
-        return {505, ""};
+        return {500, ""};
     }
+    //adding \n to end of content
+    content += '\n';
     return {200 ,content};
 }

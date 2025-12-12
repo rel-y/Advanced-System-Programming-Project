@@ -1,6 +1,9 @@
 #include "Add.h"
 
 std::pair<int, std::string> Add::execute(std::string argv) {
+    if (argv[0] == ' '){ // space in filename, bad command
+        return {400, ""};
+    }
     std::string fileName = argv.substr(0, argv.find(" "));
     std::filesystem::path dirName(getenv("FolderName"));
     std::filesystem::path path = dirName / fileName;
@@ -12,9 +15,7 @@ std::pair<int, std::string> Add::execute(std::string argv) {
     }else if(exists){//file exists
         return {404, ""};
     }
-    if (argv[0] == ' '){ // space in filename, bad command
-        return {400, ""};
-    }
+
 
     std::ofstream ofs(path); //create file
     if(!ofs){ // failed to open

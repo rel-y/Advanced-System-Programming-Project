@@ -20,14 +20,14 @@ std::pair<int, std::string> Delete::execute(std::string name){
     }
     bool is_regular = std::filesystem::is_regular_file(pathName, ec);
     if(ec){
-        return {502, ""};
+        return {500, ""};
     }else if(is_regular){
         //the file is regular file
         return deleteRegFile(pathName);
     }
     bool is_dir = std::filesystem::is_directory(pathName, ec);
     if(ec){
-        return {502, ""};
+        return {500, ""};
     }else if(is_regular){
         //the file is directory file
         return deleteDir(pathName);
