@@ -49,24 +49,44 @@ delete [file name]
 
 ### How To Run The App
 On the main folder (Advanced-System-Programming-Project):
-
-**To Build:**
+**To Build Server App:**
 ```
-docker build -f ./src/Dockerfile -t project .
+docker build -f ./src/Dockerfile -t server .
 ```
-
-**To Run:**
+**To Run Server:**
 ```
-docker run -it project
+docker run -p 12345:12345 server 12345
 ```
+replace 12345 with whatever port you wish to use.
 To run with persistence between runs, first run with
 ```
-docker run --name myapp -it project
+docker run --name myapp -p 12345:12345 -it server 12345
 ```
 and on every subsequent run, run with
 ```
 docker start -ai myapp
 ```
+
+**To Build Cpp Client:**
+```
+docker build -f ./src/Dockerfile.cppclient -t cppclient .
+```
+**To Run Cpp Client:**
+```
+docker run -it cppclient [server ip] 12345
+```
+where server ip is the ip of the machine on which the server container is running. 
+note that using 127.0.0.1 won't work even when running all containers on one pc because that refers to the ip of the container 'cppclient'. check the ip the server is running on (for example on windows use ipconfig or on wsl use hostname -I, it is different from the ip of the windows machine).
+
+**To Build Python Client:**
+```
+docker build -f ./src/Dockerfile.pythonclient -t pythonclient .
+```
+**To Run Python Client:**
+```
+docker run -it pythonclient [server ip] 12345
+```
+
 
 ### Example Run
 **The following pictures are of an example run of the code.**
