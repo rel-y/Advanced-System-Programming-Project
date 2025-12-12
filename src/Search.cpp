@@ -59,5 +59,7 @@ std::pair<int, std::string> Search::execute(std::string content) {
         result += fileName;
     }
     result.pop_back(); //remove the last space
+    //adding \n to end of result
+    result += '\n';
     return {200, result};
 }

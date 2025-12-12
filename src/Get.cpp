@@ -48,5 +48,7 @@ std::pair<int, std::string> Get::execute(std::string name){
     if(fileStream.fail()){ //failed to close
         return {500, ""};
     }
+    //adding \n to end of content
+    content += '\n';
     return {200 ,content};
 }
