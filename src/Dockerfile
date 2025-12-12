@@ -11,4 +11,4 @@ RUN mkdir /usr/myapp/files
 
 RUN cmake ./src && make
 
-CMD [ "./runProject" ]
+ENTRYPOINT [ "./runProject" ]
