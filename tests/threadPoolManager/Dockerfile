@@ -6,6 +6,7 @@ WORKDIR /usr/src/myapp
 COPY . .
 
 ENV FolderName=/usr/src/files
+ENV POOL_SIZE=4
 
 RUN mkdir ${FolderName}
 
