@@ -1,3 +1,5 @@
+const crypto = require("crypto");//yooo crypto :)
+
 const NodeType = Object.freeze({
   FILE: "FILE",
   FOLDER: "FOLDER",
@@ -37,10 +39,11 @@ class MetadataNode {
     return [...ids].map((id) => ({ id, node: this.map.get(id) })).filter(x => x.node);
   }
 
-  addFileNode(id, name, type = NodeType.FILE, parent = 0, uid = null) {
-    if (this.map.has(id)) {
-      throw new Error(`Node with id ${id} already exists.`);
-    }
+  addFileNode(name, type = NodeType.FILE, parent = 0, uid = null) {
+    let id;
+    do {
+        id = crypto.randomBytes(32).toString("hex");
+    } while (this.map.has(id));
     const parentNode = this.map.get(parent);
     if (!parentNode) {
       throw new Error(`Parent node with id ${parent} does not exist.`);
