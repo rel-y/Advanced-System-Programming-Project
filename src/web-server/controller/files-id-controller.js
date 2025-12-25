@@ -8,7 +8,7 @@ function getReqController(req, res) {
 
     if (fileNode === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ message: 'No such file/folder exists' }));
+        return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
     }
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -23,22 +23,22 @@ async function patchReqController(req, res) {
 
     if (fileNode === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ message: 'No such file/folder exists' }));
+        return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
     }
 
     let {name, data} = req.body;
     if (!name && !data) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ message: 'Empty change requset' }));
+        return res.end(JSON.stringify({ error: 'Empty change requset' }));
     }
 
     // change name and data, if they are requested
     if (name) {
         try {
             singletonMetadataModel.renameFileNode(inputId, name);
-        } catch (error) {
+        } catch (err) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify({ message: err.message }));
+            return res.end(JSON.stringify({ error: err.message }));
         } 
     }
     if (data) {
@@ -59,7 +59,7 @@ async function deleteReqController(req, res) {
 
     if (fileNode === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ message: 'No such file/folder exists' }));
+        return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
     }
 
     let output = await fileModel.deleteFile(inputId);
