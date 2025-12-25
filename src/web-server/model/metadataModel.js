@@ -20,10 +20,10 @@ const AbilityRequirement = Object.freeze({
   READ: PermissionType.VIEWER,
   COMMENT: PermissionType.COMMENTER,
   WRITE: PermissionType.WRITER,
-  READ_PREMMISIONS: PermissionType.FILE_MANAGER,
-  CHANGE_FILE_PREMMISIONS: PermissionType.FILE_MANAGER,
-  CHANGE_REGULAR_USER_PREMMISIONS: PermissionType.FILE_MANAGER,
-  CHANGE_ALL_USER_PREMMISIOSNS: PermissionType.OWNER,
+  READ_PERMISSIONS: PermissionType.FILE_MANAGER,
+  CHANGE_FILE_PERMISSIONS: PermissionType.FILE_MANAGER,
+  CHANGE_REGULAR_USER_PERMISSIONS: PermissionType.FILE_MANAGER,
+  CHANGE_ALL_USER_PERMISSIONS: PermissionType.OWNER,
   DELETE: PermissionType.OWNER,
 });
 
@@ -33,9 +33,9 @@ class FileNode {
     this.type = type;
     this.parent = parent;
     this.uid = uid; // owner user id
-    this.filePremmissions = PermissionType.NON; //deafult permission of a random user
-    this.userFilePremmissions = new map();
-    this.userFilePremmissions.set(uid, PermissionType.OWNER); //the creator is the owner of the file/folder
+    this.filePermissions = PermissionType.NON; //deafult permission of a random user
+    this.userFilePermissions = new map();
+    this.userFilePermissions.set(uid, PermissionType.OWNER); //the creator is the owner of the file/folder
   }
 }
 
@@ -145,26 +145,35 @@ class MetadataNode {
   isAbaleTo(userPermission, ability){
     if(!((typeof value === "number" && Object.values(PermissionType).includes(value)) &&
      typeof value === "string" && Object.prototype.hasOwnProperty.call(AbilityRequirement, value))){
-      //didn't get a number for the premmission level or a currect key in for ability
+      //didn't get a number for the permission level or a currect key in for ability
       return false;
      }
     return userPermission >= AbilityRequirement[ability];
   }
-  getFilePremmission(fileId, userId){
+  getFilePermission(fileId, userId){
     return {
-      filePremmissions: this.map.get(fileId).filePremmissions,
-      userFilePremmissions: this.map.get(fileId).userFilePremmissions
+      filePermissions: this.map.get(fileId).filePermissions,
+      userFilePermissions: this.map.get(fileId).userFilePermissions
     };
   }
-  setFilePremmission(fileId, newFilePremmission){
+  setFilePermission(fileId, newFilePermission){
     file = this.map.get(fileId);
-    file.filePremmissions = newFilePremmission;
+    if(file === undefined){
+      throw new Error(`File/Folder doesn't exist`);
+    }
+    file.filePermission = newFilePermission;
   }
-  getUserFilePremmission(fileId, userId){
-    return this.map.get(fileId).userFilePremmissions.get(userId);
+  getUserFilePermission(fileId, userId){
+    if(!this.map.has(fileId)){
+      throw new Error(`File/Folder doesn't exist`);
+    }
+    return this.map.get(fileId).userFilePermission.get(userId);
   }
-  setUserFilePremmission(fileId, userId, newFilePremmission){
-    this.map.get(fileId).userFilePremmissions.get(userId) = newFilePremmission;
+  setUserFilePermission(fileId, userId, newFilePermission){
+    if(!this.map.has(fileId)){
+      throw new Error(`File/Folder doesn't exist`);
+    }
+    this.map.get(fileId).userFilePermission.get(userId) = newFilePermission;
   }
 }
 
