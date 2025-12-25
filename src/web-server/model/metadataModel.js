@@ -1,5 +1,7 @@
 const crypto = require("crypto");//yooo crypto :)
 
+const idLength = 32; //length of the id in hex characters
+
 const NodeType = Object.freeze({
   FILE: "FILE",
   FOLDER: "FOLDER",
@@ -42,7 +44,7 @@ class MetadataNode {
   addFileNode(name, type = NodeType.FILE, parent = 0, uid = null) {
     let id;
     do {
-        id = crypto.randomBytes(32).toString("hex");
+        id = crypto.randomBytes(idLength).toString("hex");
     } while (this.map.has(id));
     const parentNode = this.map.get(parent);
     if (!parentNode) {
@@ -68,6 +70,7 @@ class MetadataNode {
     if (type === NodeType.FOLDER && !this.childrenByParent.has(id)) {
       this.childrenByParent.set(id, new Set());
     }
+    return id;
   }
 
   deleteFileNode(id) {
@@ -103,6 +106,18 @@ class MetadataNode {
       if (node) out.push({ id, name: node.name, type: node.type, uid: node.uid });
     }
     return out;
+  }
+  renameFileNode(id, newName) {
+    if (typeof newName !== "string" || newName.trim() === "") {
+        throw new Error("Invalid file name");
+    }
+
+    const node = this.map.get(id);
+    if (!node) {
+        throw new Error(`File/Folder with id ${id} does not exist`);
+    }
+
+    node.name = newName;
   }
 }
 

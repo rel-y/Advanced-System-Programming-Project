@@ -1,5 +1,5 @@
-const { singletonMetadataModel, NodeType } = require("./metadataModel");
-const {createFile} = require("./FileModel");
+const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
+const {createFile} = require("../model/FileModel");
 
 function getFileController(req, res) {
   const data = singletonMetadataModel.getAllBaseNodes();
@@ -25,15 +25,17 @@ function createFileController(req, res) {
       return res.status(400).json({ error: "bad request, data is required for file type" });
     }
     //create the file in the file server
-    createFile(name, data)
+    let id;
+    try 
+    {
+      id = singletonMetadataModel.addFileNode(name, type, parent, uid);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    createFile(id, data)
       .then(response => {
-        //after creating the file in the file server, we create the metadata node
-        try {
-          singletonMetadataModel.addFileNode(name, type, parent, uid);
-          return res.status(201).json({ message: "File node created successfully" });
-        } catch (err) {
-          return res.status(400).json({ error: err.message });
-        }
+        
+        return res.status(201).json({ message: response});
       })
       .catch(err => {
         return  res.status(500).json({ error: "Failed to create file in file server: " + err.message });
