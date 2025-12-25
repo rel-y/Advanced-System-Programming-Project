@@ -32,6 +32,7 @@ function setFilePermissionController(req, res){
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
+}
 
 function patchFilePermissionController(req, res){
     const {id,pld} = req.params;
