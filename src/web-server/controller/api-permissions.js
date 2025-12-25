@@ -10,7 +10,7 @@ function patchFilePermissionController(req, res){
     if(id === undefined || filePermission === undefined || pld === undefined){
         return res.status(400).json({ error: "bad request, missing fields" });
     }
-    if(!Object.values(PermissionType).includes(filePermission)){
+    if(!Object.keys(PermissionType).includes(filePermission)){
         return res.status(400).json({ error: "bad request, invalid permission type" });
     }
     const Node = singletonMetadataModel.getFileNode(id)
