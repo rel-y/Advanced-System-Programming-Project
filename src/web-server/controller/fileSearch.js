@@ -17,9 +17,7 @@ async function getSearchFileController(req, res) {
     // from searchFiles
     let idsFromSearch = [];
     try{
-    idsFromSearch = (await searchFiles(query))
-        .split(" ")
-        .slice(2)
+    idsFromSearch = ((await searchFiles(query)).split("\n").splice(2))[0].split(" ")
         .map(id => id.trim())
         .filter(Boolean);
     } catch (err) {
