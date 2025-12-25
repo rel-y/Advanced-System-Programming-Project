@@ -18,7 +18,7 @@ function patchFilePermissionController(req, res){
         return res.status(404).json({ error: "file/folder doesn't exist" });
     }
     try{
-        singletonMetadataModel.setUserFilePermission(id, pld, filePermission);
+        singletonMetadataModel.setUserFilePermission(id, pld, PermissionType[filePermission]);
         return res.status(200).json({ message: "file/folder permission updated successfully" });
     } catch (err) {
         return res.status(500).json({ error: err.message });
