@@ -7,12 +7,35 @@ const NodeType = Object.freeze({
   FOLDER: "FOLDER",
 });
 
+const PermissionType = Object.freeze({
+  OWNER: 5,
+  FILE_MANAGER: 4,
+  WRITER: 3,
+  COMMENTER: 2,
+  VIEWER: 1,
+  NON: 0,
+}); 
+
+const AbilityRequirement = Object.freeze({
+  READ: PermissionType.VIEWER,
+  COMMENT: PermissionType.COMMENTER,
+  WRITE: PermissionType.WRITER,
+  READ_PREMMISIONS: PermissionType.FILE_MANAGER,
+  CHANGE_FILE_PREMMISIONS: PermissionType.FILE_MANAGER,
+  CHANGE_REGULAR_USER_PREMMISIONS: PermissionType.FILE_MANAGER,
+  CHANGE_ALL_USER_PREMMISIOSNS: PermissionType.OWNER,
+  DELETE: PermissionType.OWNER,
+});
+
 class FileNode {
   constructor(name, type, parent = null, uid = null) {
     this.name = name;
     this.type = type;
     this.parent = parent;
     this.uid = uid; // owner user id
+    this.filePremmissions = PermissionType.NON; //deafult permission of a random user
+    this.userFilePremmissions = new map();
+    this.userFilePremmissions.set(uid, PermissionType.OWNER); //the creator is the owner of the file/folder
   }
 }
 
@@ -118,6 +141,30 @@ class MetadataNode {
     }
 
     node.name = newName;
+  }
+  isAbaleTo(userPermission, ability){
+    if(!((typeof value === "number" && Object.values(PermissionType).includes(value)) &&
+     typeof value === "string" && Object.prototype.hasOwnProperty.call(AbilityRequirement, value))){
+      //didn't get a number for the premmission level or a currect key in for ability
+      return false;
+     }
+    return userPermission >= AbilityRequirement[ability];
+  }
+  getFilePremmission(fileId, userId){
+    return {
+      filePremmissions: this.map.get(fileId).filePremmissions,
+      userFilePremmissions: this.map.get(fileId).userFilePremmissions
+    };
+  }
+  setFilePremmission(fileId, newFilePremmission){
+    file = this.map.get(fileId);
+    file.filePremmissions = newFilePremmission;
+  }
+  getUserFilePremmission(fileId, userId){
+    return this.map.get(fileId).userFilePremmissions.get(userId);
+  }
+  setUserFilePremmission(fileId, userId, newFilePremmission){
+    this.map.get(fileId).userFilePremmissions.get(userId) = newFilePremmission;
   }
 }
 
