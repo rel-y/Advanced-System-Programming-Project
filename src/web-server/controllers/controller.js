@@ -35,10 +35,13 @@ function createFileController(req, res) {
     createFile(id, data)
       .then(response => {
         
-        return res.status(201).json({ message: response});
+        return res.status(200).json([{
+          id: id,
+          name: name
+        }]);
       })
       .catch(err => {
-        return  res.status(500).json({ error: "Failed to create file in file server: " + err.message });
+        return  res.status(500).json({ error: err.message });
       });
     return;
   }
@@ -46,8 +49,11 @@ function createFileController(req, res) {
   //for folder type, we just create the metadata node
 
   try {
-    singletonMetadataModel.addFileNode(name, type, parent, uid);
-    return res.status(201).json({ message: "File node created successfully" });
+    id = singletonMetadataModel.addFileNode(name, type, parent, uid);
+    return res.status(201).json([{
+          id: id,
+          name: name
+        }]);
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
