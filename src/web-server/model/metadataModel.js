@@ -27,7 +27,11 @@ class MetadataNode {
     this.childrenByParent.set(0, new Set()); // root children set
   }
 
-  getFileNode(id) {
+  getFileNode(id) 
+  {
+    if(!this.map.has(id)) {
+        throw new Error(`File/Folder with id ${id} does not exist`);
+    }
     return this.map.get(id);
   }
 
@@ -118,6 +122,33 @@ class MetadataNode {
     }
 
     node.name = newName;
+  }
+  searchFileIdByName(query) {
+    const results = [];
+    for (const [id, node] of this.map.entries()) {
+        if (node.name.includes(query)) {
+            results.push(id);
+        }
+    }
+    return results;
+  }
+  getFullPath(id) {
+    const node = this.map.get(id);
+    if (!node) {
+        throw new Error(`File/Folder with id ${id} does not exist`);
+    }
+
+    let path = '';
+    let currentId = id;
+
+    while (currentId !== null && currentId !== undefined) {
+        const currentNode = this.map.get(currentId);
+        if (!currentNode) break;
+        path = `/${currentNode.name}${path}`;
+        currentId = currentNode.parent;
+    }
+
+    return path || '/';
   }
 }
 
