@@ -34,20 +34,9 @@ async function getSearchFileController(req, res) {
     for (let i = 0; i < combinedIds.length; i++) {
         const fullPath = singletonMetadataModel.getFullPath(combinedIds[i]);
         const node = singletonMetadataModel.getFileNode(combinedIds[i]);
-        let content;
-        if(node.type === NodeType.FOLDER){
-            content = null;
-        } else
-            try{
-                content = await getFile(combinedIds[i]);
-                content = content.substring(0,content.length -1)
-            } catch (err) {
-                return res.status(500).json({ error: err.message });
-            }
         results.push({
             id: combinedIds[i],
             name: node.name,
-            content: content?? null,
             fullPath: fullPath,
             type: node.type
         });
