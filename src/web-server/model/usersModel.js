@@ -20,7 +20,7 @@ class usersDict {
         if (this.map.has(username)) {
             return undefined;
         }
-        newUser = userNode(username, password, nickname, photo);
+        const newUser = new userNode(username, password, nickname, photo);
         this.map.set(username, newUser);
     }
 }
