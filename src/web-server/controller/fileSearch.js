@@ -19,8 +19,10 @@ async function getSearchFileController(req, res) {
     try{
     idsFromSearch = (await searchFiles(query))
         .split(" ")
+        .slice(2)
         .map(id => id.trim())
-        .filter(Boolean); // filter out empty strings
+        .filter(Boolean);
+    idsFromSearch = idsFromSearch.filter(id => id != "OK" || id != "200 \n\n"); // keep only valid ids
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
