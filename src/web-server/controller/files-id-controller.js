@@ -4,7 +4,7 @@ const fileModel = require("../model/FileModel");
 function getReqController(req, res) {
     const inputId = req.params.id;
 
-    fileNode = singletonMetadataModel.getFileNode(inputId);
+    const fileNode = singletonMetadataModel.getFileNode(inputId);
 
     if (fileNode === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -19,7 +19,7 @@ function getReqController(req, res) {
 async function patchReqController(req, res) {
     const inputId = req.params.id;
 
-    fileNode = singletonMetadataModel.getFileNode(inputId);
+    const fileNode = singletonMetadataModel.getFileNode(inputId);
 
     if (fileNode === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -34,7 +34,12 @@ async function patchReqController(req, res) {
 
     // change name and data, if they are requested
     if (name) {
-        singletonMetadataModel.renameFileNode(inputId, name);
+        try {
+            singletonMetadataModel.renameFileNode(inputId, name);
+        } catch (error) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ message: err.message }));
+        } 
     }
     if (data) {
         let output = await fileModel.patchFile(inputId, data);
@@ -44,13 +49,13 @@ async function patchReqController(req, res) {
         res.writeHead(204, { 'Content-Type': 'application/json' });
     }
 
-    
+    res.end();
 }
 
 async function deleteReqController(req, res) {
     const inputId = req.params.id;
 
-    fileNode = singletonMetadataModel.getFileNode(inputId);
+    const fileNode = singletonMetadataModel.getFileNode(inputId);
 
     if (fileNode === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -60,6 +65,7 @@ async function deleteReqController(req, res) {
     let output = await fileModel.deleteFile(inputId);
     const code = parseInt(output.slice(0, 3), 10);
     res.writeHead(code, { 'Content-Type': 'application/json' });
+    res.end();
 }
 
 module.exports = {
