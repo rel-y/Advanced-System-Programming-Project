@@ -51,9 +51,6 @@ class MetadataNode {
   }
 
   getFileNode(id) {
-    if(!this.map.has(id)){
-      return undefined;
-    }
     return this.map.get(id);
   }
 
@@ -145,7 +142,7 @@ class MetadataNode {
 
     node.name = newName;
   }
-   isAbaleTo(userPermission, ability){
+  isAbaleTo(userPermission, ability){
     if(!((typeof value === "number" && Object.values(PermissionType).includes(value)) &&
      typeof value === "string" && Object.prototype.hasOwnProperty.call(AbilityRequirement, value))){
       //didn't get a number for the permission level or a currect key in for ability
@@ -162,19 +159,19 @@ class MetadataNode {
   setFilePermission(fileId, newFilePermission){
     file = this.map.get(fileId);
     if(file === undefined){
-      throw new Error(`File/Folder doesn't exist`);
+      return null;
     }
     file.filePermission = newFilePermission;
   }
   getUserFilePermission(fileId, userId){
     if(!this.map.has(fileId)){
-      throw new Error(`File/Folder doesn't exist`);
+      return null;
     }
     return this.map.get(fileId).userFilePermission.get(userId);
   }
   setUserFilePermission(fileId, userId, newFilePermission){
     if(!this.map.has(fileId)){
-      throw new Error(`File/Folder doesn't exist`);
+      return null;
     }
     this.map.get(fileId).userFilePermission.get(userId) = newFilePermission;
   }
