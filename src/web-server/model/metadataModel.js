@@ -7,12 +7,35 @@ const NodeType = Object.freeze({
   FOLDER: "FOLDER",
 });
 
+const PermissionType = Object.freeze({
+  OWNER: 5,
+  FILE_MANAGER: 4,
+  WRITER: 3,
+  COMMENTER: 2,
+  VIEWER: 1,
+  NON: 0,
+}); 
+
+const AbilityRequirement = Object.freeze({
+  READ: PermissionType.VIEWER,
+  COMMENT: PermissionType.COMMENTER,
+  WRITE: PermissionType.WRITER,
+  READ_PERMISSIONS: PermissionType.FILE_MANAGER,
+  CHANGE_FILE_PERMISSIONS: PermissionType.FILE_MANAGER,
+  CHANGE_REGULAR_USER_PERMISSIONS: PermissionType.FILE_MANAGER,
+  CHANGE_ALL_USER_PERMISSIONS: PermissionType.OWNER,
+  DELETE: PermissionType.OWNER,
+});
+
 class FileNode {
   constructor(name, type, parent = null, uid = null) {
     this.name = name;
     this.type = type;
     this.parent = parent;
     this.uid = uid; // owner user id
+    this.filePermissions = PermissionType.NON; //deafult permission of a random user
+    this.userFilePermissions = new map();
+    this.userFilePermissions.set(uid, PermissionType.OWNER); //the creator is the owner of the file/folder
   }
 }
 
@@ -28,6 +51,9 @@ class MetadataNode {
   }
 
   getFileNode(id) {
+    if(!this.map.has(id)){
+      return undefined;
+    }
     return this.map.get(id);
   }
 
@@ -119,7 +145,40 @@ class MetadataNode {
 
     node.name = newName;
   }
+   isAbaleTo(userPermission, ability){
+    if(!((typeof value === "number" && Object.values(PermissionType).includes(value)) &&
+     typeof value === "string" && Object.prototype.hasOwnProperty.call(AbilityRequirement, value))){
+      //didn't get a number for the permission level or a currect key in for ability
+      return false;
+     }
+    return userPermission >= AbilityRequirement[ability];
+  }
+  getFilePermission(fileId, userId){
+    return {
+      filePermissions: this.map.get(fileId).filePermissions,
+      userFilePermissions: this.map.get(fileId).userFilePermissions
+    };
+  }
+  setFilePermission(fileId, newFilePermission){
+    file = this.map.get(fileId);
+    if(file === undefined){
+      throw new Error(`File/Folder doesn't exist`);
+    }
+    file.filePermission = newFilePermission;
+  }
+  getUserFilePermission(fileId, userId){
+    if(!this.map.has(fileId)){
+      throw new Error(`File/Folder doesn't exist`);
+    }
+    return this.map.get(fileId).userFilePermission.get(userId);
+  }
+  setUserFilePermission(fileId, userId, newFilePermission){
+    if(!this.map.has(fileId)){
+      throw new Error(`File/Folder doesn't exist`);
+    }
+    this.map.get(fileId).userFilePermission.get(userId) = newFilePermission;
+  }
 }
 
 const singletonMetadataModel = new MetadataNode();
-module.exports = { singletonMetadataModel, NodeType };
+module.exports = { singletonMetadataModel, NodeType, PermissionType, AbilityRequirement };
