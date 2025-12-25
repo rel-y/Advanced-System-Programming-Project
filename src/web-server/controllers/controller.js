@@ -8,7 +8,7 @@ function getFileController(req, res) {
 }
 
 function createFileController(req, res) {
-  let { name, type, parent, uid,data} = req.body;
+  let { name, type, parent, uid, content} = req.body;
 
   if (!name || uid === undefined || uid === null) {//bad request
     return res.status(400).json({ error: "bad request, name and uid are required" });
@@ -21,7 +21,7 @@ function createFileController(req, res) {
   }
 
   if (type === NodeType.FILE) {
-    if (data === undefined || data === null) {
+    if (content === undefined || content === null) {
       return res.status(400).json({ error: "bad request, data is required for file type" });
     }
     //create the file in the file server
@@ -32,15 +32,16 @@ function createFileController(req, res) {
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
-    createFile(id, data)
+    createFile(id, content)
       .then(response => {
         
-        return res.status(200).json([{
+        return res.status(201).json([{
           id: id,
           name: name
         }]);
       })
       .catch(err => {
+        try { singletonMetadataModel.deleteFileNode(id); } catch (_) {} //rollback metadata creation
         return  res.status(500).json({ error: err.message });
       });
     return;
@@ -49,7 +50,7 @@ function createFileController(req, res) {
   //for folder type, we just create the metadata node
 
   try {
-    id = singletonMetadataModel.addFileNode(name, type, parent, uid);
+    let id = singletonMetadataModel.addFileNode(name, type, parent, uid);
     return res.status(201).json([{
           id: id,
           name: name
