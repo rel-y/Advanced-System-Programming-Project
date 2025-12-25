@@ -19,6 +19,11 @@ function postReqController(req, res) {
 }
 
 function getReqController(req, res) { // for api/users/:id !!!
+    const loggedInUsername = req.headers['username'];
+    if (loggedInUsername === undefined) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
+    }
     const inputId = req.params.id;
 
     const requestedUser = singletonUsersModel.getUser(inputId);
