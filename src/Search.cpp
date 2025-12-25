@@ -3,9 +3,9 @@
 namespace fs = std::filesystem;
 int Search::searchFile(fs::directory_entry file, std::string content){
     fs::path filePath = file.path();
-    if(filePath.filename().string().find(content) != std::string::npos){
-        return 1; //found content in the name of the file
-    }
+    //  if(filePath.filename().string().find(content) != std::string::npos){
+    //     return 1; //found content in the name of the file
+    // }
     std::error_code ec;
     bool is_regular = std::filesystem::is_regular_file(filePath, ec);
     if(ec){
