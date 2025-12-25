@@ -3,6 +3,10 @@ const {searchFiles, getFile} = require("../model/FileModel");
 
 async function getSearchFileController(req, res) {
     const { query } = req.query;
+    const {username} = req.user; // from authentication middleware
+    if(username === undefined || username === null){
+        return res.status(401).json({ error: "unauthorized" });
+    }
     if (!query || query.trim() === "") {
         return res.status(400).json({ error: "bad request, query parameter is required" });
     }
@@ -38,7 +42,7 @@ async function getSearchFileController(req, res) {
                 content = await getFile(combinedIds[i]);
                 content = content.substring(0,content.length -1)
             } catch (err) {
-                content = `Error retrieving file ${combinedIds[i]} content with error: ${err.message}`;
+                return res.status(500).json({ error: err.message });
             }
         results.push({
             id: combinedIds[i],
