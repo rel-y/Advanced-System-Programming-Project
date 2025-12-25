@@ -30,7 +30,7 @@ class MetadataNode {
   getFileNode(id) 
   {
     if(!this.map.has(id)) {
-        throw new Error(`File/Folder with id ${id} does not exist`);
+        return undefined;
     }
     return this.map.get(id);
   }
