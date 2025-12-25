@@ -46,7 +46,7 @@ async function patchReqController(req, res) {
         const code = parseInt(output.slice(0, 3), 10);
         res.writeHead(code, { 'Content-Type': 'application/json' });
     } else { // only name changes
-        res.writeHead(204, { 'Content-Type': 'application/json' });
+        res.writeHead(204);
     }
 
     res.end();
