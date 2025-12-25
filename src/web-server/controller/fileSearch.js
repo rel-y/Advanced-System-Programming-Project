@@ -28,19 +28,22 @@ async function getSearchFileController(req, res) {
     ])];
     let results = [];
     for (let i = 0; i < combinedIds.length; i++) {
-        let content;
-        try{
-            content = await getFile(combinedIds[i]);
-            content = content.substring(0,content.length -1)
-        } catch (err) {
-            content = "Error retrieving file content";
-        }
         const fullPath = singletonMetadataModel.getFullPath(combinedIds[i]);
         const node = singletonMetadataModel.getFileNode(combinedIds[i]);
+        let content;
+        if(node.type === NodeType.FOLDER){
+            content = null;
+        } else
+            try{
+                content = await getFile(combinedIds[i]);
+                content = content.substring(0,content.length -1)
+            } catch (err) {
+                content = `Error retrieving file ${combinedIds[i]} content with error: ${err.message}`;
+            }
         results.push({
             id: combinedIds[i],
             name: node.name,
-            content: content,
+            content: content?? null,
             fullPath: fullPath,
             type: node.type
         });
