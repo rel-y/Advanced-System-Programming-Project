@@ -1,0 +1,69 @@
+const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
+const fileModel = require("../model/FileModel");
+
+function getReqController(req, res) {
+    const inputId = req.params.id;
+
+    fileNode = singletonMetadataModel.getFileNode(inputId);
+
+    if (fileNode === undefined) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ message: 'No such file/folder exists' }));
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    const retjson = { id: inputId, ...fileNode };
+    res.end(JSON.stringify(retjson));
+}
+
+async function patchReqController(req, res) {
+    const inputId = req.params.id;
+
+    fileNode = singletonMetadataModel.getFileNode(inputId);
+
+    if (fileNode === undefined) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ message: 'No such file/folder exists' }));
+    }
+
+    let {name, data} = req.body;
+    if (!name && !data) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ message: 'Empty change requset' }));
+    }
+
+    // change name and data, if they are requested
+    if (name) {
+        singletonMetadataModel.renameFileNode(inputId, name);
+    }
+    if (data) {
+        let output = await fileModel.patchFile(inputId, data);
+        const code = parseInt(output.slice(0, 3), 10);
+        res.writeHead(code, { 'Content-Type': 'application/json' });
+    } else { // only name changes
+        res.writeHead(204, { 'Content-Type': 'application/json' });
+    }
+
+    
+}
+
+async function deleteReqController(req, res) {
+    const inputId = req.params.id;
+
+    fileNode = singletonMetadataModel.getFileNode(inputId);
+
+    if (fileNode === undefined) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ message: 'No such file/folder exists' }));
+    }
+
+    let output = await fileModel.deleteFile(inputId);
+    const code = parseInt(output.slice(0, 3), 10);
+    res.writeHead(code, { 'Content-Type': 'application/json' });
+}
+
+module.exports = {
+    getReqController,
+    patchReqController,
+    deleteReqController
+};
