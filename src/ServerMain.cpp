@@ -1,4 +1,4 @@
-#include "Threads.h"
+#include "PoolThreadManager.h"
 #include "TCPServer.h"
 int main(int argc, char* argv[]){
     if(argc != 2){
@@ -12,7 +12,7 @@ int main(int argc, char* argv[]){
         //didn't get a number
         return -1;
     }
-    Threads threadManager;
+    PoolThreadManager threadManager;
     TCPServer* server = new TCPServer(threadManager, portNumber);
     server->run();
 
