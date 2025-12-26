@@ -2,6 +2,12 @@ const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const fileModel = require("../model/FileModel");
 
 async function getReqController(req, res) {
+    const loggedInUsername = req.headers['username'];
+    if (loggedInUsername === undefined) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
+    }
+    
     const inputId = req.params.id;
 
     const fileNode = singletonMetadataModel.getFileNode(inputId);
@@ -29,6 +35,12 @@ async function getReqController(req, res) {
 }
 
 async function patchReqController(req, res) {
+    const loggedInUsername = req.headers['username'];
+    if (loggedInUsername === undefined) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
+    }
+    
     const inputId = req.params.id;
 
     const fileNode = singletonMetadataModel.getFileNode(inputId);
@@ -53,7 +65,7 @@ async function patchReqController(req, res) {
             return res.end(JSON.stringify({ error: err.message }));
         } 
     }
-    if (data) {
+    if (data && fileNode.type === NodeType.FILE) {
         let output = await fileModel.patchFile(inputId, data);
         const code = parseInt(output.slice(0, 3), 10);
         res.writeHead(code, { 'Content-Type': 'application/json' });
@@ -65,6 +77,12 @@ async function patchReqController(req, res) {
 }
 
 async function deleteReqController(req, res) {
+    const loggedInUsername = req.headers['username'];
+    if (loggedInUsername === undefined) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
+    }
+    
     const inputId = req.params.id;
 
     const fileNode = singletonMetadataModel.getFileNode(inputId);
@@ -72,6 +90,18 @@ async function deleteReqController(req, res) {
     if (fileNode === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
+    }
+
+    try { // catches if attempting bad deletion
+        singletonMetadataModel.deleteFileNode(inputId);
+    } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: err.message }));
+    }
+
+    if (fileNode.type === NodeType.FOLDER) {
+        res.writeHead(204, { 'Content-Type': 'application/json' });
+        return res.end();
     }
 
     let output = await fileModel.deleteFile(inputId);
