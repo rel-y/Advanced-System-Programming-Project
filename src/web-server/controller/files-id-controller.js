@@ -10,17 +10,22 @@ async function getReqController(req, res) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
     }
-
-    let output = await fileModel.getFile(inputId);
-    const code = parseInt(output.slice(0, 3), 10);
-    if (code !== 200) {
-        res.writeHead(code, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: "error reading file" }));
+    if(fileNode.type === NodeType.FOLDER){
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        const retjson = { id: inputId, ...fileNode};
+        res.end(JSON.stringify(retjson));
+    }else if(fileNode.type === NodeType.FILE){
+        let output = await fileModel.getFile(inputId);
+        const code = parseInt(output.slice(0, 3), 10);
+        if (code !== 200) {
+            res.writeHead(code, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: "error reading file" }));
+        }
+        output = output.slice(output.indexOf("\n\n") + 2);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        const retjson = { id: inputId, ...fileNode, content: output };
+        res.end(JSON.stringify(retjson));
     }
-    output = output.slice(output.indexOf("\n\n") + 2);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    const retjson = { id: inputId, ...fileNode, content: output };
-    res.end(JSON.stringify(retjson));
 }
 
 async function patchReqController(req, res) {
