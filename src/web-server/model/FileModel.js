@@ -35,6 +35,9 @@ function receiveFrom(){
                     if(receivedData.charAt(j) === '\\' && (receivedData.charAt(j+1) === '\n' || receivedData.charAt(j+1) == '\\')){
                         j++; //skipping the first '\\' 
                     }
+                    if(j === i-1 && receivedData.charAt(j) === '\n'){ //skipping the last \n of the message
+                        continue;
+                    }
                     line += receivedData.charAt(j);
                 }
                 receivedData = receivedData.substring(i+1); //removing the message

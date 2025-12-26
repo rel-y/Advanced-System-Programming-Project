@@ -1,7 +1,7 @@
 const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const fileModel = require("../model/FileModel");
 
-function getReqController(req, res) {
+async function getReqController(req, res) {
     const inputId = req.params.id;
 
     const fileNode = singletonMetadataModel.getFileNode(inputId);
@@ -11,8 +11,15 @@ function getReqController(req, res) {
         return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
     }
 
+    let output = await fileModel.getFile(inputId);
+    const code = parseInt(output.slice(0, 3), 10);
+    if (code !== 200) {
+        res.writeHead(code, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: "error reading file" }));
+    }
+    output = output.slice(output.indexOf("\n\n") + 2);
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    const retjson = { id: inputId, ...fileNode };
+    const retjson = { id: inputId, ...fileNode, content: output };
     res.end(JSON.stringify(retjson));
 }
 

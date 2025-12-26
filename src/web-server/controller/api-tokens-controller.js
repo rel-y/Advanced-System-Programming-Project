@@ -1,4 +1,4 @@
-const singletonUsersModel = require("../model/usersModel")
+const {singletonUsersModel} = require("../model/usersModel")
 
 function postReqController(req, res) {
     let { username, password } = req.body;
@@ -8,7 +8,7 @@ function postReqController(req, res) {
         return res.end(JSON.stringify({ error: 'missing fields' }));
     }
 
-    const requestedUser = singletonUsersModel.getUser(inputId);
+    const requestedUser = singletonUsersModel.getUser(username);
 
     if (requestedUser === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -21,6 +21,6 @@ function postReqController(req, res) {
     }
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ message: username }));
+        return res.end(JSON.stringify({ username: username }));
 }
 module.exports = {postReqController};

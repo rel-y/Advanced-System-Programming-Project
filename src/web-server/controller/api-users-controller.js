@@ -1,4 +1,4 @@
-const singletonUsersModel = require("../model/usersModel")
+const {singletonUsersModel} = require("../model/usersModel")
 
 function postReqController(req, res) {
     let { username, password, nickname, photo } = req.body;
@@ -34,7 +34,7 @@ function getReqController(req, res) { // for api/users/:id !!!
     }
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    const retjson = { id: inputId, ...requestedUser };
+    const retjson = {...requestedUser };
     return res.end(JSON.stringify(retjson));
 }
 

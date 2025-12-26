@@ -1,6 +1,6 @@
 const crypto = require("crypto");//yooo crypto :)
 
-const idLength = 32; //length of the id in hex characters
+const idLength = 16; //length of the id in hex characters
 
 const NodeType = Object.freeze({
   FILE: "FILE",
@@ -34,7 +34,7 @@ class FileNode {
     this.parent = parent;
     this.uid = uid; // owner user id
     this.filePermissions = PermissionType.NON; //deafult permission of a random user
-    this.userFilePermissions = new map();
+    this.userFilePermissions = new Map();
     this.userFilePermissions.set(uid, PermissionType.OWNER); //the creator is the owner of the file/folder
   }
 }
@@ -172,6 +172,7 @@ class MetadataNode {
     }
 
     return path || '/';
+  }
   isAbaleTo(userPermission, ability){
     if(!((typeof value === "number" && Object.values(PermissionType).includes(value)) &&
      typeof value === "string" && Object.prototype.hasOwnProperty.call(AbilityRequirement, value))){
