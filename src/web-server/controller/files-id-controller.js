@@ -1,4 +1,4 @@
-const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
+const { singletonMetadataModel, PermissionType, NodeType } = require("../model/metadataModel");
 const fileModel = require("../model/FileModel");
 
 async function getReqController(req, res) {
@@ -18,7 +18,9 @@ async function getReqController(req, res) {
     }
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        const retjson = { id: inputId, ...fileNode};
+        const retjson = { id: inputId, ...fileNode,
+            filePermissions: Object.keys(PermissionType).find(key => PermissionType[key] === fileNode.filePermissions)
+        };
         res.end(JSON.stringify(retjson));
     }else if(fileNode.type === NodeType.FILE){
         let output = await fileModel.getFile(inputId);
@@ -29,7 +31,9 @@ async function getReqController(req, res) {
         }
         output = output.slice(output.indexOf("\n\n") + 2);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        const retjson = { id: inputId, ...fileNode, content: output };
+        const retjson = { id: inputId, ...fileNode, content: output,
+            filePermissions: Object.keys(PermissionType).find(key => PermissionType[key] === fileNode.filePermissions)
+         };
         res.end(JSON.stringify(retjson));
     }
 }
