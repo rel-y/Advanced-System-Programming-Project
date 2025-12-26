@@ -70,3 +70,6 @@ function deleteFilePermissionController(req, res){
         return res.status(500).json({ error: "file/folder doesn't exists" });
     }
 }
+
+module.exports = {getFilePermissionController, setFilePermissionController,
+     patchFilePermissionController, deleteFilePermissionController};
