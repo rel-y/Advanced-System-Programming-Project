@@ -4,7 +4,7 @@ function getFilePermissionController(req, res){
     const {id} = req.params;
     const permissions = singletonMetadataModel.getFilePermission(id);
     if(permissions === undefined || permissions === null){
-        return res.status(404).json({ error: "file/folder doesn't exist" });
+        return res.status(404).json({ error: "file/folder doesn't exist" });//check if file/folder exists
     }
     return res.status(200).json({ filePermissions: Object.keys(PermissionType).find(key => PermissionType[key] === permissions.filePermissions)});
 }
@@ -14,13 +14,13 @@ function setFilePermissionController(req, res){
     const {filePermission} = req.body;
     const username = req.headers['username'];
     if(username === undefined || username === null){
-        return res.status(401).json({ error: "unauthorized" });
+        return res.status(401).json({ error: "unauthorized" });//user must be logged in
     }
     if(id === undefined || filePermission === undefined){
-        return res.status(400).json({ error: "missing fields" });
+        return res.status(400).json({ error: "missing fields" });//id and permission type are required
     }
     if(!Object.keys(PermissionType).includes(filePermission)){
-        return res.status(400).json({ error: "invalid permission type" });
+        return res.status(400).json({ error: "invalid permission type" });//invalid permission type
     }
     if(singletonMetadataModel.setFilePermission(id, PermissionType[filePermission]) != null){
         
