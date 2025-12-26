@@ -2,8 +2,8 @@ const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const {searchFiles, getFile} = require("../model/FileModel");
 
 async function getSearchFileController(req, res) {
-    const { query } = req.query;
-    const {username} = req.user; // from authentication middleware
+    const { query } = req.params;
+    const username = req.headers['username']; // from authentication middleware
     if(username === undefined || username === null){
         return res.status(401).json({ error: "unauthorized" });
     }
@@ -17,9 +17,14 @@ async function getSearchFileController(req, res) {
     // from searchFiles
     let idsFromSearch = [];
     try{
-    idsFromSearch = ((await searchFiles(query)).split("\n").splice(2))[0].split(" ")
-        .map(id => id.trim())
-        .filter(Boolean);
+        let matchesInCServer = await searchFiles(query);
+        if (matchesInCServer === "200 OK\n") { // no matches in cServer
+            idsFromSearch = []
+        } else {
+            idsFromSearch = ((matchesInCServer).split("\n").splice(2))[0].split(" ")
+            .map(id => id.trim())
+            .filter(Boolean);
+        }
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
@@ -45,4 +50,4 @@ async function getSearchFileController(req, res) {
     return res.status(200).json(results);
 }
 
-    
+module.exports = {getSearchFileController};

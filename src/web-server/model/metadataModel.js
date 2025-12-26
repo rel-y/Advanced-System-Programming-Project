@@ -1,6 +1,6 @@
 const crypto = require("crypto");//yooo crypto :)
 
-const idLength = 32; //length of the id in hex characters
+const idLength = 16; //length of the id in hex characters
 
 const NodeType = Object.freeze({
   FILE: "FILE",
@@ -34,7 +34,7 @@ class FileNode {
     this.parent = parent;
     this.uid = uid; // owner user id
     this.filePermissions = PermissionType.NON; //deafult permission of a random user
-    this.userFilePermissions = new map();
+    this.userFilePermissions = new Map();
     this.userFilePermissions.set(uid, PermissionType.OWNER); //the creator is the owner of the file/folder
   }
 }
@@ -55,7 +55,16 @@ class MetadataNode {
     if(!this.map.has(id)) {
         return undefined;
     }
-    return this.map.get(id);
+    let file = this.map.get(id);
+    return {
+      ...file,
+      userFilePermissions: Object.fromEntries(
+        [...file.userFilePermissions].map(([userName, permission]) => [
+          userName,
+          Object.keys(PermissionType).find(key => PermissionType[key] == permission)
+        ])
+      )
+    }
   }
 
   listChildIds(parentId) {
@@ -172,6 +181,7 @@ class MetadataNode {
     }
 
     return path || '/';
+  }
   isAbaleTo(userPermission, ability){
     if(!((typeof value === "number" && Object.values(PermissionType).includes(value)) &&
      typeof value === "string" && Object.prototype.hasOwnProperty.call(AbilityRequirement, value))){
@@ -187,23 +197,23 @@ class MetadataNode {
     };
   }
   setFilePermission(fileId, newFilePermission){
-    file = this.map.get(fileId);
+    let file = this.map.get(fileId);
     if(file === undefined){
       return null;
     }
-    file.filePermission = newFilePermission;
+    file.filePermissions = newFilePermission;
   }
   getUserFilePermission(fileId, userId){
     if(!this.map.has(fileId)){
       return null;
     }
-    return this.map.get(fileId).userFilePermission.get(userId);
+    return this.map.get(fileId).userFilePermissions.get(userId);
   }
   setUserFilePermission(fileId, userId, newFilePermission){
     if(!this.map.has(fileId)){
       return null;
     }
-    this.map.get(fileId).userFilePermission.get(userId) = newFilePermission;
+    this.map.get(fileId).userFilePermissions.set(userId, newFilePermission);
   }
 }
 

@@ -2,12 +2,22 @@ const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const {createFile} = require("../model/FileModel");
 
 function getFileController(req, res) {
+  const loggedInUsername = req.headers['username'];
+    if (loggedInUsername === undefined) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
+  }
   const data = singletonMetadataModel.getAllBaseNodes();
   const idAndNames = data.map(item => ({ id: item.id, name: item.name }));
   res.status(200).json(idAndNames);
 }
 
 function createFileController(req, res) {
+  const loggedInUsername = req.headers['username'];
+  if (loggedInUsername === undefined) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
+  }
   let { name, type, parent, uid, content} = req.body;
 
   if (!name || uid === undefined || uid === null) {//bad request
