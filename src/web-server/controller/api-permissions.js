@@ -33,10 +33,9 @@ function deleteFilePermissionController(req, res){
     if(id === undefined || pid === undefined){
         return res.status(400).json({ error: "bad request, missing fields" });
     }
-    try{
-        singletonMetadataModel.setUserFilePermission(id, pid, PermissionType.NON);
+    if(singletonMetadataModel.setUserFilePermission(id, pid, PermissionType.NON) != null)
         return res.status(200).json({ message: "user file/folder permission deleted successfully" });
-    } catch (err) {
+    } else{
         return res.status(500).json({ error: "file/folder doesn't exists" });
     }
 }
