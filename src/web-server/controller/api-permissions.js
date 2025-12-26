@@ -6,7 +6,7 @@ function getFilePermissionController(req, res){
     if(permissions === undefined || permissions === null){
         return res.status(404).json({ error: "file/folder doesn't exist" });
     }
-    return res.status(200).json({ filePermissions: permissions.filePermissions});
+    return res.status(200).json({ filePermissions: PermissionType[permissions.filePermissions]});
 }
 
 function setFilePermissionController(req, res){
