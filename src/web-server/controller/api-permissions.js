@@ -25,7 +25,7 @@ function patchFilePermissionController(req, res){
     }
 }
 
-function delteFilePermissionController(req, res){
+function deleteFilePermissionController(req, res){
     const {id, pld} = req.params;
     const {username} = req.body;
     if(username === undefined || username === null){
