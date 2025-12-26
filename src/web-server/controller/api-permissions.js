@@ -12,7 +12,7 @@ function getFilePermissionController(req, res){
 function setFilePermissionController(req, res){
     const {id} = req.params;
     const {filePermission} = req.body;
-    const {username} = req.body; // from authentication middleware
+    const username = req.headers['username'];
     if(username === undefined || username === null){
         return res.status(401).json({ error: "unauthorized" });
     }
