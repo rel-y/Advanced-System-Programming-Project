@@ -37,3 +37,5 @@ function getReqController(req, res) { // for api/users/:id !!!
     const retjson = { id: inputId, ...requestedUser };
     return res.end(JSON.stringify(retjson));
 }
+
+module.exports = { postReqController, getReqController};
