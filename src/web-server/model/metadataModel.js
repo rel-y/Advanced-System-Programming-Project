@@ -208,4 +208,4 @@ class MetadataNode {
 }
 
 const singletonMetadataModel = new MetadataNode();
-module.exports = { singletonMetadataModel, NodeType };
+module.exports = { singletonMetadataModel, NodeType, PermissionType, AbilityRequirement };
