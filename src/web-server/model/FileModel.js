@@ -66,6 +66,7 @@ function deleteFile(name){
     let command = 'DELETE' + ' ' + name;
     sendTO(command);
     let output = receiveFrom();
+    return output;
 }
 
 function searchFiles(content){

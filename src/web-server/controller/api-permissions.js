@@ -22,7 +22,7 @@ function setFilePermissionController(req, res){
     if(!Object.keys(PermissionType).includes(filePermission)){
         return res.status(400).json({ error: "invalid permission type" });//invalid permission type
     }
-    if(singletonMetadataModel.setFilePermission(id, PermissionType[filePermission]) != null){
+    if(singletonMetadataModel.setFilePermission(id, PermissionType[filePermission]) !== null){
         
         return res.status(200).json({ message: "file/folder permission updated successfully" });
     } else {
