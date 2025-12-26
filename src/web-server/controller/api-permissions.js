@@ -17,11 +17,10 @@ function patchFilePermissionController(req, res){
     if(Node == undefined){
         return res.status(404).json({ error: "file/folder doesn't exist" });
     }
-    try{
-        singletonMetadataModel.setUserFilePermission(id, pid, PermissionType[filePermission]);
+    if(singletonMetadataModel.setUserFilePermission(id, pid, PermissionType[filePermission]) !== null){
         return res.status(200).json({ message: "file/folder permission updated successfully" });
-    } catch (err) {
-        return res.status(500).json({ error: err.message });
+    } else{
+        return res.status(500).json({ error: "file/folder doesn't exist"});
     }
 }
 
@@ -38,6 +37,6 @@ function deleteFilePermissionController(req, res){
         singletonMetadataModel.setUserFilePermission(id, pid, PermissionType.NON);
         return res.status(200).json({ message: "user file/folder permission deleted successfully" });
     } catch (err) {
-        return res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: "file/folder doesn't exists" });
     }
 }
