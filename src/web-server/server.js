@@ -7,6 +7,7 @@ app.use('/api/users', require('./routes/usersRouter'));
 app.use('/api/tokens', require('./routes/tokensRouter'));
 app.use('/api/files', require('./routes/filesRouter'));
 app.use('/api/search', require('./routes/searchRouter'));
+app.use('/api/folders', require('./routes/folderRouter'));
 
 const port = process.env.WEB_SERVER_PORT; //the port the server listen to is passed as an enviroment variable
 

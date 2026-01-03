@@ -1,4 +1,5 @@
 const crypto = require("crypto");//yooo crypto :)
+const {singletonUsersModel} = require("./usersModel")
 
 const idLength = 16; //length of the id in hex characters
 
@@ -28,7 +29,7 @@ const AbilityRequirement = Object.freeze({
 });
 
 class FileNode {
-  constructor(name, type, parent = null, uid = null) {
+  constructor(name, type, parent = null, uid = null,id) {
     this.name = name;
     this.type = type;
     this.parent = parent;
@@ -36,20 +37,22 @@ class FileNode {
     this.filePermissions = PermissionType.NON; //deafult permission of a random user
     this.userFilePermissions = new Map();
     this.userFilePermissions.set(uid, PermissionType.OWNER); //the creator is the owner of the file/folder
+    this.isStarred = false;
+    this.isInTrash = false;
+    this.createdAt = new Date();
+    singletonUsersModel.getUser(uid)?.filemap.set(id, [this, new Date()]); //add file to user's filemap
   }
 }
 
 class MetadataNode {
   constructor() {
     this.map = new Map(); // id -> FileNode
-    this.childrenByParent = new Map(); // parentId -> Set(childId)
 
     // root
-    const root = new FileNode("/", NodeType.FOLDER, null, null);
+    const root = new FileNode("/", NodeType.FOLDER, null, null,0);
     this.map.set(0, root); //root folder with id 0
     this.childrenByParent.set(0, new Set()); // root children set
   }
-
   getFileNode(id) 
   {
     if(!this.map.has(id)) {
@@ -93,7 +96,7 @@ class MetadataNode {
       throw new Error(`Invalid node type: ${type}.`);
     }
 
-    const node = new FileNode(name, type, parent, uid);
+    const node = new FileNode(name, type, parent, uid,id);
     this.map.set(id, node);
 
     // register child under parent
@@ -142,6 +145,48 @@ class MetadataNode {
       if (node) out.push({ id, name: node.name, type: node.type, uid: node.uid });
     }
     return out;
+  }
+
+  getAllFolderNodes(id) {
+    // "base" = children of root
+    const ids = this.childrenByParent.get(id);
+    if (!ids) return [];
+    const out = [];
+    for (const id of ids) {
+      const node = this.map.get(id);
+      if (node) out.push({ id, name: node.name, type: node.type, uid: node.uid });
+    }
+    return out;
+  }
+  getAllMetadata(node, userId){
+    if(!node){
+      return null;
+    }
+    const lastAccess = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[1] ?? node.createdAt;
+
+    return {
+      id: fileId,
+      name: node.name,
+      type: node.type,
+      parent: node.parent,
+      uid: node.uid,
+      isStarred: node.isStarred,
+      isInTrash: node.isInTrash,
+      createdAt: node.createdAt,
+      lastAccess: lastAccess,
+      filePermissions:  Object.keys(PermissionType).find(key => PermissionType[key] === node.filePermissions)};
+  }
+  updateLastAccess(fileId, userId){
+    const user = singletonUsersModel.getUser(userId);
+    if(!user){
+      return;
+    }
+    const fileEntry = user.filemap.get(fileId);
+    if(!fileEntry){
+      user.filemap.set(fileId, [this.map.get(fileId), new Date()]);//first time access
+      return;
+    }
+    fileEntry[1] = new Date();
   }
   renameFileNode(id, newName) {
     if (typeof newName !== "string" || newName.trim() === "") {
@@ -214,6 +259,18 @@ class MetadataNode {
       return null;
     }
     this.map.get(fileId).userFilePermissions.set(userId, newFilePermission);
+  }
+  setStarredStatus(fileId, isStarred){
+    if(!this.map.has(fileId)){
+      return null;
+    }
+    this.map.get(fileId).isStarred = isStarred;
+  }
+  setTrashStatus(fileId, isInTrash){
+    if(!this.map.has(fileId)){
+      return null;
+    }
+    this.map.get(fileId).isInTrash = isInTrash;
   }
 }
 

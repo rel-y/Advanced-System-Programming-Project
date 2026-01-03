@@ -8,6 +8,8 @@ const filePermissions = require('../controller/api-permissions');
 router.get('/', getAndAddFiles.getFileController);
 router.post('/', getAndAddFiles.createFileController);
 
+router.get('/folder/:Id', getAndAddFiles.getFolderFileController);
+
 router.get('/:id', filesId.getReqController);
 router.patch('/:id', filesId.patchReqController);
 router.delete('/:id', filesId.deleteReqController);

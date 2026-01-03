@@ -16,6 +16,7 @@ async function getReqController(req, res) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
     }
+    singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
         const retjson = { id: inputId, ...fileNode,
@@ -54,12 +55,17 @@ async function patchReqController(req, res) {
         return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
     }
 
-    let {name, data} = req.body;
+    let {name, data, starred, inBin} = req.body;
     if (!name && !data) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'Empty change requset' }));
     }
-
+    if (starred !== undefined && starred !== null) {
+        fileNode.isStarred = starred;
+    }
+    if (inBin !== undefined && inBin !== null) {
+        fileNode.isInTrash = inBin;
+    }
     // change name and data, if they are requested
     if (name) {
         try {
@@ -69,6 +75,7 @@ async function patchReqController(req, res) {
             return res.end(JSON.stringify({ error: err.message }));
         } 
     }
+    singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
     if (data && fileNode.type === NodeType.FILE) {
         let output = await fileModel.patchFile(inputId, data);
         const code = parseInt(output.slice(0, 3), 10);
