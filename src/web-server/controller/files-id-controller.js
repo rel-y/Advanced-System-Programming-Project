@@ -2,12 +2,7 @@ const { singletonMetadataModel, PermissionType, NodeType } = require("../model/m
 const fileModel = require("../model/FileModel");
 
 async function getReqController(req, res) {
-    const loggedInUsername = req.headers['username'];
-    if (loggedInUsername === undefined) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
-    }
-    
+
     const inputId = req.params.id;
 
     const fileNode = singletonMetadataModel.getFileNode(inputId);
@@ -38,13 +33,7 @@ async function getReqController(req, res) {
     }
 }
 
-async function patchReqController(req, res) {
-    const loggedInUsername = req.headers['username'];
-    if (loggedInUsername === undefined) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
-    }
-    
+async function patchReqController(req, res) {    
     const inputId = req.params.id;
 
     const fileNode = singletonMetadataModel.getFileNode(inputId);
@@ -81,12 +70,7 @@ async function patchReqController(req, res) {
 }
 
 async function deleteReqController(req, res) {
-    const loggedInUsername = req.headers['username'];
-    if (loggedInUsername === undefined) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
-    }
-    
+
     const inputId = req.params.id;
 
     const fileNode = singletonMetadataModel.getFileNode(inputId);

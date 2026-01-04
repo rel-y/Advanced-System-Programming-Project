@@ -12,10 +12,6 @@ function getFilePermissionController(req, res){
 function setFilePermissionController(req, res){
     const {id} = req.params;
     const {filePermission} = req.body;
-    const username = req.headers['username'];
-    if(username === undefined || username === null){
-        return res.status(401).json({ error: "unauthorized" });//user must be logged in
-    }
     if(id === undefined || filePermission === undefined){
         return res.status(400).json({ error: "missing fields" });//id and permission type are required
     }
@@ -33,10 +29,7 @@ function setFilePermissionController(req, res){
 function patchFilePermissionController(req, res){
     const {id,pid} = req.params;
     const {filePermission} = req.body;
-    const username = req.headers['username'];
-    if(username === undefined || username === null){
-        return res.status(401).json({ error: "unauthorized" });
-    }
+
     if(id === undefined || filePermission === undefined || pid === undefined){
         return res.status(400).json({ error: "bad request, missing fields" });
     }
@@ -56,10 +49,7 @@ function patchFilePermissionController(req, res){
 
 function deleteFilePermissionController(req, res){
     const {id, pid} = req.params;
-    const username = req.headers['username'];
-    if(username === undefined || username === null){
-        return res.status(401).json({ error: "unauthorized" });
-    }
+
     if(id === undefined || pid === undefined){
         return res.status(400).json({ error: "bad request, missing fields" });
     }
