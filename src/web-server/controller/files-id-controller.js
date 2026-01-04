@@ -61,10 +61,10 @@ async function patchReqController(req, res) {
         return res.end(JSON.stringify({ error: 'Empty change requset' }));
     }
     if (starred !== undefined && starred !== null) {
-        fileNode.isStarred = starred;
+        singletonMetadataModel.setStarredStatus(inputId, starred,loggedInUsername);
     }
     if (inBin !== undefined && inBin !== null) {
-        fileNode.isInTrash = inBin;
+        singletonMetadataModel.setTrashStatus(inputId, inBin);
     }
     // change name and data, if they are requested
     if (name) {

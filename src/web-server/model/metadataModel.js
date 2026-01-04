@@ -29,7 +29,7 @@ const AbilityRequirement = Object.freeze({
 });
 
 class FileNode {
-  constructor(name, type, parent = null, uid = null,id) {
+  constructor(name, type, parent = null, uid = null) {
     this.name = name;
     this.type = type;
     this.parent = parent;
@@ -37,10 +37,9 @@ class FileNode {
     this.filePermissions = PermissionType.NON; //deafult permission of a random user
     this.userFilePermissions = new Map();
     this.userFilePermissions.set(uid, PermissionType.OWNER); //the creator is the owner of the file/folder
-    this.isStarred = false;
     this.isInTrash = false;
     this.createdAt = new Date();
-    singletonUsersModel.getUser(uid)?.filemap.set(id, [this, new Date()]); //add file to user's filemap
+    this.size;
   }
 }
 
@@ -49,7 +48,7 @@ class MetadataNode {
     this.map = new Map(); // id -> FileNode
 
     // root
-    const root = new FileNode("/", NodeType.FOLDER, null, null,0);
+    const root = new FileNode("/", NodeType.FOLDER, null, null);
     this.map.set(0, root); //root folder with id 0
     this.childrenByParent.set(0, new Set()); // root children set
   }
@@ -96,7 +95,7 @@ class MetadataNode {
       throw new Error(`Invalid node type: ${type}.`);
     }
 
-    const node = new FileNode(name, type, parent, uid,id);
+    const node = new FileNode(name, type, parent, uid);
     this.map.set(id, node);
 
     // register child under parent
@@ -135,45 +134,39 @@ class MetadataNode {
     this.map.delete(id);
   }
 
-  getAllBaseNodes() {
-    // "base" = children of root
-    const ids = this.childrenByParent.get(0);
-    if (!ids) return [];
-    const out = [];
-    for (const id of ids) {
-      const node = this.map.get(id);
-      if (node) out.push({ id, name: node.name, type: node.type, uid: node.uid });
-    }
-    return out;
-  }
 
-  getAllFolderNodes(id) {
+  getAllFolderNodes(id = 0) {
     // "base" = children of root
     const ids = this.childrenByParent.get(id);
     if (!ids) return [];
     const out = [];
     for (const id of ids) {
       const node = this.map.get(id);
-      if (node) out.push({ id, name: node.name, type: node.type, uid: node.uid });
+      if (node) out.push({ id:id});
     }
     return out;
+  }
+  
+  getAllBaseNodes() {
+    return getAllFolderNodes();
   }
   getAllMetadata(node, userId){
     if(!node){
       return null;
     }
     const lastAccess = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[1] ?? node.createdAt;
-
+    const isStarred = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[2] ?? false;
     return {
       id: fileId,
       name: node.name,
       type: node.type,
       parent: node.parent,
       uid: node.uid,
-      isStarred: node.isStarred,
+      isStarred: isStarred,
       isInTrash: node.isInTrash,
       createdAt: node.createdAt,
       lastAccess: lastAccess,
+      size: node.size,
       filePermissions:  Object.keys(PermissionType).find(key => PermissionType[key] === node.filePermissions)};
   }
   updateLastAccess(fileId, userId){
@@ -181,12 +174,12 @@ class MetadataNode {
     if(!user){
       return;
     }
-    const fileEntry = user.filemap.get(fileId);
-    if(!fileEntry){
-      user.filemap.set(fileId, [this.map.get(fileId), new Date()]);//first time access
+    const currect = user.filemap.get(fileId);
+    if(!currect){
+      user.filemap.set(fileId, [this.map.get(fileId), new Date(),currect[2]]);//first time access
       return;
     }
-    fileEntry[1] = new Date();
+    user.filemap.set(fileId,[this.map.get(fileId), new Date(),false])
   }
   renameFileNode(id, newName) {
     if (typeof newName !== "string" || newName.trim() === "") {
@@ -260,17 +253,21 @@ class MetadataNode {
     }
     this.map.get(fileId).userFilePermissions.set(userId, newFilePermission);
   }
-  setStarredStatus(fileId, isStarred){
+  setStarredStatus(fileId, isStarred,uid){
     if(!this.map.has(fileId)){
       return null;
     }
-    this.map.get(fileId).isStarred = isStarred;
+    const currect = singletonUsersModel.map.get(fileId);
+    singletonUsersModel.map.get(uid).map.set([currect[0],currect[1], isStarred])
   }
   setTrashStatus(fileId, isInTrash){
     if(!this.map.has(fileId)){
       return null;
     }
     this.map.get(fileId).isInTrash = isInTrash;
+  }
+  setSize(size){
+    this.size = size;
   }
 }
 
