@@ -154,8 +154,8 @@ class MetadataNode {
     if(!node){
       return null;
     }
-    const lastAccess = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[1] ?? node.createdAt;
-    const isStarred = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[2] ?? false;
+    const lastAccess = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[0] ?? node.createdAt;
+    const isStarred = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[1] ?? false;
     return {
       id: fileId,
       name: node.name,
@@ -176,10 +176,10 @@ class MetadataNode {
     }
     const currect = user.filemap.get(fileId);
     if(!currect){
-      user.filemap.set(fileId, [this.map.get(fileId), new Date(),currect[2]]);//first time access
+      user.filemap.set(fileId, [new Date(),currect[1]]);//first time access
       return;
     }
-    user.filemap.set(fileId,[this.map.get(fileId), new Date(),false])
+    user.filemap.set(fileId,[new Date(),false])
   }
   renameFileNode(id, newName) {
     if (typeof newName !== "string" || newName.trim() === "") {
@@ -257,8 +257,8 @@ class MetadataNode {
     if(!this.map.has(fileId)){
       return null;
     }
-    const currect = singletonUsersModel.map.get(uid).filemap.get(fileId);
-    singletonUsersModel.map.get(uid).filemap.set([currect[0],currect[1], isStarred])
+    const time = singletonUsersModel.map.get(uid).filemap.get(fileId)[0];// [time, isStarred]
+    singletonUsersModel.map.get(uid).filemap.set([time, isStarred])
   }
   setTrashStatus(fileId, isInTrash){
     if(!this.map.has(fileId)){
