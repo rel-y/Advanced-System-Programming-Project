@@ -102,7 +102,11 @@ async function deleteReqController(req, res) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'No such file/folder exists' }));
     }
-
+    if(fileNode.isInTrash === false){
+        singletonMetadataModel.setTrashStatus(inputId, true);
+        res.writeHead(204, { 'Content-Type': 'application/json' });
+        return res.end();
+    }
     try { // catches if attempting bad deletion
         singletonMetadataModel.deleteFileNode(inputId);
     } catch (err) {
