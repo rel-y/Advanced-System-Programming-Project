@@ -23,7 +23,7 @@ function getFolderFileController(req, res) {
     if(folderId === undefined || folderId === null || Folder === undefined || Folder.type !== NodeType.FOLDER){
       return res.status(400).json({ error: "bad request, folder id is invalid" });
     }
-  const data = singletonMetadataModel.getAllBaseNodes(folderId);
+  const data = singletonMetadataModel.getAllFolderNodes(folderId);
   const metadata = data.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
   res.status(200).json(metadata);
 }
