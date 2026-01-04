@@ -257,8 +257,8 @@ class MetadataNode {
     if(!this.map.has(fileId)){
       return null;
     }
-    const currect = singletonUsersModel.map.get(fileId);
-    singletonUsersModel.map.get(uid).map.set([currect[0],currect[1], isStarred])
+    const currect = singletonUsersModel.map.get(uid).filemap.get(fileId);
+    singletonUsersModel.map.get(uid).filemap.set([currect[0],currect[1], isStarred])
   }
   setTrashStatus(fileId, isInTrash){
     if(!this.map.has(fileId)){

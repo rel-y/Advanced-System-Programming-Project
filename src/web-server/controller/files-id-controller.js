@@ -56,7 +56,7 @@ async function patchReqController(req, res) {
     }
 
     let {name, data, starred, inBin} = req.body;
-    if (!name && !data) {
+    if (!name && !data && !starred && !inBin) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'Empty change requset' }));
     }
