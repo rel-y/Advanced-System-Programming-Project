@@ -1,8 +1,9 @@
 const express = require('express');
 var router = express.Router();
 const users = require('../controller/api-users-controller');
+const {isLoggedIn} = require("../authorization/JWT")
 
 router.post('/', users.postReqController);
-router.get('/:id', users.getReqController);
+router.get('/:id', isLoggedIn, users.getReqController);
 
 module.exports = router;
