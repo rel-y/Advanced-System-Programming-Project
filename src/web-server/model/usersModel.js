@@ -28,7 +28,8 @@ class usersDict {
         if (this.map.has(username)) {
             return undefined;
         }
-        tokenVersion += 1;
+        const user = this.map.get(username);
+        user.tokenVersion += 1;
     }
     getUsertokenVersion(username){
         if (this.map.has(username)) {

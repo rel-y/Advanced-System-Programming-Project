@@ -5,5 +5,6 @@ const {isLoggedIn} = require("../authorization/JWT")
 
 router.post('/', users.postReqController);
 router.get('/:id', isLoggedIn, users.getReqController);
+router.get('/logout', isLoggedIn, users.disconnectController);
 
 module.exports = router;

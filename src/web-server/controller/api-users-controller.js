@@ -37,5 +37,15 @@ function getReqController(req, res) { // for api/users/:id !!!
     const retjson = {...requestedUser };
     return res.end(JSON.stringify(retjson));
 }
+function disconnectController(req, res){ //for api/users/logout
+    let { username } = req.body;
+    
+    if (requestedUser === undefined) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user with this username does not exists' }));
+    }
 
-module.exports = { postReqController, getReqController};
+    singletonUsersModel.updateUserTokenVersion(username);
+    return res.status(200).send("Disconnected");
+}
+module.exports = { postReqController, getReqController, disconnectController};

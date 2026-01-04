@@ -1,4 +1,4 @@
-const {singletonUsersModel} = require("../model/usersModel")
+const { singletonUsersModel } = require("../model/usersModel")
 
 function postReqController(req, res) {
     let { username, password } = req.body;
@@ -19,8 +19,9 @@ function postReqController(req, res) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'wrong password for this user' }));
     }
-
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ username: username }));
+    //generaing a token
+    const data = { username: username, tokenVersion: requestedUser.tokenVersion}
+    const token = jwt.sign(data, key)
+    res.status(201).json({ token })
 }
-module.exports = {postReqController};
+module.exports = { postReqController };
