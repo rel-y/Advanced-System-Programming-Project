@@ -25,14 +25,14 @@ class usersDict {
         this.map.set(username, newUser);
     }
     updateUserTokenVersion(username){
-        if (this.map.has(username)) {
+        if (!(this.map.has(username))) {
             return undefined;
         }
         const user = this.map.get(username);
         user.tokenVersion += 1;
     }
     getUsertokenVersion(username){
-        if (this.map.has(username)) {
+        if (!(this.map.has(username))) {
             return undefined;
         }
         const user = this.map.get(username);

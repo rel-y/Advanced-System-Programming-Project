@@ -2,7 +2,7 @@ const express = require('express');
 var app = express();
 //setting the urlencoder so the app can prase json 
 app.use(express.json({limit: '10mb'})); //allowing the incoming data to be up to 10mb to support large data as images
-const {isLoggedIn} = require("../authorization/JWT")
+const {isLoggedIn} = require("./authentication/JWT")
 
 app.use('/api/users' ,require('./routes/usersRouter'));
 app.use('/api/tokens', require('./routes/tokensRouter'));

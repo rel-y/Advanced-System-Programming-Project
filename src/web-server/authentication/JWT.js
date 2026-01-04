@@ -1,5 +1,6 @@
 const {singletonUsersModel} = require("../model/usersModel")
-const key = require("../.secret");
+const jwt = require("jsonwebtoken")
+const {key} = require("../.secret");
 function isLoggedIn(req, res, next) {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(" ")[1];
@@ -22,6 +23,6 @@ function isLoggedIn(req, res, next) {
         return res.status(403).send('Token required');
 }
 
-module.exports ={
+module.exports = {
     isLoggedIn
 }

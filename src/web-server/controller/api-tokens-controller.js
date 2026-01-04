@@ -1,4 +1,6 @@
 const { singletonUsersModel } = require("../model/usersModel")
+const jwt = require("jsonwebtoken")
+const {key} = require("../.secret");
 
 function postReqController(req, res) {
     let { username, password } = req.body;
@@ -9,7 +11,6 @@ function postReqController(req, res) {
     }
 
     const requestedUser = singletonUsersModel.getUser(username);
-
     if (requestedUser === undefined) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'user with this username does not exists' }));
