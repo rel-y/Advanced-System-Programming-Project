@@ -8,8 +8,24 @@ function getFileController(req, res) {
         return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
   }
   const data = singletonMetadataModel.getAllBaseNodes();
-  const idAndNames = data.map(item => ({ id: item.id, name: item.name }));
-  res.status(200).json(idAndNames);
+  const metadata = data.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
+  res.status(200).json(metadata);
+}
+
+function getFolderFileController(req, res) {
+  const loggedInUsername = req.headers['username'];
+  const folderId = req.params.Id;
+    if (loggedInUsername === undefined) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
+  }
+  let Folder = singletonMetadataModel.map.get(folderId);
+    if(folderId === undefined || folderId === null || Folder === undefined || Folder.type !== NodeType.FOLDER){
+      return res.status(400).json({ error: "bad request, folder id is invalid" });
+    }
+  const data = singletonMetadataModel.getAllFolderNodes(folderId);
+  const metadata = data.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
+  res.status(200).json(metadata);
 }
 
 function createFileController(req, res) {
@@ -44,7 +60,7 @@ function createFileController(req, res) {
     }
     createFile(id, content)
       .then(response => {
-        
+        singletonMetadataModel.map(id).setSize(content.length());
         return res.status(201).json([{
           id: id,
           name: name
@@ -70,4 +86,4 @@ function createFileController(req, res) {
   }
 }
 
-module.exports = { getFileController, createFileController };
+module.exports = { getFileController, createFileController,getFolderFileController };
