@@ -5,6 +5,8 @@ class userNode {
         this.nickname = nickname;
         this.photo = photo;
         this.tokenVersion = 1;
+        this.filemap = new Map(); // fileid -> fileNode, last access for the user
+
     }
 }
 

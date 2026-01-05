@@ -33,14 +33,7 @@ async function getSearchFileController(req, res) {
     ])];
     let results = [];
     for (let i = 0; i < combinedIds.length; i++) {
-        const fullPath = singletonMetadataModel.getFullPath(combinedIds[i]);
-        const node = singletonMetadataModel.getFileNode(combinedIds[i]);
-        results.push({
-            id: combinedIds[i],
-            name: node.name,
-            fullPath: fullPath,
-            type: node.type
-        });
+        results.push(singletonMetadataModel.getAllMetadata(combinedIds[i]));
     }
 
 
