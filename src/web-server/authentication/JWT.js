@@ -13,6 +13,10 @@ function isLoggedIn(req, res, next) {
             if(data.tokenVersion !== version){
                 return res.status(401).send("Invalid Token");
             }else{
+                //adding username to req
+                req.user = {
+                    username: data.username
+                };
                 return next()
             }
         } catch (err) {
