@@ -79,6 +79,7 @@ async function patchReqController(req, res) {
     if (data && fileNode.type === NodeType.FILE) {
         let output = await fileModel.patchFile(inputId, data);
         const code = parseInt(output.slice(0, 3), 10);
+        singletonMetadataModel.setSize(inputId,data.length());
         res.writeHead(code, { 'Content-Type': 'application/json' });
     } else { // only name changes
         res.writeHead(204);
