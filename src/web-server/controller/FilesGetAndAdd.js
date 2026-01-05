@@ -2,18 +2,14 @@ const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const {createFile} = require("../model/FileModel");
 
 function getFileController(req, res) {
-  const loggedInUsername = req.headers['username'];
-    if (loggedInUsername === undefined) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
-  }
+  let loggedInUsername = req.user.username;
   const data = singletonMetadataModel.getAllBaseNodes();
   const metadata = data.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
   res.status(200).json(metadata);
 }
 
 function getFolderFileController(req, res) {
-  const loggedInUsername = req.headers['username'];
+  const loggedInUsername = req.user.username;
   const folderId = req.params.Id;
     if (loggedInUsername === undefined) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -29,11 +25,6 @@ function getFolderFileController(req, res) {
 }
 
 function createFileController(req, res) {
-  const loggedInUsername = req.headers['username'];
-  if (loggedInUsername === undefined) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
-  }
   let { name, type, parent, uid, content} = req.body;
 
   if (!name || uid === undefined || uid === null) {//bad request
@@ -60,14 +51,16 @@ function createFileController(req, res) {
     }
     createFile(id, content)
       .then(response => {
-        singletonMetadataModel.map(id).setSize(content.length());
+        singletonMetadataModel.setSize(id,content.length);
         return res.status(201).json([{
           id: id,
           name: name
         }]);
       })
       .catch(err => {
-        try { singletonMetadataModel.deleteFileNode(id); } catch (_) {} //rollback metadata creation
+        try { singletonMetadataModel.deleteFileNode(id); } catch (_) {
+          console.log("prob")
+        } //rollback metadata creation
         return  res.status(500).json({ error: err.message });
       });
     return;

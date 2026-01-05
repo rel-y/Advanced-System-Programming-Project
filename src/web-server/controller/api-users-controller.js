@@ -19,11 +19,7 @@ function postReqController(req, res) {
 }
 
 function getReqController(req, res) { // for api/users/:id !!!
-    const loggedInUsername = req.headers['username'];
-    if (loggedInUsername === undefined) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ error: 'user must be logged in. username in header' }));
-    }
+
     const inputId = req.params.id;
 
     const requestedUser = singletonUsersModel.getUser(inputId);
@@ -37,5 +33,10 @@ function getReqController(req, res) { // for api/users/:id !!!
     const retjson = {...requestedUser };
     return res.end(JSON.stringify(retjson));
 }
+function disconnectController(req, res){ //for api/users/logout
+    let { username } = req.body;
 
-module.exports = { postReqController, getReqController};
+    singletonUsersModel.updateUserTokenVersion(username);
+    return res.status(200).send("Disconnected");
+}
+module.exports = { postReqController, getReqController, disconnectController};

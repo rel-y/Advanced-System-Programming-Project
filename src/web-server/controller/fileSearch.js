@@ -3,10 +3,7 @@ const {searchFiles, getFile} = require("../model/FileModel");
 
 async function getSearchFileController(req, res) {
     const { query } = req.params;
-    const username = req.headers['username']; // from authentication middleware
-    if(username === undefined || username === null){
-        return res.status(401).json({ error: "unauthorized" });
-    }
+
     if (!query || query.trim() === "") {
         return res.status(400).json({ error: "bad request, query parameter is required" });
     }

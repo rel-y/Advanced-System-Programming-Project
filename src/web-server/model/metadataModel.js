@@ -148,16 +148,20 @@ class MetadataNode {
   }
   
   getAllBaseNodes() {
-    return getAllFolderNodes();
+    return this.getAllFolderNodes();
   }
-  getAllMetadata(node, userId){
-    if(!node){
+  getAllMetadata(nodeIdItem, userId){
+    if(!nodeIdItem){
       return null;
     }
-    const lastAccess = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[0] ?? node.createdAt;
-    const isStarred = singletonUsersModel.getUser(userId)?.filemap?.get(node.id)?.[1] ?? false;
+    if(!this.map.has(nodeIdItem.id)){
+      return null;
+    }
+    let node = this.map.get(nodeIdItem.id);
+    const lastAccess = singletonUsersModel.getUser(userId)?.filemap?.get(nodeIdItem.id)?.[0] ?? node.createdAt;
+    const isStarred = singletonUsersModel.getUser(userId)?.filemap?.get(nodeIdItem.id)?.[1] ?? false;
     return {
-      id: fileId,
+      id: nodeIdItem.id,
       name: node.name,
       type: node.type,
       parent: node.parent,
@@ -266,8 +270,11 @@ class MetadataNode {
     }
     this.map.get(fileId).isInTrash = isInTrash;
   }
-  setSize(size){
-    this.size = size;
+  setSize(fileId, size){
+    if(!this.map.has(fileId)){
+      return null;
+    }
+    this.map.get(fileId).size = size;
   }
 }
 
