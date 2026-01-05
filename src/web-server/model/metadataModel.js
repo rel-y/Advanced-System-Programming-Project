@@ -46,7 +46,7 @@ class FileNode {
 class MetadataNode {
   constructor() {
     this.map = new Map(); // id -> FileNode
-    this.childrenByParent = new Map(); // parentId -> Set of child ids
+    this.childrenByParent = new Map()
     // root
     const root = new FileNode("/", NodeType.FOLDER, null, null);
     this.map.set(0, root); //root folder with id 0
