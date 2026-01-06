@@ -29,11 +29,12 @@ function getFolderFileController(req, res) {
 }
 
 function createFileController(req, res) {
-  let { name, type, parent, uid, content} = req.body;
+  let { name, type, parent, content} = req.body;
   const loggedInUsername = req.user.username;
+  const uid = loggedInUsername;
 
   if (!name || uid === undefined || uid === null) {//bad request
-    return res.status(400).json({ error: "bad request, name and uid are required" });
+    return res.status(400).json({ error: "bad request, name required" });
   }
 
   if (parent === undefined || parent === null) parent = 0; //default parent is root

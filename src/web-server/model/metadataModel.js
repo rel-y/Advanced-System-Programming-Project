@@ -244,7 +244,7 @@ class MetadataNode {
      }
     return userPermission >= AbilityRequirement[ability];
   }
-  getFilePermission(fileId, userId){
+  getFilePermission(fileId){
     return {
       filePermissions: this.map.get(fileId).filePermissions,
       userFilePermissions: this.map.get(fileId).userFilePermissions

@@ -22,7 +22,12 @@ async function getReqController(req, res) {
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
         const retjson = { id: inputId, ...fileNode };
+        
+        delete retjson.filePermissions; // dont show permissions
+        delete retjson.userFilePermissions;
+
         res.end(JSON.stringify(retjson));
+
     }else if(fileNode.type === NodeType.FILE){
         let output = await fileModel.getFile(inputId);
         const code = parseInt(output.slice(0, 3), 10);
@@ -33,6 +38,10 @@ async function getReqController(req, res) {
         output = output.slice(output.indexOf("\n\n") + 2);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         const retjson = { id: inputId, ...fileNode, content: output };
+        
+        delete retjson.filePermissions; // dont show permissions
+        delete retjson.userFilePermissions;
+
         res.end(JSON.stringify(retjson));
     }
 }
@@ -48,22 +57,26 @@ async function patchReqController(req, res) {
     }
 
     const loggedInUsername = req.user.username;
+    
+    if (starred !== undefined && starred !== null) {
+        if (!singletonMetadataModel.isAbaleTo(loggedInUsername, inputId, "READ")) {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: 'user has no READ permissions for this file/folder' }));
+        }
+        singletonMetadataModel.setStarredStatus(inputId, starred,loggedInUsername);
+    }
+
     if (!singletonMetadataModel.isAbaleTo(loggedInUsername, inputId, "WRITE")) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'user has no WRITE permissions for this file/folder' }));
     }
 
-    let {name, data, starred, inBin} = req.body;
+    let {name, data, starred} = req.body;
     if (!name && !data && !starred && !inBin) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'Empty change requset' }));
     }
-    if (starred !== undefined && starred !== null) {
-        singletonMetadataModel.setStarredStatus(inputId, starred,loggedInUsername);
-    }
-    if (inBin !== undefined && inBin !== null) {
-        singletonMetadataModel.setTrashStatus(inputId, inBin);
-    }
+    
     // change name and data, if they are requested
     if (name) {
         try {
