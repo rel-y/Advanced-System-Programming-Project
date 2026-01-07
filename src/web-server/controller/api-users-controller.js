@@ -35,7 +35,7 @@ function getReqController(req, res) { // for api/users/:id !!!
     return res.end(JSON.stringify(retjson));
 }
 function disconnectController(req, res){ //for api/users/logout
-    let { username } = req.body;
+    let username = req.user.username;
 
     singletonUsersModel.updateUserTokenVersion(username);
     return res.status(200).send("Disconnected");
