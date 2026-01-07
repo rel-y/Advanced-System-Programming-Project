@@ -224,15 +224,27 @@ class MetadataNode {
 
     return path || '/';
   }
-  isAbaleTo(userPermission, ability){
-    if(!((typeof value === "number" && Object.values(PermissionType).includes(value)) &&
-     typeof value === "string" && Object.prototype.hasOwnProperty.call(AbilityRequirement, value))){
+  isAbaleTo(userId, fileId, ability){
+    if (!this.map.has(fileId)) {
+      return false;
+    }
+    defaultForFile = fileId.filePermissions;
+    fileContainsUser = fileId.userFilePermissions.has(userId);
+
+    if (fileContainsUser) {
+      userPermission = fileId.userFilePermissions.get(userId);
+    } else {
+      userPermission = defaultForFile;
+    }
+    
+    if(!((typeof userPermission === "number" && Object.values(PermissionType).includes(userPermission)) &&
+     typeof ability === "string" && Object.prototype.hasOwnProperty.call(AbilityRequirement, ability))){
       //didn't get a number for the permission level or a currect key in for ability
       return false;
      }
     return userPermission >= AbilityRequirement[ability];
   }
-  getFilePermission(fileId, userId){
+  getFilePermission(fileId){
     return {
       filePermissions: this.map.get(fileId).filePermissions,
       userFilePermissions: this.map.get(fileId).userFilePermissions

@@ -31,10 +31,11 @@ function getReqController(req, res) { // for api/users/:id !!!
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     const retjson = {...requestedUser };
+    delete retjson.password; // dont send password...
     return res.end(JSON.stringify(retjson));
 }
 function disconnectController(req, res){ //for api/users/logout
-    let { username } = req.body;
+    let username = req.user.username;
 
     singletonUsersModel.updateUserTokenVersion(username);
     return res.status(200).send("Disconnected");
