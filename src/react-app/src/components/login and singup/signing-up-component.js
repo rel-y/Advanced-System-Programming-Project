@@ -50,7 +50,6 @@ function SigningUpComponent() {
           navigator('/api/users/login');
         } else { //waiting for the response to tell the user what went wrong
           const errorData = await response.json();
-          console.log(errorData);
           setGeneralError(errorData.error || "Unknown error");
         }
       });
@@ -67,11 +66,16 @@ function SigningUpComponent() {
   }
 
   return (
-    <div className="vh-100 d-flex justify-content-center align-items-center">
-      <div className="border p-4 rounded box-sizes">
-        <p className="align-self-center fs-2 p-4">
-          signup
-        </p>
+    <div className="bg-secondary-subtle vh-100 d-flex justify-content-center align-items-center">
+      <div className="bg-white border p-4 rounded-5 box-sizes">
+        <div className="align-self-center lex-column">
+          <p className="text-start fs-1">
+            Signup
+          </p>
+          <p className="text-start fs-4">
+            create a new account
+          </p>
+        </div>
         <form className="form-style ms-auto" onSubmit={e => {
           e.preventDefault(); // stop the default submit
           resetErrors(); //reseting previous errors

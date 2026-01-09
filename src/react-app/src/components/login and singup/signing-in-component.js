@@ -51,11 +51,16 @@ function LoginInComponent() {
   }
 
   return (
-    <div className="vh-100 d-flex justify-content-center align-items-center">
-      <div className="border p-4 rounded box-sizes">
-        <p className="align-self-center fs-2 p-4">
-          Login
-        </p>
+    <div className="bg-secondary-subtle vh-100 d-flex justify-content-center align-items-center">
+      <div className="bg-white border p-4 rounded-5 box-sizes">
+        <div className="align-self-center lex-column">
+          <p className="text-start fs-1">
+            Login
+          </p>
+          <p className="text-start fs-4">
+            login into your account
+          </p>
+        </div>
         <form className="form-style ms-auto" onSubmit={e => {
           e.preventDefault(); // stop the default submit
           resetErrors(); //reseting previous errors
