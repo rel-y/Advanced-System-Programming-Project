@@ -1,4 +1,4 @@
-const {singletonUsersModel} = require("../model/usersModel")
+const { singletonUsersModel } = require("../model/usersModel")
 
 function postReqController(req, res) {
     let { username, password, nickname, photo } = req.body;
@@ -6,7 +6,11 @@ function postReqController(req, res) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'missing fields for signup' }));
     }
-
+    const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!validPasswordRegex.test(password)) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'Password should contain at least 8 characters, one letter and one number' }));
+    }
     if (!(singletonUsersModel.getUser(username) === undefined)) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'user with this username already exists' }));
@@ -30,14 +34,14 @@ function getReqController(req, res) { // for api/users/:id !!!
     }
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    const retjson = {...requestedUser };
+    const retjson = { ...requestedUser };
     delete retjson.password; // dont send password...
     return res.end(JSON.stringify(retjson));
 }
-function disconnectController(req, res){ //for api/users/logout
+function disconnectController(req, res) { //for api/users/logout
     let username = req.user.username;
 
     singletonUsersModel.updateUserTokenVersion(username);
     return res.status(200).send("Disconnected");
 }
-module.exports = { postReqController, getReqController, disconnectController};
+module.exports = { postReqController, getReqController, disconnectController };

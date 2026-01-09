@@ -3,13 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import './signing-up-component.css'
 import Element from "./Element"
 function SigningUpComponent() {
+  //variables
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [secPassword, setSecPassword] = useState('');
   const [nickname, setNickname] = useState('');
   const [photo, setPhoto] = useState('');
   const navigator = useNavigate();
-
+  //variables for error handeling
+  const [usernameError, setUsernameError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
+  const [secPasswordError, setSecPasswordError] = useState(null);
+  const [nicknameError, setNicknameError] = useState(null);
+  const [photoError, setPhotoError] = useState(null);
+  const [generalError, setGeneralError] = useState(null);
+  const filedRequired = 'this field is required.'
+  const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
   const updateUsername = (newUserName) => {
     setUsername(newUserName)
@@ -27,12 +36,6 @@ function SigningUpComponent() {
     setPhoto(newPhoto);
   }
   const onSubmit = (e) => {
-    //controlling password matches secPassword
-    // if (this.state.secPassword !== this.state.password) {
-
-    // }
-
-    // console.log(JSON.stringify(this.state))
     let data = { username: username, password: password, nickname: nickname, photo: photo };
     fetch('http://localhost:8080/api/users', {
       body: JSON.stringify(data),
@@ -41,32 +44,64 @@ function SigningUpComponent() {
       },
       method: 'POST',
     })
-      .then(function (response) {
+      .then(async (response) => {
         console.log(response);
-        if (response.status === 200) {
+        if (response.status === 200) { //user was created passing to login
           navigator('/api/users/login');
-        } else {
-          alert('Issues saving');
+        } else { //waiting for the response to tell the user what went wrong
+          const errorData = await response.json();
+          console.log(errorData);
+          setGeneralError(errorData.error || "Unknown error");
         }
       });
 
   }
-
+  //reseting errors
+  const resetErrors = () => {
+    setGeneralError(null);
+    setUsernameError(null);
+    setPasswordError(null);
+    setSecPasswordError(null);
+    setNicknameError(null);
+    setPhotoError(null);
+  }
 
   return (
     <div className="vh-100 d-flex justify-content-center align-items-center">
       <div className="border p-4 rounded box-sizes">
-        <form className="form-style ms-auto needs-validation" onSubmit={e => {
+        <p className="align-self-center fs-2 p-4">
+          signup
+        </p>
+        <form className="form-style ms-auto" onSubmit={e => {
           e.preventDefault(); // stop the default submit
-
-          const form = e.target;
+          resetErrors(); //reseting previous errors
           let invalid = false;
-          if (!form.checkValidity()) {
-            form.classList.add('was-validated');
+          if (!username) {
+            setUsernameError(filedRequired);
             invalid = true;
           }
-          if (password !== secPassword) {
-            
+          if (!secPassword) {
+            setSecPasswordError(filedRequired);
+            invalid = true;
+          }
+          if (!nickname) {
+            setNicknameError(filedRequired);
+            invalid = true;
+          }
+          if (!photo) {
+            setPhotoError(filedRequired);
+            invalid = true;
+          }
+          if (!password) {
+            setPasswordError(filedRequired);
+            invalid = true;
+          } else if (!validPasswordRegex.test(password)) {
+            setPasswordError('Password should contain at least 8 characters, one letter and one number')
+            invalid = true;
+          } else if (secPassword && password !== secPassword) {
+            setPasswordError('passwords Should Match');
+            setSecPasswordError('passwords Should Match');
+            invalid = true;
           }
           if (invalid) {
             //there is a problem in the input
@@ -74,10 +109,10 @@ function SigningUpComponent() {
           }
           onSubmit(e);
         }} noValidate>
-          <Element label="Username" type="text" updateFunc={e => updateUsername(e.target.value)} />
-          <Element label="Password" type="password" updateFunc={e => updatePassword(e.target.value)} />
-          <Element label="verify Password" type="password" updateFunc={e => updateSecPassword(e.target.value)} />
-          <Element label="Nickname" type="text" updateFunc={e => updateNickname(e.target.value)} />
+          <Element label="Username" type="text" errorMessage={usernameError} updateFunc={e => updateUsername(e.target.value)} />
+          <Element label="Password" type="password" errorMessage={passwordError} updateFunc={e => updatePassword(e.target.value)} />
+          <Element label="verify Password" type="password" errorMessage={secPasswordError} updateFunc={e => updateSecPassword(e.target.value)} />
+          <Element label="Nickname" type="text" errorMessage={nicknameError} updateFunc={e => updateNickname(e.target.value)} />
 
           <div className="mb-3">
             <label className="form-label">Profile Picture</label>
@@ -90,12 +125,15 @@ function SigningUpComponent() {
                 };
                 reader.readAsDataURL(file);
               }
-            }} required></input>
-            <div className="invalid-feedback">
-              this field is required.
+            }}></input>
+            <div className="Error">
+              {photoError}
             </div>
           </div>
-          <button type="submit" className="btn btn-primary rounded-pill align-self-left">Sign In</button>
+          <button type="submit" className="btn btn-primary rounded-pill align-self-left">Sign Up</button>
+          <div className="Error">
+            {generalError}
+          </div>
         </form>
       </div >
     </div >

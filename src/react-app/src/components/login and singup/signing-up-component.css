@@ -4,8 +4,16 @@
   display: flex;
   overflow-y: auto;
 }
-.form-style{
-    width: 35%;
-    display: flex;
-    flex-direction: column;
+
+.form-style {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+}
+
+.Error {
+  width: 100%;
+  margin-top: .25rem;
+  font-size: .875em;
+  color: var(--bs-form-invalid-color)
 }
