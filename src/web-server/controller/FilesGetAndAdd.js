@@ -1,5 +1,6 @@
 const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const {createFile} = require("../model/FileModel");
+const { singletonUsersModel } = require("../model/usersModel");
 
 function getFileController(req, res) {
   let loggedInUsername = req.user.username;
@@ -9,7 +10,7 @@ function getFileController(req, res) {
   res.status(200).json(metadata);
 }
 
-function getFolderFileController(req, res) {
+function getFolderFileController(req, res, filter = null) {
   const loggedInUsername = req.user.username;
   const folderId = req.params.Id;
   
@@ -24,7 +25,9 @@ function getFolderFileController(req, res) {
 
   const data = singletonMetadataModel.getAllFolderNodes(folderId);
   filteredByPermissions = data.filter(item => singletonMetadataModel.isAbaleTo(loggedInUsername, item.id, "READ"));
-  const metadata = filteredByPermissions.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
+  let metadata = filteredByPermissions.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
+  if(filter !== null)
+    metadata = metadata.filter(filter(req));//apply additional filter
   res.status(200).json(metadata);
 }
 
@@ -91,5 +94,19 @@ function createFileController(req, res) {
     return res.status(400).json({ error: err.message });
   }
 }
-
-module.exports = { getFileController, createFileController,getFolderFileController };
+function starFilter(_req) {
+  return item => item.isStarred === true;
+}
+function myDriveFilter(req) {
+  return item => item.uid === req.user.username;
+}
+function sharedWithMeFilter(req) {
+  return item => item.uid !== req.user.username && item.isShared === true;
+}
+function recentFilter(req) {
+  return item => singletonUsersModel.isFileAccessedByUser(req.user.username, item.id) || singletonMetadataModel.getFileNode(item.id).uid === req.user.username; 
+}//if the user is the owner and just created it, it might not be in the accessed list yet
+function trashFilter(req) {
+  return item => item.isInTrash === true;
+}
+module.exports = { getFileController, createFileController,getFolderFileController, starFilter, myDriveFilter, sharedWithMeFilter, recentFilter, trashFilter };

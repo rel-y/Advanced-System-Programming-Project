@@ -40,6 +40,13 @@ class usersDict {
         const user = this.map.get(username);
         return user.tokenVersion;
     }
+    isFileAccessedByUser(username, fileId) {
+        if (!(this.map.has(username))) {
+            return undefined;
+        }
+        const user = this.map.get(username);
+        return user.filemap.has(fileId);
+    }
 }
 
 const singletonUsersModel = new usersDict();
