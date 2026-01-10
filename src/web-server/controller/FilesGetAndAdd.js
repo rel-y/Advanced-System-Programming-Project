@@ -1,5 +1,6 @@
 const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const {createFile} = require("../model/FileModel");
+const { singletonUsersModel } = require("../model/usersModel");
 
 function getFileController(req, res) {
   let loggedInUsername = req.user.username;
@@ -9,22 +10,22 @@ function getFileController(req, res) {
   res.status(200).json(metadata);
 }
 
-function getFolderFileController(req, res) {
+function getFolderFileController(req, res, filter = undefined) {
   const loggedInUsername = req.user.username;
-  const folderId = req.params.Id;
-  
+  let folderId = req.params.id;
+  if (folderId == "0")//because we are dumb and store root as number 0
+    folderId = 0;
   let Folder = singletonMetadataModel.map.get(folderId);
-    if(folderId === undefined || folderId === null || Folder === undefined || Folder.type !== NodeType.FOLDER){
-      return res.status(400).json({ error: "bad request, folder id is invalid" });
-    }
+    if(folderId === undefined || folderId === null)
+      return res.status(400).json({ error: "bad request, folder id is invalid1" });
+    if(Folder === undefined || Folder.type !== NodeType.FOLDER)
+      return res.status(404).json({ error: "folder does not exist or is a file" });
   
-  if (!isAbaleTo(loggedInUsername, folderId, "READ")) {
-    return res.status(401).json({ error: "user doesnt have read permissions for folder" });
-  }
-
   const data = singletonMetadataModel.getAllFolderNodes(folderId);
   filteredByPermissions = data.filter(item => singletonMetadataModel.isAbaleTo(loggedInUsername, item.id, "READ"));
-  const metadata = filteredByPermissions.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
+  let metadata = filteredByPermissions.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
+  if(filter !== undefined)
+    metadata = metadata.filter(filter(req));//apply additional filter
   res.status(200).json(metadata);
 }
 
@@ -91,5 +92,23 @@ function createFileController(req, res) {
     return res.status(400).json({ error: err.message });
   }
 }
+function All(_req) {
+  return () => true;
+}
+function starFilter(_req) {
+  return item => item.isStarred === true || item.isStarred === "true";
+}
 
-module.exports = { getFileController, createFileController,getFolderFileController };
+function myDriveFilter(req) {
+  return item => item.uid === req.user.username;
+}
+function sharedWithMeFilter(req) {
+  return item => item.uid !== req.user.username && item.isShared === true;
+}
+function recentFilter(req) {
+  return item => singletonUsersModel.isFileAccessedByUser(req.user.username, item.id) || singletonMetadataModel.getFileNode(item.id).uid === req.user.username; 
+}//if the user is the owner and just created it, it might not be in the accessed list yet
+function trashFilter(_req) {
+  return item => item.isInTrash === true;
+}
+module.exports = { getFileController, createFileController,getFolderFileController, starFilter, myDriveFilter, sharedWithMeFilter, recentFilter, trashFilter,All };
