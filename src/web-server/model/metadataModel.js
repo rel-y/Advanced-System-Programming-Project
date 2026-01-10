@@ -49,6 +49,7 @@ class MetadataNode {
     this.childrenByParent = new Map()
     // root
     const root = new FileNode("/", NodeType.FOLDER, null, null);
+    root.userFilePermissions.set(null, PermissionType.READ_PERMISSIONS); // everyone is owner of root
     this.map.set(0, root); //root folder with id 0
     this.childrenByParent.set(0, new Set()); // root children set
   }

@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useNodes } from "./nodeListContext.jsx";
 import "./SidebarComponent.css";
+import fetchFromWebServer from "../../api.js";
 
 export default function Sidebar() {
   const { pathname } = useLocation();
-  const { id } = useParams();          
+  let { id } = useParams();          
   const { setNodes } = useNodes();     
 
   const [activeKey, setActiveKey] = useState("home"); 
@@ -21,11 +22,13 @@ export default function Sidebar() {
 
   async function filter(item) {
     setActiveKey(item.key);
-
+    if( id === undefined ) {
+        id = 0;
+    }
     const url = `/api/folders/${id}${item.suffix}`;
 
     try {
-      const res = await fetch(url, {
+      const res = await fetchFromWebServer(url, {
         method: "GET",
         headers: { Accept: "application/json" },
       });
@@ -33,6 +36,7 @@ export default function Sidebar() {
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
 
       const data = await res.json();
+      console.log("Filter fetch data:", data);
       setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
     } catch (err) {
       console.error("Filter fetch failed:", err);

@@ -30,6 +30,7 @@
   }
     .sidebar {
     background-color: #1e1e1e;
+    position: sticky;
   }
 
   .sidebar__item {
