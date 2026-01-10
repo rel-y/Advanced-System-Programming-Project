@@ -57,7 +57,7 @@ async function patchReqController(req, res) {
     }
 
     const loggedInUsername = req.user.username;
-    
+    let {name, data, starred} = req.body;
     if (starred !== undefined && starred !== null) {
         if (!singletonMetadataModel.isAbaleTo(loggedInUsername, inputId, "READ")) {
             res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -71,7 +71,7 @@ async function patchReqController(req, res) {
         return res.end(JSON.stringify({ error: 'user has no WRITE permissions for this file/folder' }));
     }
 
-    let {name, data, starred} = req.body;
+    
     if (!name && !data && !starred) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'Empty change requset' }));

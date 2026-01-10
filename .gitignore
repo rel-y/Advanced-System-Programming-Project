@@ -1,2 +1,3 @@
 .vscode
 src/web-server/.secret.js
+src/react-app/node_modules/

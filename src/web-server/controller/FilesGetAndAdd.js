@@ -106,7 +106,7 @@ function sharedWithMeFilter(req) {
 function recentFilter(req) {
   return item => singletonUsersModel.isFileAccessedByUser(req.user.username, item.id) || singletonMetadataModel.getFileNode(item.id).uid === req.user.username; 
 }//if the user is the owner and just created it, it might not be in the accessed list yet
-function trashFilter(req) {
+function trashFilter(_req) {
   return item => item.isInTrash === true;
 }
 module.exports = { getFileController, createFileController,getFolderFileController, starFilter, myDriveFilter, sharedWithMeFilter, recentFilter, trashFilter };

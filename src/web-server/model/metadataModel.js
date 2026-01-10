@@ -179,7 +179,7 @@ class MetadataNode {
       return;
     }
     const currect = user.filemap.get(fileId);
-    if(!currect){
+    if(currect){
       user.filemap.set(fileId, [new Date(),currect[1]]);//first time access
       return;
     }
@@ -228,11 +228,13 @@ class MetadataNode {
     if (!this.map.has(fileId)) {
       return false;
     }
-    defaultForFile = fileId.filePermissions;
-    fileContainsUser = fileId.userFilePermissions.has(userId);
+    const fileNode = this.map.get(fileId);
+    let defaultForFile = fileNode.filePermissions;
+    let fileContainsUser = fileNode.userFilePermissions.has(userId);
+    let userPermission = ""
 
     if (fileContainsUser) {
-      userPermission = fileId.userFilePermissions.get(userId);
+      userPermission = fileNode.userFilePermissions.get(userId);
     } else {
       userPermission = defaultForFile;
     }
@@ -272,6 +274,10 @@ class MetadataNode {
   setStarredStatus(fileId, isStarred,uid){
     if(!this.map.has(fileId)){
       return null;
+    }
+    if(!singletonUsersModel.map.get(uid).filemap.has(fileId)){
+      singletonUsersModel.map.get(uid).filemap.set(fileId,[this.map.get(fileId).createdAt, isStarred]);
+      return;
     }
     const time = singletonUsersModel.map.get(uid).filemap.get(fileId)[0];// [time, isStarred]
     singletonUsersModel.map.get(uid).filemap.set([time, isStarred])
