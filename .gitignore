@@ -1,2 +1,4 @@
 .vscode
 src/web-server/.secret.js
+*node_modules
+*package-lock.json

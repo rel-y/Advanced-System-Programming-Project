@@ -1,5 +1,7 @@
 const express = require('express');
 var app = express();
+const cors = require('cors');
+app.use(cors());
 //setting the urlencoder so the app can prase json 
 app.use(express.json({limit: '10mb'})); //allowing the incoming data to be up to 10mb to support large data as images
 const {isLoggedIn} = require("./authentication/JWT")
