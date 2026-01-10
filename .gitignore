@@ -1,3 +1,5 @@
 .vscode
 src/web-server/.secret.js
 src/react-app/node_modules/
+*node_modules
+*package-lock.json
