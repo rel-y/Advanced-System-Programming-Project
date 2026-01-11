@@ -1,0 +1,95 @@
+/* Page */
+.file-page {
+  min-height: 100vh;
+  padding-top: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #ffffff; /* page background */
+  box-sizing: border-box;
+}
+
+/* Card */
+.file-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+/* Card body */
+.file-card-body {
+  padding: 1.5rem 2rem;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #2c3e50;
+}
+
+/* Title */
+.file-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+/* File content */
+.file-content {
+  background-color: #f0f2f5;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #2d3436;
+  max-height: 60vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 1rem; /* space for floating buttons if needed */
+}
+
+/* Floating buttons wrapper */
+.floating-btns {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+/* Base floating button */
+.floating-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+/* Primary floating button */
+.primary-btn {
+  background-color: #2c3e50;
+  color: #ffffff;
+}
+
+.primary-btn:hover {
+  background-color: #1f2d3a;
+}
+
+.primary-btn:active {
+  transform: translateY(1px);
+}
+
+/* Secondary floating button */
+.secondary-btn {
+  background-color: #ffffff;
+  color: #2c3e50;
+  border: 1px solid #2c3e50;
+}
+
+.secondary-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.secondary-btn:active {
+  transform: translateY(1px);
+}
