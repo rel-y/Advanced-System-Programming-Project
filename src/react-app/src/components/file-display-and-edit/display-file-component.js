@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './display-file-component.css';
 import fetchFromWebServer from '../../api';
 
@@ -9,6 +9,7 @@ function DisplayFileComponent() {
   
 
   const { id: paramId } = useParams();
+  const navigate = useNavigate();
 
   // using useEffect to not make an infinite loop
   useEffect(() => {
@@ -56,12 +57,14 @@ function DisplayFileComponent() {
       {/* Floating buttons */}
       <div className="floating-btns d-flex gap-2">
         {userPerms >= 3 && (// only displays this if user can edit file, 3 is file editor
-            <button className="floating-btn primary-btn">
+            <button className="floating-btn primary-btn"
+                    onClick={() => navigate(`/api/files/${paramId}/edit`)}>
                 Edit file
             </button>
         )}
         {userPerms >= 4 && (
-            <button className="floating-btn secondary-btn">
+            <button className="floating-btn secondary-btn"
+                    onClick={() => navigate(`/api/files/${paramId}/editpermissions`)}>
                 Edit permissions
             </button>)}
       </div>
