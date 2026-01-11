@@ -2,8 +2,11 @@ import "./SearchComponent.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import fetchFromWebServer from "../../api";
+import {useNodes} from "../nodeListContext.jsx";
 export default function SearchBar() {
+  //hooks and what not
   const navigate = useNavigate();
+  const ctx = useNodes();
   //#region --- helpers ---
 const getSearchResults = useCallback(async (query) => {
   const url = `/api/search/${encodeURIComponent(query)}`;
@@ -24,7 +27,14 @@ const getSearchResults = useCallback(async (query) => {
     return [];
   }
 }, []);
-
+  async function runSearch() {
+    const query = q.trim();
+    if (!query) return;
+    setQ("");
+    setOpen(false);
+    const results = await getSearchResults(query);
+    ctx.setNodes(results);
+  }
 function onPick(item) {
   if (item?.type?.toLowerCase().includes("folder")) {
     navigate(`/folder/${item.id}`);
@@ -84,6 +94,10 @@ function formatWhen(v) {
     else if (e.key === "Escape") {
       setOpen(false);
     }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      runSearch(); // equivalent to clicking the search button
+    }
   }
   /**
    * Debounced search on query change
@@ -128,7 +142,14 @@ function formatWhen(v) {
     <div className="sb-wrap" ref={wrapRef}>
       {/* Search bar */}
       <div className="sb-bar">
-        <span className="sb-icon">🔍</span>
+        <button
+          className="sb-icon-btn"
+          onMouseDown={(e) => e.preventDefault()}   // keep input focused
+          onClick={runSearch}
+          aria-label="Search"
+        >
+          🔍
+        </button>
 
         <input
           className="sb-input"
