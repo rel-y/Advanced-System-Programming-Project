@@ -8,6 +8,8 @@ import Sidebar from './components/sideBar/SidebarComponent';
 import { NodesProvider } from './components/sideBar/nodeListContext';
 import LoginInComponent from './components/login and singup/signing-in-component';
 import SigningUpComponent from './components/login and singup/signing-up-component';
+import DisplayFileComponent from './components/file-display-and-edit/display-file-component';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,6 +23,8 @@ root.render(
             <Route path="/" element={<div>Home</div>} />
             <Route path="/api/users/login" element={<LoginInComponent />} />
             <Route path="/api/users/signup" element={<SigningUpComponent />} />
+            <Route path="/api/files/:id" element={<DisplayFileComponent />} />
+
           </Routes>
         </div>
       </div>
