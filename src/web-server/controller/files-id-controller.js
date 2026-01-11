@@ -37,7 +37,7 @@ async function getReqController(req, res) {
         }
         output = output.slice(output.indexOf("\n\n") + 2);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        const retjson = { id: inputId, ...fileNode, content: output };
+        const retjson = { id: inputId, ...fileNode, content: output, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
         
         delete retjson.filePermissions; // dont show permissions
         delete retjson.userFilePermissions;
