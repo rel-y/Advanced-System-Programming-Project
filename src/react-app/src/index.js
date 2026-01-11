@@ -5,9 +5,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from './components/sideBar/SidebarComponent';
-import { NodesProvider } from './components/sideBar/nodeListContext';
+import { NodesProvider } from './components/nodeListContext';
 import LoginInComponent from './components/login and singup/signing-in-component';
 import SigningUpComponent from './components/login and singup/signing-up-component';
+import SearchBar from './components/Search/SearchComponent';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,7 +16,7 @@ root.render(
     <NodesProvider>
       <div style={{ display: "flex", minHeight: "100vh" }}>
         <Sidebar />
-
+        <SearchBar />
         <div style={{ flex: 1, padding: "24px" }}>
           <Routes>
             <Route path="/" element={<div>Home</div>} />
