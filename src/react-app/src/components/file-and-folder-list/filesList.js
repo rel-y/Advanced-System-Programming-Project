@@ -58,24 +58,6 @@ function FileList() {
 
         fetchFileData();
     }, [currentFolder]);
-    const getFileParentName = async (fileId) => {
-        try {
-            const response = await fetchFromWebServer(`http://localhost:8080/api/files/${fileId}`, {
-                headers: { 'Content-Type': 'application/json' },
-                method: 'GET'
-            });
-
-            if (response.ok) {
-                const fileData = await response.json();
-                return(fileData.name);
-            } else {
-                console.error('Failed to fetch folder data');
-            }
-        } catch {
-            console.error('network error')
-        }
-        return "couldn't load parent";
-    };
 
     return (
         <div>

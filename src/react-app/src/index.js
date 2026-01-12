@@ -10,7 +10,6 @@ import SigningUpComponent from './components/login and singup/signing-up-compone
 import DisplayFileComponent from './components/file-display-and-edit/display-file-component';
 import EditFileComponent from './components/file-display-and-edit/edit-file-component';
 import EditPermissionsComponent from './components/file-display-and-edit/edit-permissions-component';
-import FileList from './components/file and folder list/filesList';
 import NotFound from './components/NotFound/NotFound';
 import MainPage from './components/mainPage/mainPageComponent';
 
@@ -21,7 +20,6 @@ root.render(
           <div>
             <Routes>
               <Route path="/" element={<MainPage/>} />
-               <Route path="/files" element={<FileList />} />
               <Route path="/api/users/login" element={<LoginInComponent />} />
               <Route path="/api/users/signup" element={<SigningUpComponent />} />
               <Route path="/api/files/:id" element={<DisplayFileComponent />} />

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import {useParams, useNavigate } from "react-router-dom";
 import { useNodes } from "../nodeListContext.jsx";
 import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
 
 export default function Sidebar() {
-  const { pathname } = useLocation();
   let { id } = useParams();          
   const { nodes, setNodes, currentFolder, setCurrentFolder } = useNodes();
 
@@ -44,7 +43,7 @@ export default function Sidebar() {
       console.log("Filter fetch data:", data);
       setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
       setCurrentFolder(0);
-      navigate('/files')
+      navigate('/')
     } catch (err) {
       console.error("Filter fetch failed:", err);
     }
