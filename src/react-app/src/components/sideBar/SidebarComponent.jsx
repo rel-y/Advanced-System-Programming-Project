@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { useNodes } from "../nodeListContext.jsx";
 import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
@@ -8,6 +8,8 @@ export default function Sidebar() {
   const { pathname } = useLocation();
   let { id } = useParams();          
   const { setNodes } = useNodes();     
+
+  const navigate = useNavigate();
 
   const [activeKey, setActiveKey] = useState("home"); 
 
@@ -43,12 +45,42 @@ export default function Sidebar() {
     }
   }
 
+  async function createFile() {
+    try {
+      const resCreate = await fetchFromWebServer(url, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: {
+          name: "default",
+          type: "FILE",
+          content: "default"
+        }
+
+      });
+
+      if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
+
+      const data = await resCreate.json();
+      console.log("Filter fetch data:", data);
+      
+      const newId = data.id;
+      navigate(`/api/files/${newId}`);
+
+    } catch (err) {
+      console.error("Filter fetch failed:", err);
+    }
+  }
+
   return (
     <aside className="sidebar">
 
-      <Link to="/files" className="sidebar__newLink">
+      <button
+        type="button"
+        className="sidebar__newButton"
+        onClick={createFile}
+      >
         + New
-      </Link>
+      </button>
 
       <nav>
         {items.map((it) => (
