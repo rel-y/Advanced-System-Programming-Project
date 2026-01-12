@@ -17,3 +17,13 @@ body {
   margin: 0;
   background: var(--app-bg);
 }
+:root {
+  --content-bg: #ffffff;
+}
+
+html.dark {
+  --content-bg: #000000;
+}
+html.dark .hello{
+  background: black;
+}

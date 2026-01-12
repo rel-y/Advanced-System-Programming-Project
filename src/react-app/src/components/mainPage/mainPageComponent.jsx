@@ -14,17 +14,19 @@ export default function MainPage(){
     }, [navigate]);
 
     return(
-        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-  <TopBar />
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <div style={{zIndex: 1}}>
+          <TopBar />
+    </div>
 
   <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
     <Sidebar />
 
-    <div
+    <div className="hello"
       style={{
         flex: 1,
-        overflowY: "auto",
         minHeight: 0,
+        
       }}
     >
       <FileList />

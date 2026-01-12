@@ -20,6 +20,12 @@
 }
 
 /* dark mode */
-html.dark {
+html.dark .hello{
   --text-color: #e6e6e6;
+  background: black;
+}
+:root.dark{
+    background-color: rgb(0, 0, 0, 0.8);
+    border-color: grey;
+    color: white;
 }
