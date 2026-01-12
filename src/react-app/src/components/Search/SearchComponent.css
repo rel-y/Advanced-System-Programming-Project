@@ -1,21 +1,76 @@
+/* ================================
+   Defaults (Light mode)
+================================ */
+
+:root {
+  --sb-wrap-font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  --sb-bar-bg: #f1f3f4;
+  --sb-bar-text: #111111;
+  --sb-icon: #5f6368;
+  --sb-placeholder: #5f6368;
+
+  --sb-clear-hover-bg: rgba(0, 0, 0, 0.06);
+  --sb-clear-hover-text: #111111;
+
+  --sb-dropdown-bg: #ffffff;
+  --sb-dropdown-border: rgba(0, 0, 0, 0.08);
+  --sb-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+  --sb-item-hover: rgba(0, 0, 0, 0.06);
+
+  --sb-title: #111111;
+  --sb-sub: #5f6368;
+  --sb-meta: #5f6368;
+}
+
+/* ================================
+   Dark mode (when <html class="dark">)
+================================ */
+
+:root.dark {
+  --sb-bar-bg: #2b2c2f;
+  --sb-bar-text: #e8eaed;
+  --sb-icon: #9aa0a6;
+  --sb-placeholder: #9aa0a6;
+
+  --sb-clear-hover-bg: rgba(255, 255, 255, 0.06);
+  --sb-clear-hover-text: #e8eaed;
+
+  --sb-dropdown-bg: #202124;
+  --sb-dropdown-border: rgba(255, 255, 255, 0.06);
+  --sb-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+  --sb-item-hover: rgba(255, 255, 255, 0.06);
+
+  --sb-title: #e8eaed;
+  --sb-sub: #9aa0a6;
+  --sb-meta: #9aa0a6;
+}
+
+/* ================================
+   Component styles
+================================ */
+
 .sb-wrap {
   width: 680px;
   position: relative;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: var(--sb-wrap-font);
 }
 
 .sb-bar {
   display: flex;
   align-items: center;
   height: 44px;
-  background: #2b2c2f;
+  background: var(--sb-bar-bg);
   border-radius: 22px;
   padding: 0 14px;
   box-sizing: border-box;
+  color: var(--sb-bar-text);
 }
 
 .sb-icon {
-  color: #9aa0a6;
+  color: var(--sb-icon);
   font-size: 16px;
   margin-right: 10px;
 }
@@ -25,18 +80,18 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #e8eaed;
+  color: var(--sb-bar-text);
   font-size: 15px;
 }
 
 .sb-input::placeholder {
-  color: #9aa0a6;
+  color: var(--sb-placeholder);
 }
 
 .sb-clear {
   background: none;
   border: none;
-  color: #9aa0a6;
+  color: var(--sb-icon);
   cursor: pointer;
   font-size: 16px;
   line-height: 1;
@@ -45,8 +100,8 @@
 }
 
 .sb-clear:hover {
-  color: #e8eaed;
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--sb-clear-hover-text);
+  background: var(--sb-clear-hover-bg);
 }
 
 .sb-dropdown {
@@ -54,11 +109,11 @@
   top: 52px;
   left: 0;
   right: 0;
-  background: #202124;
+  background: var(--sb-dropdown-bg);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: var(--sb-shadow);
+  border: 1px solid var(--sb-dropdown-border);
 }
 
 .sb-row {
@@ -67,10 +122,9 @@
 }
 
 .sb-muted {
-  color: #9aa0a6;
+  color: var(--sb-meta);
   font-size: 14px;
 }
-
 
 .sb-item {
   width: 100%;
@@ -85,7 +139,7 @@
 
 .sb-item:hover,
 .sb-item.is-active {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--sb-item-hover);
 }
 
 .sb-left {
@@ -94,7 +148,7 @@
 }
 
 .sb-title {
-  color: #e8eaed;
+  color: var(--sb-title);
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
@@ -103,7 +157,7 @@
 
 .sb-sub {
   margin-top: 3px;
-  color: #9aa0a6;
+  color: var(--sb-sub);
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
@@ -119,7 +173,7 @@
 }
 
 .sb-meta {
-  color: #9aa0a6;
+  color: var(--sb-meta);
   font-size: 12px;
 }
 

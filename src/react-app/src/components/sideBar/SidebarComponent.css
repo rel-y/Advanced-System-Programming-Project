@@ -1,5 +1,8 @@
+/* ================================
+   Light mode (default)
+================================ */
+
 :root {
-  /* Light mode defaults */
   --sb-bg: #ffffff;
   --sb-text: #1f1f1f;
   --sb-muted: #5f6368;
@@ -14,49 +17,56 @@
   --sb-radius: 999px;
 }
 
-/* Dark mode overrides */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --sb-bg: #1f1f1f;
-    --sb-text: #e8eaed;
-    --sb-muted: #bdc1c6;
-    
-    --sb-hover: #2a2b2e;
-    --sb-active: #0b57d0;
-    --sb-activeText: #ffffff;
+/* ================================
+   Dark mode (html.dark)
+================================ */
 
-    --sb-newBg: #303134;
-    --sb-newHover: #3c4043;
-  }
-    .sidebar {
-    background-color: #1e1e1e;
-    position: sticky;
-  }
+:root.dark {
+  --sb-bg: #1f1f1f;
+  --sb-text: #e8eaed;
+  --sb-muted: #bdc1c6;
 
-  .sidebar__item {
-    background-color: #2b2b2b;   /* gray buttons */
-    color: #e0e0e0;              /* readable text */
-    border: none;
-  }
+  --sb-hover: #2a2b2e;
+  --sb-active: #0b57d0;
+  --sb-activeText: #ffffff;
 
-  .sidebar__item:hover {
-    background-color: #3a3a3a;
-  }
-
-  .sidebar__item.active {
-    background-color: #0d6efd;   /* keep active blue */
-    color: #ffffff;
-  }
-
-  .sidebar__newLink {
-    background-color: #2b2b2b;
-    color: #e0e0e0;
-  }
-
-  .sidebar__newLink:hover {
-    background-color: #3a3a3a;
-  }
+  --sb-newBg: #303134;
+  --sb-newHover: #3c4043;
 }
+
+/* extra component tweaks in dark mode */
+:root.dark .sidebar {
+  background-color: #1e1e1e;
+  position: sticky;
+}
+
+:root.dark .sidebar__item {
+  background-color: #2b2b2b;
+  color: #e0e0e0;
+  border: none;
+}
+
+:root.dark .sidebar__item:hover {
+  background-color: #3a3a3a;
+}
+
+:root.dark .sidebar__item.active {
+  background-color: #0d6efd;
+  color: #ffffff;
+}
+
+:root.dark .sidebar__newLink {
+  background-color: #2b2b2b;
+  color: #e0e0e0;
+}
+
+:root.dark .sidebar__newLink:hover {
+  background-color: #3a3a3a;
+}
+
+/* ================================
+   Sidebar base styles
+================================ */
 
 .sidebar {
   width: 260px;
@@ -67,6 +77,8 @@
   flex-direction: column;
   padding: 12px;
   font-family: system-ui, sans-serif;
+  border-right: 3px solid rgba(0, 0, 0, 1);
+  border-bottom: 3px solid rgba(0, 0, 0, 1);
 }
 
 .sidebar__header {
@@ -76,7 +88,7 @@
   color: var(--sb-text);
 }
 
-/* "New" is a Link */
+/* "New" link */
 .sidebar__newLink {
   display: inline-flex;
   align-items: center;
