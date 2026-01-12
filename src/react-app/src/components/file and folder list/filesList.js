@@ -35,7 +35,7 @@ function FileList() {
     useEffect(() => {
         // Fetch file data
         const fetchFileData = async () => {
-            if(currentFolder === 0){
+            if (currentFolder === 0) {
                 setFolderName("MyDrive");
                 return;
             }
@@ -51,14 +51,32 @@ function FileList() {
                 } else {
                     console.error('Failed to fetch folder data');
                 }
-            }catch{
+            } catch {
                 console.error('network error')
             }
         };
 
         fetchFileData();
     }, [currentFolder]);
-    
+    const getFileParentName = async (fileId) => {
+        try {
+            const response = await fetchFromWebServer(`http://localhost:8080/api/files/${fileId}`, {
+                headers: { 'Content-Type': 'application/json' },
+                method: 'GET'
+            });
+
+            if (response.ok) {
+                const fileData = await response.json();
+                return(fileData.name);
+            } else {
+                console.error('Failed to fetch folder data');
+            }
+        } catch {
+            console.error('network error')
+        }
+        return "couldn't load parent";
+    };
+
     return (
         <div>
             <p>
@@ -74,7 +92,7 @@ function FileList() {
                     owner={file.uid}
                     size={file.size}
                     date={file.lastAccess}
-                    location={file.parent}
+                    location={file.parentName}
                     funcOnClick={() => handleClick(file.id)}
                 />
                 )
