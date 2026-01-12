@@ -4,7 +4,7 @@ export default async function CheckLogin(){
         return false;
     }
     const res = await fetch("/api/users/isLoggedIn", {
-        method: "POST",
+        method: "GET",
         headers: { 
             Accept: "application/json",
             authorization: token ? `Bearer ${token}` : undefined

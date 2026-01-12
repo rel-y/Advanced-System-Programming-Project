@@ -1,7 +1,6 @@
 const {singletonUsersModel} = require("../model/usersModel")
 const jwt = require("jsonwebtoken")
 const {key} = require("../.secret");
-const { checkout } = require("../routes/usersRouter");
 function isLoggedIn(req, res, next) {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(" ")[1];
@@ -34,19 +33,19 @@ function CheckToken(req, res) {//returns true if the token is valid else returns
             const data = jwt.verify(token, key);
             const version = singletonUsersModel.getUsertokenVersion(data.username);
             if(version === null || version === undefined){
-                return res.status(401).send("false");
+                return res.status(200).send("false");
             }
             if(data.tokenVersion !== version){
-                return res.status(401).send("false");
+                return res.status(200).send("false");
             }else{
                 return res.status(200).send("true");
             }
         } catch (err) {
-            return res.status(401).send("false");
+            return res.status(200).send("false");
         }
     }
     else
-        return res.status(403).send('false');
+        return res.status(200).send('false');
 }
 
 module.exports = {
