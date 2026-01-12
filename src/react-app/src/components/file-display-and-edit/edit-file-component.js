@@ -116,7 +116,7 @@ function EditFileComponent() {
       {showSuccess && (
         <div className="success-popup-backdrop">
           <div className="success-popup">
-            <h5>✅ File saved successfully</h5>
+            <h5>File saved successfully</h5>
             <button
               className="btn btn-primary mt-3"
               onClick={() => {

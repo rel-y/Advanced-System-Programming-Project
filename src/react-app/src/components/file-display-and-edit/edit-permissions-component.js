@@ -155,7 +155,7 @@ function EditPermissionsComponent() {
       {showSuccess && (
         <div className="success-popup-backdrop">
           <div className="success-popup">
-            <h5>✅ Permissions updated successfully</h5>
+            <h5>Permissions updated successfully</h5>
             <button
               className="btn btn-primary mt-3"
               onClick={() => {
