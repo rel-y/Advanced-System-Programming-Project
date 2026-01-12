@@ -8,21 +8,25 @@ import Sidebar from './components/sideBar/SidebarComponent';
 import { NodesProvider } from './components/nodeListContext';
 import LoginInComponent from './components/login and singup/signing-in-component';
 import SigningUpComponent from './components/login and singup/signing-up-component';
-import SearchBar from './components/Search/SearchComponent';
+import TopBar from './components/TopBar/TopBarComponent';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <NodesProvider>
-      <div style={{ display: "flex", minHeight: "100vh" }}>
-        <Sidebar />
-        <SearchBar />
-        <div style={{ flex: 1, padding: "24px" }}>
-          <Routes>
-            <Route path="/" element={<div>Home</div>} />
-            <Route path="/api/users/login" element={<LoginInComponent />} />
-            <Route path="/api/users/signup" element={<SigningUpComponent />} />
-          </Routes>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <TopBar />
+
+        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+          <Sidebar />
+
+          <div style={{ flex: 1, padding: "24px", overflow: "auto" }}>
+            <Routes>
+              <Route path="/" element={<div>Home</div>} />
+              <Route path="/api/users/login" element={<LoginInComponent />} />
+              <Route path="/api/users/signup" element={<SigningUpComponent />} />
+            </Routes>
+          </div>
         </div>
       </div>
     </NodesProvider>

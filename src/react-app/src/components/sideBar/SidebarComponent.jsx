@@ -45,7 +45,6 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar__header">Drive</div>
 
       <Link to="/files" className="sidebar__newLink">
         + New

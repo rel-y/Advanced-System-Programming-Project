@@ -1,0 +1,113 @@
+/* ================================
+   Top bar layout
+================================ */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 1%;
+  box-sizing: border-box;
+  background: var(--topbar-bg, #ffffff);
+  color: var(--topbar-text, #111);
+
+  border-bottom: 3px solid rgba(0, 0, 0, 1);
+  border-right: 3px solid rgba(0, 0, 0, 1);
+}
+
+/* left spacer */
+.topbar__left {
+  width: 15%;
+  display: flex;
+  align-items: center;
+}
+.topbar__title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: inherit;
+}
+/* center (search bar) */
+.topbar__center {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+}
+
+.topbar__center > * {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* right controls */
+.topbar__right {
+  width: 25%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10%;
+}
+
+/* ================================
+   Theme toggle button
+================================ */
+
+.topbar__toggle {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* ================================
+   Profile picture button
+================================ */
+
+.topbar__profileBtn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topbar__profileBtn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+/* ================================
+   Dark mode
+================================ */
+
+:root.dark {
+  --topbar-bg: #1f1f1f;
+  --topbar-text: #eaeaea;
+}
+
+:root.dark .topbar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+:root.dark .topbar__toggle {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* subtle outline for profile image in dark mode */
+:root.dark .topbar__profileBtn {
+  outline: 1px solid rgba(255, 255, 255, 0.18);
+  outline-offset: 0;
+}
