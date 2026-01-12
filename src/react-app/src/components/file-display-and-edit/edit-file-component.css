@@ -129,3 +129,77 @@
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
+
+/* ================================
+   Dark mode
+================================ */
+
+:root.dark .file-page {
+  background-color: #121212;
+}
+
+:root.dark .file-card {
+  background-color: #1e1e1e;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+:root.dark .file-card-body {
+  color: #e0e0e0;
+}
+
+/* edit mode inputs */
+
+:root.dark .file-name-input {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border-color: #444;
+}
+
+:root.dark .file-name-input:focus {
+  border-color: #6fa8ff;
+  box-shadow: 0 0 0 0.15rem rgba(111, 168, 255, 0.25);
+}
+
+:root.dark .file-content-input {
+  background-color: #262626;
+  color: #dddddd;
+  border-color: #444;
+}
+
+:root.dark .file-content-input:focus {
+  background-color: #2a2a2a;
+  border-color: #6fa8ff;
+  box-shadow: 0 0 0 0.15rem rgba(111, 168, 255, 0.25);
+}
+
+/* floating buttons */
+
+:root.dark .primary-btn {
+  background-color: #3a6df0;
+}
+
+:root.dark .primary-btn:hover {
+  background-color: #2f5ad6;
+}
+
+:root.dark .secondary-btn {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #888;
+}
+
+:root.dark .secondary-btn:hover {
+  background-color: #2a2a2a;
+}
+
+/* success popup */
+
+:root.dark .success-popup {
+  background: #1e1e1e;
+  color: #eaeaea;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+:root.dark .success-popup-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}

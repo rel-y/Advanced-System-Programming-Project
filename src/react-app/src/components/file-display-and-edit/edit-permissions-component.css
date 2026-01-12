@@ -63,3 +63,47 @@
   text-align: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
+/* ================================
+   Dark mode
+================================ */
+
+:root.dark .file-page {
+  background-color: #121212;
+}
+
+:root.dark .file-card {
+  background: #1e1e1e;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+:root.dark .file-card-body {
+  color: #e0e0e0;
+}
+
+/* Floating buttons */
+
+:root.dark .primary-btn {
+  background-color: #3a6df0;
+  color: #ffffff;
+}
+
+:root.dark .primary-btn:disabled {
+  background-color: #2a3f75;
+}
+
+:root.dark .secondary-btn {
+  background-color: #495057;
+  color: #ffffff;
+}
+
+/* Success popup */
+
+:root.dark .success-popup-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+:root.dark .success-popup {
+  background: #1e1e1e;
+  color: #eaeaea;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
