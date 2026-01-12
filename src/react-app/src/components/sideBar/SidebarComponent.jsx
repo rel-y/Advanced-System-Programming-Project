@@ -13,6 +13,9 @@ export default function Sidebar() {
 
   const [activeKey, setActiveKey] = useState("home"); 
 
+  const [showFolderInput, setShowFolderInput] = useState(false);
+  const [folderName, setFolderName] = useState("");
+
   const items = [
     { key: "home", label: "Home", suffix: "" },
     { key: "shared", label: "Shared with me", suffix: "/shared" },
@@ -72,6 +75,41 @@ export default function Sidebar() {
     }
   }
 
+  async function createFolder() {
+    setShowFolderInput(true); // show input field
+  }
+
+  async function handleFolderSubmit(e) {
+    e.preventDefault();
+    console.log("New folder name:", folderName); 
+
+    try {
+      const resCreate = await fetchFromWebServer(`http://localhost:8080/api/files/`, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: folderName,
+          type: "FOLDER"
+        })
+
+      });
+
+      if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
+
+      const data = await resCreate.json();
+      console.log("Filter fetch data:", data);
+      
+      const newId = data[0].id; // i dont even know why this is an array
+      console.log(newId);
+
+    } catch (err) {
+      console.error("Filter fetch failed:", err);
+    }
+
+    setFolderName("");
+    setShowFolderInput(false);
+  }
+
   return (
     <aside className="sidebar">
 
@@ -80,8 +118,29 @@ export default function Sidebar() {
         className="sidebar__newButton"
         onClick={createFile}
       >
-        + New
+        + New File
       </button>
+
+      <button
+        type="button"
+        className="sidebar__newButton"
+        onClick={createFolder}
+      >
+        + New Folder
+      </button>
+
+      {showFolderInput && (
+        <form onSubmit={handleFolderSubmit} style={{ marginTop: "8px" }}>
+          <input
+            type="text"
+            value={folderName}
+            onChange={(e) => setFolderName(e.target.value)}
+            placeholder="Folder name"
+            style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
+            autoFocus
+          />
+        </form>
+      )}
 
       <nav>
         {items.map((it) => (
