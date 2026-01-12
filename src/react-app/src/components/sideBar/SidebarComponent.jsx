@@ -47,7 +47,7 @@ export default function Sidebar() {
 
   async function createFile() {
     try {
-      const resCreate = await fetchFromWebServer(url, {
+      const resCreate = await fetchFromWebServer(`http://localhost:8080/api/files/`, {
         method: "POST",
         headers: { Accept: "application/json" },
         body: {
