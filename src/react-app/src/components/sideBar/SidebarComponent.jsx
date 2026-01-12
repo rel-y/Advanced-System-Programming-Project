@@ -49,21 +49,22 @@ export default function Sidebar() {
     try {
       const resCreate = await fetchFromWebServer(`http://localhost:8080/api/files/`, {
         method: "POST",
-        headers: { Accept: "application/json" },
-        body: {
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
           name: "default",
           type: "FILE",
           content: "default"
-        }
+        })
 
       });
 
-      if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
+      //if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
 
       const data = await resCreate.json();
       console.log("Filter fetch data:", data);
       
-      const newId = data.id;
+      const newId = data[0].id; // i dont even know why this is an array
+      console.log(newId);
       navigate(`/api/files/${newId}`);
 
     } catch (err) {
