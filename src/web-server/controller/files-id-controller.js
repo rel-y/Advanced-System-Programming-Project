@@ -63,6 +63,7 @@ async function patchReqController(req, res) {
             res.writeHead(401, { 'Content-Type': 'application/json' });
             return res.end(JSON.stringify({ error: 'user has no READ permissions for this file/folder' }));
         }
+        console.log(starred);
         singletonMetadataModel.setStarredStatus(inputId, starred,loggedInUsername);
     }
 
@@ -90,7 +91,7 @@ async function patchReqController(req, res) {
     if (data && fileNode.type === NodeType.FILE) {
         let output = await fileModel.patchFile(inputId, data);
         const code = parseInt(output.slice(0, 3), 10);
-        singletonMetadataModel.setSize(inputId,length(data));
+        singletonMetadataModel.setSize(inputId,data.length);
         res.writeHead(code, { 'Content-Type': 'application/json' });
     } else { // only name changes
         res.writeHead(204);
