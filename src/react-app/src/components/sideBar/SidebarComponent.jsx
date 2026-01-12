@@ -51,21 +51,21 @@ export default function Sidebar() {
         method: "POST",
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "default",
+          name: "Name...",
           type: "FILE",
-          content: "default"
+          content: "content..."
         })
 
       });
 
-      //if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
+      if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
 
       const data = await resCreate.json();
       console.log("Filter fetch data:", data);
       
       const newId = data[0].id; // i dont even know why this is an array
       console.log(newId);
-      navigate(`/api/files/${newId}`);
+      navigate(`/api/files/${newId}/edit`);
 
     } catch (err) {
       console.error("Filter fetch failed:", err);
