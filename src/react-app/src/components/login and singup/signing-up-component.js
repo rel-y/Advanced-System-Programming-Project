@@ -64,7 +64,9 @@ function SigningUpComponent() {
     setNicknameError(null);
     setPhotoError(null);
   }
-
+  function moveToLogin() {
+    navigator('/api/users/login');
+  }
   return (
     <div className="bg-secondary-subtle vh-100 d-flex justify-content-center align-items-center">
       <div className="bg-white border p-4 rounded-5 box-sizes">
@@ -74,6 +76,10 @@ function SigningUpComponent() {
           </p>
           <p className="text-start fs-4">
             create a new account
+          </p>
+          <p className="text-start">
+            already have an acount:
+            <button onClick={moveToLogin} className="ms-2 btn btn-primary rounded-pill align-self-left">signup</button>
           </p>
         </div>
         <form className="form-style ms-auto" onSubmit={e => {
