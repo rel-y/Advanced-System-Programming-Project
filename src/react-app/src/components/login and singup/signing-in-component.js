@@ -26,7 +26,7 @@ function LoginInComponent() {
   }
   const onSubmit = (e) => {
     e.preventDefault();
-    const data = {username: username, password: password};
+    const data = { username: username, password: password };
 
     fetch('http://localhost:8080/api/tokens', {
       body: JSON.stringify(data),
@@ -49,7 +49,9 @@ function LoginInComponent() {
         }
       });
   }
-
+  function moveToSignup() {
+    navigator('/api/users/signup');
+  }
   return (
     <div className="bg-secondary-subtle vh-100 d-flex justify-content-center align-items-center">
       <div className="bg-white border p-4 rounded-5 box-sizes">
@@ -59,6 +61,10 @@ function LoginInComponent() {
           </p>
           <p className="text-start fs-4">
             login into your account
+          </p>
+          <p className="text-start">
+            don't have an acount: 
+            <button onClick={moveToSignup} className="ms-2 btn btn-primary rounded-pill align-self-left">signup</button>
           </p>
         </div>
         <form className="form-style ms-auto" onSubmit={e => {
