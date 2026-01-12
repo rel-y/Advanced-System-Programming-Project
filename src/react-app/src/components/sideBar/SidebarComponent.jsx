@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { useNodes } from "./nodeListContext.jsx";
+import { useNodes } from "../nodeListContext.jsx";
 import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
 
@@ -45,7 +45,6 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar__header">Drive</div>
 
       <Link to="/files" className="sidebar__newLink">
         + New

@@ -34,14 +34,8 @@ async function getSearchFileController(req, res) {
 
     const loggedInUsername = req.user.username;
     const filteredByPermissions = combinedIds.filter(id => singletonMetadataModel.isAbaleTo(loggedInUsername, id, "READ"));
-
-    let results = [];
-    for (let i = 0; i < filteredByPermissions.length; i++) {
-        results.push(singletonMetadataModel.getAllMetadata(filteredByPermissions[i]));
-    }
-
-
-    return res.status(200).json(results);
+    const metadata = filteredByPermissions.map(id => {return singletonMetadataModel.getAllMetadata({id:id}, loggedInUsername); });
+    return res.status(200).json(metadata);
 }
 
 module.exports = {getSearchFileController};
