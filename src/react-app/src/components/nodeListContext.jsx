@@ -4,7 +4,7 @@ const NodesContext = createContext(null);
 
 export function NodesProvider({ children }) {
   const [nodes, setNodes] = useState([]);
-  const [currentFolder, setCurrentFolder] = useState(0); // new variable
+  const [currentFolder, setCurrentFolder] = useState(0); 
 
   const value = useMemo(
     () => ({ nodes, setNodes, currentFolder, setCurrentFolder }),

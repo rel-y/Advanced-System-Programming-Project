@@ -18,23 +18,37 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <NodesProvider>
-      {<div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      {/* <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
         <TopBar />
-        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-          <Sidebar />
 
-          <div style={{ flex: 1, padding: "24px", overflow: "auto" }}>
-            <Routes>
+        <div style={{ flex: 1, padding: "24px" }}>
+          <Routes>
             <Route path="/" element={<div>Home</div>} />
             <Route path="/api/users/login" element={<LoginInComponent />} />
             <Route path="/api/users/signup" element={<SigningUpComponent />} />
             <Route path="/api/files/:id" element={<DisplayFileComponent />} />
             <Route path="/api/files/:id/edit" element={<EditFileComponent />} />
             <Route path="/api/files/:id/permissions" element={<EditPermissionsComponent />} />
+            
+
+          </Routes>
+        </div>
+      </div>
+        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+          <Sidebar /> */}
+
+          <div style={{ flex: 1, padding: "24px", overflow: "auto" }}>
+            <Routes>
+              <Route path="/" element={<div>Home</div>} />
+              <Route path="/api/users/login" element={<LoginInComponent />} />
+              <Route path="/api/users/signup" element={<SigningUpComponent />} />
+              <Route path="/api/files/:id" element={<DisplayFileComponent />} />
+              <Route path="/api/files/:id/edit" element={<EditFileComponent />} />
+              <Route path="/api/files/:id/permissions" element={<EditPermissionsComponent />} />
             </Routes>
           </div>
-        </div>
-      </div>}
+        {/* </div>
+      </div> */}
     </NodesProvider>
   </BrowserRouter>
 );
