@@ -1,0 +1,109 @@
+
+.file-page {
+  padding-top: 40px;
+}
+
+/* Card styling */
+.file-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.file-card-body {
+  padding: 24px;
+}
+
+
+.floating-btns {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+}
+
+.floating-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.primary-btn:disabled {
+  background-color: #9ec5fe;
+  cursor: not-allowed;
+}
+
+.secondary-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Success popup */
+.success-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.success-popup {
+  background: white;
+  padding: 24px 32px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+/* ================================
+   Dark mode
+================================ */
+
+:root.dark .file-page {
+  background-color: #121212;
+}
+
+:root.dark .file-card {
+  background: #1e1e1e;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+:root.dark .file-card-body {
+  color: #e0e0e0;
+}
+
+/* Floating buttons */
+
+:root.dark .primary-btn {
+  background-color: #3a6df0;
+  color: #ffffff;
+}
+
+:root.dark .primary-btn:disabled {
+  background-color: #2a3f75;
+}
+
+:root.dark .secondary-btn {
+  background-color: #495057;
+  color: #ffffff;
+}
+
+/* Success popup */
+
+:root.dark .success-popup-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+:root.dark .success-popup {
+  background: #1e1e1e;
+  color: #eaeaea;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}

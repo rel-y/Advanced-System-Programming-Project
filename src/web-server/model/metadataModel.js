@@ -247,6 +247,29 @@ class MetadataNode {
      }
     return userPermission >= AbilityRequirement[ability];
   }
+  
+   getFilePermissionsForUser(userId, fileId){
+    if (!this.map.has(fileId)) {
+      return false;
+    }
+    const fileNode = this.map.get(fileId);
+    let defaultForFile = fileNode.filePermissions;
+    let fileContainsUser = fileNode.userFilePermissions.has(userId);
+    let userPermission = ""
+
+    if (fileContainsUser) {
+      userPermission = fileNode.userFilePermissions.get(userId);
+    } else {
+      userPermission = defaultForFile;
+    }
+    
+    if(!((typeof userPermission === "number" && Object.values(PermissionType).includes(userPermission)))){
+      //didn't get a number for the permission level or a currect key in for ability
+      return false;
+     }
+    return userPermission;
+  }
+
   getFilePermission(fileId){
     return {
       filePermissions: this.map.get(fileId).filePermissions,
