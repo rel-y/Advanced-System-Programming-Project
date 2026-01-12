@@ -64,7 +64,7 @@ function DisplayFileComponent() {
         )}
         {userPerms >= 4 && (
             <button className="floating-btn secondary-btn"
-                    onClick={() => navigate(`/api/files/${paramId}/editpermissions`)}>
+                    onClick={() => navigate(`/api/files/${paramId}/permissions`)}>
                 Edit permissions
             </button>)}
       </div>
