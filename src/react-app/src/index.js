@@ -11,7 +11,7 @@ import SigningUpComponent from './components/login and singup/signing-up-compone
 import DisplayFileComponent from './components/file-display-and-edit/display-file-component';
 import EditFileComponent from './components/file-display-and-edit/edit-file-component';
 import EditPermissionsComponent from './components/file-display-and-edit/edit-permissions-component';
-
+import NotFound from './components/NotFound/NotFound';
 import TopBar from './components/TopBar/TopBarComponent';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -45,6 +45,7 @@ root.render(
               <Route path="/api/files/:id" element={<DisplayFileComponent />} />
               <Route path="/api/files/:id/edit" element={<EditFileComponent />} />
               <Route path="/api/files/:id/permissions" element={<EditPermissionsComponent />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
         {/* </div>
