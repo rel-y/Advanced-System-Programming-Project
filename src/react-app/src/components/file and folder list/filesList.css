@@ -1,0 +1,25 @@
+/* container */
+.file-list {
+  background: var(--app-bg);
+  color: var(--text-color, #111);
+  min-height: 100%;
+  padding: 8px;
+}
+
+/* folder name header */
+.file-list__title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 8px 0 12px 0;
+  color: var(--text-color, #111);
+}
+
+/* default (light) */
+:root {
+  --text-color: #111;
+}
+
+/* dark mode */
+html.dark {
+  --text-color: #e6e6e6;
+}

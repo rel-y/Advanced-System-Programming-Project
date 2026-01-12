@@ -36,7 +36,7 @@ function FileList() {
         // Fetch file data
         const fetchFileData = async () => {
             if(currentFolder === 0){
-                setFolderName("MyDrive");
+                setFolderName("");
                 return;
             }
             try {

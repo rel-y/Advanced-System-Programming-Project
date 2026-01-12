@@ -21,7 +21,6 @@ root.render(
           <div>
             <Routes>
               <Route path="/" element={<MainPage/>} />
-               <Route path="/files" element={<FileList />} />
               <Route path="/api/users/login" element={<LoginInComponent />} />
               <Route path="/api/users/signup" element={<SigningUpComponent />} />
               <Route path="/api/files/:id" element={<DisplayFileComponent />} />
