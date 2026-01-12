@@ -88,8 +88,7 @@
   color: var(--sb-text);
 }
 
-/* "New" link */
-.sidebar__newLink {
+.sidebar__newButton {
   display: inline-flex;
   align-items: center;
   background: var(--sb-newBg);
@@ -97,12 +96,13 @@
   padding: 10px 16px;
   border-radius: var(--sb-radius);
   font-size: 14px;
-  text-decoration: none;
+  border: none;
+  cursor: pointer;
   margin-bottom: 12px;
   width: fit-content;
 }
 
-.sidebar__newLink:hover {
+.sidebar__newButton:hover {
   background: var(--sb-newHover);
 }
 

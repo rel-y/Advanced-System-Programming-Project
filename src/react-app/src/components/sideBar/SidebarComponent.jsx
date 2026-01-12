@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { useNodes } from "../nodeListContext.jsx";
 import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
@@ -7,9 +7,14 @@ import fetchFromWebServer from "../../api.js";
 export default function Sidebar() {
   const { pathname } = useLocation();
   let { id } = useParams();          
-  const { setNodes } = useNodes();     
+  const { nodes, setNodes, currentFolder, setCurrentFolder } = useNodes();
+
+  const navigate = useNavigate();
 
   const [activeKey, setActiveKey] = useState("home"); 
+
+  const [showFolderInput, setShowFolderInput] = useState(false);
+  const [folderName, setFolderName] = useState("");
 
   const items = [
     { key: "home", label: "Home", suffix: "" },
@@ -43,12 +48,101 @@ export default function Sidebar() {
     }
   }
 
+  async function createFile() {
+    try {
+      const resCreate = await fetchFromWebServer(`http://localhost:8080/api/files/`, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "Name...",
+          type: "FILE",
+          content: "content...",
+          parent: currentFolder
+        })
+
+      });
+
+      if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
+
+      const data = await resCreate.json();
+      console.log("Filter fetch data:", data);
+      
+      const newId = data[0].id; // i dont even know why this is an array
+      console.log(newId);
+      navigate(`/api/files/${newId}/edit`);
+
+    } catch (err) {
+      console.error("Filter fetch failed:", err);
+    }
+  }
+
+  async function createFolder() {
+    setShowFolderInput(true); // show input field
+  }
+
+  async function handleFolderSubmit(e) {
+    e.preventDefault();
+    console.log("New folder name:", folderName); 
+
+    try {
+      const resCreate = await fetchFromWebServer(`http://localhost:8080/api/files/`, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: folderName,
+          type: "FOLDER",
+          parent: currentFolder
+        })
+
+      });
+
+      if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
+
+      const data = await resCreate.json();
+      console.log("Filter fetch data:", data);
+      
+      const newId = data[0].id; // i dont even know why this is an array
+      console.log(newId);
+
+    } catch (err) {
+      console.error("Filter fetch failed:", err);
+    }
+
+    setFolderName("");
+    setShowFolderInput(false);
+  }
+
   return (
     <aside className="sidebar">
 
-      <Link to="/files" className="sidebar__newLink">
-        + New
-      </Link>
+      <button
+        type="button"
+        className="sidebar__newButton"
+        onClick={createFile}
+      >
+        + New File
+      </button>
+
+      <button
+        type="button"
+        className="sidebar__newButton"
+        onClick={createFolder}
+      >
+        + New Folder
+      </button>
+
+      {showFolderInput && (
+        <form onSubmit={handleFolderSubmit} style={{ marginTop: "8px" }}>
+          <input
+            type="text"
+            value={folderName}
+            onChange={(e) => setFolderName(e.target.value)}
+            placeholder="Folder name"
+            style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
+            autoFocus
+          />
+        </form>
+      )}
 
       <nav>
         {items.map((it) => (
