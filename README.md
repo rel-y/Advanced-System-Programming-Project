@@ -79,3 +79,5 @@ if you change cpp server from 12345 to something else like 3000, add in JS serve
 ### Example Run
 **an example run is added in it's own folder. it has 20+ pictures in it, ordered.**
 
+docker-compose build
+SERVERIP=[cpp server ip] docker-compose up -d --build
