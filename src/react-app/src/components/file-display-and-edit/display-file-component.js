@@ -10,7 +10,7 @@ function DisplayFileComponent() {
 
   const { id: paramId } = useParams();
   const navigate = useNavigate();
-
+  console.log(paramId);
   // using useEffect to not make an infinite loop
   useEffect(() => {
     // Fetch file data
@@ -20,10 +20,11 @@ function DisplayFileComponent() {
           headers: { 'Content-Type': 'application/json' },
           method: 'GET'
         });
-
+        console.log("filedata:" + response)
         if (response.ok) {
           const fileData = await response.json();
           setData(fileData);
+        
 
           setuserPerms(fileData.permissionsForFile);
 
