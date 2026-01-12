@@ -7,7 +7,7 @@ import fetchFromWebServer from "../../api.js";
 export default function Sidebar() {
   const { pathname } = useLocation();
   let { id } = useParams();          
-  const { setNodes } = useNodes();     
+  const { nodes, setNodes, currentFolder, setCurrentFolder } = useNodes();
 
   const navigate = useNavigate();
 
@@ -56,7 +56,8 @@ export default function Sidebar() {
         body: JSON.stringify({
           name: "Name...",
           type: "FILE",
-          content: "content..."
+          content: "content...",
+          parent: currentFolder
         })
 
       });
@@ -89,7 +90,8 @@ export default function Sidebar() {
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         body: JSON.stringify({
           name: folderName,
-          type: "FOLDER"
+          type: "FOLDER",
+          parent: currentFolder
         })
 
       });
