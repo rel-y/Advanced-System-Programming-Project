@@ -9,6 +9,9 @@ function EditPermissionsComponent() {
 
   const [username, setUsername] = useState('');
   const [permission, setPermission] = useState('');
+  const [globalPermissions, setGlobalPermissions] = useState('');
+
+
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState('');
   // actual setter, logic is in here
@@ -35,6 +38,40 @@ function EditPermissionsComponent() {
       setError('Server error while updating permissions');
     }
   };
+
+  const saveGeneralPermissions = async () => {
+    setError('');
+
+    try {
+      const response = await fetchFromWebServer(
+        `http://localhost:8080/api/files/${paramId}/permissions`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({filePermission: globalPermissions})
+        }
+      );
+
+      if (response.ok) {
+        setShowSuccess(true);
+      } else {
+        setError('Failed to update permissions');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Server error while updating permissions');
+    }
+  };
+
+    const saveAllPermissions = async () => {
+        if (permission) {
+            await savePermissions();
+        }
+        if (globalPermissions) {
+            await saveGeneralPermissions();
+        }
+    };
+
 
   return (
     <div className="file-page container-fluid">
@@ -72,6 +109,21 @@ function EditPermissionsComponent() {
                 </select>
               </div>
 
+                {/* General permissions selector */}
+                <div className="mb-3">
+                <label className="form-label">Change general permissions</label>
+                <select
+                    className="form-select"
+                    value={globalPermissions}
+                    onChange={(e) => setGlobalPermissions(e.target.value)}
+                >
+                    <option value="NONE">None</option>
+                    <option value="VIEWER">Viewer</option>
+                    <option value="WRITER">Writer</option>
+                </select>
+                </div>
+
+
               {error && (
                 <div className="alert alert-danger">{error}</div>
               )}
@@ -85,8 +137,8 @@ function EditPermissionsComponent() {
       <div className="floating-btns d-flex gap-2">
         <button
           className="floating-btn primary-btn"
-          disabled={!username}
-          onClick={savePermissions}
+          disabled={!username && !globalPermissions}
+          onClick={saveAllPermissions}
         >
           Save
         </button>
