@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './edit-file-component.css';
 import fetchFromWebServer from '../../api';
@@ -7,9 +7,40 @@ function EditFileComponent() {
   const { id: paramId } = useParams();
   const navigate = useNavigate();
 
+  const [data, setData] = useState('');
+
   
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
+
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  // for initial values
+  useEffect(() => {
+    // Fetch file data
+    const fetchFileData = async () => {
+      try {
+        const response = await fetchFromWebServer(`http://localhost:8080/api/files/${paramId}`, {
+          headers: { 'Content-Type': 'application/json' },
+          method: 'GET'
+        });
+
+        if (response.ok) {
+          const fileData = await response.json();
+          setData(fileData);
+          setName(fileData.name);
+          setContent(fileData.content);
+
+        } else {
+          console.error('Failed to fetch file data');
+        }
+      } catch (err) {
+        console.error('Error fetching file or permissions:', err);
+      }
+    };
+
+    fetchFileData();
+  }, [paramId]);
 
   return (
     <div className="file-page container-fluid">
@@ -61,14 +92,15 @@ function EditFileComponent() {
                         }),
                         method: 'PATCH'
                 });
-
+                
+                setShowSuccess(true);
 
 
             } catch (error) {
                 console.error('Error saving file:', error);
             }
 
-            navigate(-1); // go back after save (for now)
+            
           }}
         >
           Save
@@ -81,6 +113,22 @@ function EditFileComponent() {
           Cancel
         </button>
       </div>
+      {showSuccess && (
+        <div className="success-popup-backdrop">
+          <div className="success-popup">
+            <h5>✅ File saved successfully</h5>
+            <button
+              className="btn btn-primary mt-3"
+              onClick={() => {
+                setShowSuccess(false);
+                navigate(-1);
+              }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
