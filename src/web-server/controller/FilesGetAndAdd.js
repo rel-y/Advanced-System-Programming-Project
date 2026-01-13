@@ -65,6 +65,7 @@ function createFileController(req, res) {
     }
     createFile(id, content)
       .then(response => {
+        console.log(response)
         singletonMetadataModel.setSize(id,content.length);
         return res.status(201).json([{
           id: id,
