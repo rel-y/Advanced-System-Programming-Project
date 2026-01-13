@@ -3,7 +3,7 @@ import CheckLogin from "../../logincheck";
 import { useNavigate } from "react-router-dom";
 import Sidebar from '../sideBar/SidebarComponent';
 import TopBar from '../TopBar/TopBarComponent';
-import FileList from "../file and folder list/filesList";
+import FileList from '../file-and-folder-list/filesList';
 export default function MainPage(){
     const navigate = useNavigate();
     useEffect(() => {

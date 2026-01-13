@@ -39,8 +39,13 @@ function FileList() {
     useEffect(() => {
         // Fetch file data
         const fetchFileData = async () => {
+<<<<<<< HEAD:src/react-app/src/components/file and folder list/filesList.js
             if(currentFolder === 0){
                 setFolderName("");
+=======
+            if (currentFolder === 0) {
+                setFolderName("MyDrive");
+>>>>>>> 3e588820ad378e5366660ed6791ec320080ebe87:src/react-app/src/components/file-and-folder-list/filesList.js
                 return;
             }
             try {
@@ -55,13 +60,14 @@ function FileList() {
                 } else {
                     console.error('Failed to fetch folder data');
                 }
-            }catch{
+            } catch {
                 console.error('network error')
             }
         };
 
         fetchFileData();
     }, [currentFolder]);
+<<<<<<< HEAD:src/react-app/src/components/file and folder list/filesList.js
 useEffect(() => {
   const onPop = (event) => {
     const state = event.state;
@@ -76,6 +82,9 @@ useEffect(() => {
   window.addEventListener("popstate", onPop);
   return () => window.removeEventListener("popstate", onPop);
 }, []);
+=======
+
+>>>>>>> 3e588820ad378e5366660ed6791ec320080ebe87:src/react-app/src/components/file-and-folder-list/filesList.js
     return (
         <div
             className='hello'
@@ -100,7 +109,7 @@ useEffect(() => {
                     owner={file.uid}
                     size={file.size}
                     date={file.lastAccess}
-                    location={file.parent}
+                    location={file.parentName}
                     funcOnClick={() => handleClick(file.id)}
                 />
                 )

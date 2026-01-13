@@ -198,11 +198,13 @@ class MetadataNode {
     let node = this.map.get(nodeIdItem.id);
     const lastAccess = singletonUsersModel.getUser(userId)?.filemap?.get(nodeIdItem.id)?.[0] ?? node.createdAt;
     const isStarred = singletonUsersModel.getUser(userId)?.filemap?.get(nodeIdItem.id)?.[1] ?? false;
+    let parentName = this.map.get(node.parent).name;
     return {
       id: nodeIdItem.id,
       name: node.name,
       type: node.type,
       parent: node.parent,
+      parentName: parentName,
       uid: node.uid,
       isStarred: isStarred,
       isInTrash: node.isInTrash,
@@ -341,7 +343,7 @@ class MetadataNode {
       return;
     }
     const time = singletonUsersModel.map.get(uid).filemap.get(fileId)[0];// [time, isStarred]
-    singletonUsersModel.map.get(uid).filemap.set([time, isStarred])
+    singletonUsersModel.map.get(uid).filemap.set(fileId, [time, isStarred])
   }
   setTrashStatus(fileId, isInTrash){
     if(!this.map.has(fileId)){

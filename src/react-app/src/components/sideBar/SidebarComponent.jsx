@@ -17,6 +17,9 @@ export default function Sidebar() {
   const [showFolderInput, setShowFolderInput] = useState(false);
   const [folderName, setFolderName] = useState("");
 
+  const [showFileInput, setShowFileInput] = useState(false);
+  const [fileName, setFileName] = useState("");
+
   const items = [
     { key: "home", label: "Home", suffix: "" },
     { key: "shared", label: "Shared with me", suffix: "/shared" },
@@ -32,11 +35,11 @@ export default function Sidebar() {
         id = 0;
     }
     let url;
-    if(currentFolder !== 0){
+    if (currentFolder !== 0) {
       id = currentFolder;
       url = `/api/folders/${id}`;
     }
-    else url = `/api/folders/${id}${item.suffix}`;
+    else url = `/api/folders/${id}${item.suffix}`
 
     try {
       const res = await fetchFromWebServer(url, {
@@ -57,15 +60,22 @@ export default function Sidebar() {
   }
 
   async function createFile() {
+    setShowFileInput(true); // show input field
+  }
+
+  async function handleFileSubmit (e) {
+    e.preventDefault();
+    console.log("New file name:", fileName); 
+
     try {
       const resCreate = await fetchFromWebServer(`http://localhost:8080/api/files/`, {
         method: "POST",
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "Name...",
+          name: fileName,
           type: "FILE",
-          content: "content...",
-          parent: currentFolder
+          parent: currentFolder,
+          content: ""
         })
 
       });
@@ -73,15 +83,18 @@ export default function Sidebar() {
       if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
 
       const data = await resCreate.json();
-      console.log("Filter fetch data:", data);
+      console.log("fetched data:", data);
       
       const newId = data[0].id; // i dont even know why this is an array
       console.log(newId);
-      navigate(`/api/files/${newId}/edit`);
 
     } catch (err) {
-      console.error("Filter fetch failed:", err);
+      console.error("fetch failed:", err);
     }
+
+    setFileName("");
+    setShowFileInput(false);
+    filter(items.filter(item => item.key === activeKey)[0]);
   }
 
   async function createFolder() {
@@ -107,13 +120,13 @@ export default function Sidebar() {
       if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
 
       const data = await resCreate.json();
-      console.log("Filter fetch data:", data);
+      console.log("fetched data:", data);
       
       const newId = data[0].id; // i dont even know why this is an array
       console.log(newId);
 
     } catch (err) {
-      console.error("Filter fetch failed:", err);
+      console.error("fetch failed:", err);
     }
 
     setFolderName("");
@@ -139,6 +152,23 @@ export default function Sidebar() {
         + New File
       </button>
 
+      {showFileInput && (
+        <form onSubmit={handleFileSubmit} style={{ marginTop: "8px" }}>
+          <input
+            type="text"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+            onBlur={() => {
+                setFileName("");
+                setShowFileInput(false);
+            }}
+            placeholder="File name"
+            style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
+            autoFocus
+          />
+        </form>
+      )}
+
       <button
         type="button"
         className="sidebar__newButton"
@@ -153,6 +183,10 @@ export default function Sidebar() {
             type="text"
             value={folderName}
             onChange={(e) => setFolderName(e.target.value)}
+            onBlur={() => {
+                setFolderName("");
+                setShowFolderInput(false);
+            }}
             placeholder="Folder name"
             style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
             autoFocus
