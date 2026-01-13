@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
+import { useRef, useCallback, useEffect } from "react";
 import { useNodes } from "../nodeListContext.jsx";
 import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
-import { useEffect } from "react";
-
 export default function Sidebar() {
   const { pathname } = useLocation();
   let { id } = useParams();          
@@ -29,34 +28,36 @@ export default function Sidebar() {
     { key: "mydrive", label: "My Drive", suffix: "/mydrive" },
   ];
 
-  async function filter(item) {
-    setActiveKey(item.key);
-    if( id === undefined ) {
-        id = 0;
-    }
-    let url;
-    if (currentFolder !== 0) {
-      id = currentFolder;
-      url = `/api/folders/${id}`;
-    }
-    else url = `/api/folders/${id}${item.suffix}`
+const reqSeq = useRef(0);
 
-    try {
-      const res = await fetchFromWebServer(url, {
-        method: "GET",
-        headers: { Accept: "application/json" },
-      });
+const filter = useCallback(async (item) => {
+  const mySeq = ++reqSeq.current;
 
-      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  setActiveKey(item.key);
 
-      const data = await res.json();
-      console.log("Filter fetch data:", data);
-      setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
-      setCurrentFolder(0);
-    } catch (err) {
-      console.error("Filter fetch failed:", err);
-    }
+  const folderId = id ?? 0;
+  const url = `/api/folders/${folderId}${item.suffix}`;
+
+  try {
+    const res = await fetchFromWebServer(url, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+
+    const data = await res.json();
+    const nextNodes = Array.isArray(data) ? data : (data.nodes ?? data.files ?? []);
+
+    // ignore stale responses
+    if (mySeq !== reqSeq.current) return;
+
+    setNodes(nextNodes);
+    setCurrentFolder(0);
+  } catch (err) {
+    if (mySeq !== reqSeq.current) return;
+    console.error("Filter fetch failed:", err);
   }
+}, [id, setNodes, setCurrentFolder]);
 
   async function createFile() {
     setShowFileInput(true); // show input field
@@ -130,16 +131,11 @@ export default function Sidebar() {
 
     setFolderName("");
     setShowFolderInput(false);
-    filter(items.filter(item => item.key === activeKey)[0],currentFolder);
+    filter(items.filter(item => item.key === activeKey)[0]);
   }
-    useEffect(() => {
-    const load = async () => {
-      await filter({ key: "home", label: "Home", suffix: "" },currentFolder);   // your async function
-    };
-
-    load();
-  }, []); // empty deps = run once on mount
-
+useEffect(() => {
+  filter(items[0]); // Home
+}, [filter]);
   return (
     <aside className="sidebar">
 
@@ -157,10 +153,6 @@ export default function Sidebar() {
             type="text"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
-            onBlur={() => {
-                setFileName("");
-                setShowFileInput(false);
-            }}
             placeholder="File name"
             style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
             autoFocus
@@ -182,10 +174,6 @@ export default function Sidebar() {
             type="text"
             value={folderName}
             onChange={(e) => setFolderName(e.target.value)}
-            onBlur={() => {
-                setFolderName("");
-                setShowFolderInput(false);
-            }}
             placeholder="Folder name"
             style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
             autoFocus
@@ -199,9 +187,7 @@ export default function Sidebar() {
             key={it.key}
             type="button"
             className={`sidebar__item ${activeKey === it.key ? "active" : ""}`}
-            onClick={() => {
-              filter(it); 
-            }}
+            onClick={() => filter(it)}
           >
             {it.label}
           </button>
