@@ -86,6 +86,7 @@ export default function Sidebar() {
 
     setFileName("");
     setShowFileInput(false);
+    filter(items.filter(item => item.key === activeKey)[0]);
   }
 
   async function createFolder() {
@@ -122,6 +123,7 @@ export default function Sidebar() {
 
     setFolderName("");
     setShowFolderInput(false);
+    filter(items.filter(item => item.key === activeKey)[0]);
   }
 
   return (
