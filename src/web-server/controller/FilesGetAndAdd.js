@@ -58,7 +58,7 @@ function createFileController(req, res) {
   if (!singletonMetadataModel.map.has(parent)) {
     return res.status(404).json({ error: "parent folder does not exist" });
   }
-  if (parent !== 0 && !isAbaleTo(loggedInUsername, parent, "WRITE")) {
+  if (parent !== 0 && !singletonMetadataModel.isAbaleTo(loggedInUsername, parent, "WRITE")) {
     return res.status(401).json({ error: "user hase no WRITE permissions to parent folder" });
   }
 

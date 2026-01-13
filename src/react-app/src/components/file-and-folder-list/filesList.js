@@ -8,6 +8,7 @@ import { useNodes } from "../nodeListContext.jsx";
 function FileList() {
     const { nodes, setNodes, currentFolder, setCurrentFolder } = useNodes();
     const navigate = useNavigate();
+    const [menu, setMenu] = useState(null);
 
     const changeFolder = async (folderId) => {
         const url = `/api/folders/${folderId}`;
@@ -35,7 +36,7 @@ function FileList() {
     useEffect(() => {
         // Fetch file data
         const fetchFileData = async () => {
-            if(currentFolder === 0){
+            if (currentFolder === 0) {
                 setFolderName("");
                 return;
             }
@@ -61,35 +62,37 @@ function FileList() {
 
     return (
         <div
-            className='hello'
-              style={{
-                flex: 1,
-                overflowY: "auto",
-                minHeight: 0,
-                
-              }}
-        >
-            <p>
+            className="hello" >
+            <p className="FolderName fs-1">
                 {folderName}
             </p>
-            <div style={{overflowY: "auto"}}>
-            {nodes.map((file) => {
+            <div style={{ overflowY: "auto" }}>
+                <ul className="list-group list-group-horizontal">
+                    <li className="p-2 list-group-item TitleBox" style={{ width: "35%" }}>Name</li>
+                    <li className="p-2 list-group-item TitleBox" style={{ width: "15%" }}>last Access</li>
+                    <li className="p-2 list-group-item TitleBox" style={{ width: "10%" }}>Owner</li>
+                    <li className="p-2 list-group-item TitleBox" style={{ width: "10%" }}>Size</li>
+                    <li className="p-2 list-group-item TitleBox" style={{ width: "15%" }}>Location</li>
+                </ul>
+                {nodes.map((file) => {
 
-                const handleClick = file.type === "FILE" ? openFile : changeFolder;
-                console.log(file);
-                return (<ListElement
-                    fileId={file.id}
-                    fileName={file.name}
-                    owner={file.uid}
-                    size={file.size}
-                    date={file.lastAccess}
-                    location={file.parentName}
-                    isStarred={file.isStarred}
-                    isTrash={file.isInTrash}
-                    funcOnClick={() => handleClick(file.id)}
-                />
-                )
-            })}
+                    const handleClick = file.type === "FILE" ? openFile : changeFolder;
+                    console.log(file);
+                    return (<ListElement
+                        menu={menu}
+                        setMenu={setMenu}
+                        fileId={file.id}
+                        fileName={file.name}
+                        owner={file.uid}
+                        size={file.size}
+                        date={file.lastAccess}
+                        location={file.parentName}
+                        isStarred={file.isStarred}
+                        isTrash={file.isInTrash}
+                        funcOnClick={() => handleClick(file.id)}
+                    />
+                    )
+                })}
             </div>
         </div>
     );

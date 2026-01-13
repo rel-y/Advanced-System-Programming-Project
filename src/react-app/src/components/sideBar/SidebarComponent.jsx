@@ -48,7 +48,6 @@ export default function Sidebar() {
       console.log("Filter fetch data:", data);
       setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
       setCurrentFolder(0);
-      navigate('/files')
     } catch (err) {
       console.error("Filter fetch failed:", err);
     }
