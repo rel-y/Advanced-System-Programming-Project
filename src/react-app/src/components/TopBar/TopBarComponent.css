@@ -21,12 +21,14 @@
   display: flex;
   align-items: center;
 }
+
 .topbar__title {
   font-size: 20px;
   font-weight: 600;
   letter-spacing: 0.3px;
   color: inherit;
 }
+
 /* center (search bar) */
 .topbar__center {
   width: 60%;
@@ -34,7 +36,7 @@
   justify-content: center;
 }
 
-.topbar__center > * {
+.topbar__center>* {
   width: 100%;
   max-width: 100%;
 }
@@ -60,6 +62,10 @@
   background: transparent;
   color: inherit;
   cursor: pointer;
+}
+
+.topbar__toggle:hover {
+  background-color: var(--bs-secondary-bg);
 }
 
 /* ================================
@@ -89,6 +95,15 @@
   display: block;
 }
 
+.topbar__menuItem {
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.topbar__menuItem:hover {
+  background-color: var(--bs-secondary-bg);
+}
+
 /* ================================
    Dark mode
 ================================ */
@@ -106,8 +121,21 @@
   border-color: rgba(255, 255, 255, 0.18);
 }
 
+:root.dark .topbar__toggle:hover {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
 /* subtle outline for profile image in dark mode */
 :root.dark .topbar__profileBtn {
   outline: 1px solid rgba(255, 255, 255, 0.18);
   outline-offset: 0;
+}
+
+:root.dark .topbar__menuItem {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+:root.dark .topbar__menuItem:hover {
+  background-color: rgba(255, 255, 255, 0.18);
 }

@@ -82,7 +82,7 @@ export default function TopBar() {
 
         {open && (
           <div className="topbar__menu">
-            <button onClick={logout} className="topbar__menuItem">
+            <button onClick={logout} className="btn topbar__menuItem">
               Logout
             </button>
           </div>
