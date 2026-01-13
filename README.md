@@ -1,5 +1,7 @@
 # Advanced-System-Programming-Project
 
+https://github.com/rel-y/Advanced-System-Programming-Project-Part-4
+
 ## Welcome To Our "Google-Drive" Project!
 Our app is a file compression & backup system, like google drive.
 **The app functions as such:**
@@ -20,7 +22,7 @@ After logging in, the user is greeted with their drive. it shows them their file
 #### The Files List
 once clicking on a file, the user is transfered to viewing the file. there they are met with (if they are allowed to) edit file & edit permissions features. here users may also download files.
 once clicking a folder, the list is updated to show the files and folders within the selected folder.
-users may also right-click files/folders (and can for example, edit a folder's name like this).
+users may also right-click files/folders and this transfers them to view the file/folder (and can for example, edit a folder's name like this).
 
 #### The Side Bar
 the user is prompted with their drive, their starred items, their trash, files shared with them and recent items.
@@ -29,6 +31,9 @@ here the user may also create a new file or folder, which will be rooted in the 
 #### The Top Bar
 the user has access to the search bar here. once used, all files/folders with matching names/content will appear.
 here we also see the light/dark mode toggle.
+
+#### Log Out
+click on the profile photo and a log out button will appear.
 
 ### How To Run The App
 On the main folder (Advanced-System-Programming-Project), run:
@@ -40,6 +45,7 @@ for windows:
 $env:SERVERIP="[host machine ip]"; docker-compose up -d --build
 
 ```
+building may take a minute.
 
 [host machine ip] is the ip of the machine on which the containers are running. 
 note that using 127.0.0.1 won't work even when running all containers on one pc because that refers to the ip of the containers themselves. check the ip the server is running on (for example on windows use ipconfig or on wsl use hostname -I, it is different from the ip of the windows machine).
@@ -47,3 +53,5 @@ note that using 127.0.0.1 won't work even when running all containers on one pc 
 ### Example Run
 
 **an example run is added in it's own folder.**
+
+
