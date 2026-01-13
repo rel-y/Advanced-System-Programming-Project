@@ -21,10 +21,13 @@ function ListElement({ fileId, fileName, owner = "Unable to load user", size = "
             method: 'DELETE'
         });
     }
+
+    const formattedDate = new Date(date).toLocaleDateString('en-GB');
+
     return (
         <ul className="list-group list-group-horizontal lineHover-bg" onClick={() => funcOnClick()}>
             <li className="p-2 list-group-item text-truncate detailBox" style={{ width: "40%" }}>{fileName}</li>
-            <li className="p-2 list-group-item detailBox" style={{ width: "15%" }}>{date}</li>
+            <li className="p-2 list-group-item detailBox" style={{ width: "15%" }}>{formattedDate}</li>
             <li className="p-2 list-group-item detailBox" style={{ width: "10%" }}>{owner}</li>
             <li className="p-2 list-group-item detailBox" style={{ width: "10%" }}>{size}</li>
             <li className="p-2 list-group-item detailBox" style={{ width: "15%" }}>{location}</li>
