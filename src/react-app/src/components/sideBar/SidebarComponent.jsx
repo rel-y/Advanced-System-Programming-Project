@@ -6,7 +6,7 @@ import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
 export default function Sidebar() {
   const { pathname } = useLocation();
-  let { id } = useParams();          
+  let id = useRef();          
   const { nodes, setNodes, currentFolder, setCurrentFolder } = useNodes();
 
   const navigate = useNavigate();
@@ -33,16 +33,20 @@ const reqSeq = useRef(0);
 const filter = useCallback(async (item) => {
     const mySeq = ++reqSeq.current;
     setActiveKey(item.key);
-    if( id === undefined ) {
-        id = 0;
-    }
+    console.log("item from filter:" + item.key+ "id:" + id.current + "cur: " + currentFolder);
+    
     let url;
-    if(currentFolder !== 0){
-      id = currentFolder;
-      url = `/api/folders/${id}`;
+    if( id.current === undefined ) {
+        id.current = 0;
+        setCurrentFolder(0)
+        url = `/api/folders/${id.current}${item.suffix}`
     }
-    else url = `/api/folders/${id}${item.suffix}`;
-
+    else if(currentFolder !== 0){
+      id.current = currentFolder;
+      url = `/api/folders/${id.current}`;
+    }
+    else url = `/api/folders/${id.current}${item.suffix}`;
+    console.log(url);
   try {
     const res = await fetchFromWebServer(url, {
       method: "GET",
@@ -62,7 +66,7 @@ const filter = useCallback(async (item) => {
     if (mySeq !== reqSeq.current) return;
     console.error("Filter fetch failed:", err);
   }
-}, [id, currentFolder, setNodes]);
+}, [currentFolder, setNodes]);
 
   async function createFile() {
     setShowFileInput(true); // show input field
@@ -138,9 +142,6 @@ const filter = useCallback(async (item) => {
     setShowFolderInput(false);
     filter(items.filter(item => item.key === activeKey)[0]);
   }
-useEffect(() => {
-  filter(items[0]); // Home
-}, [filter]);
   return (
     <aside className="sidebar">
 
@@ -192,7 +193,7 @@ useEffect(() => {
             key={it.key}
             type="button"
             className={`sidebar__item ${activeKey === it.key ? "active" : ""}`}
-            onClick={() => {setCurrentFolder(0); filter(it)}}
+            onClick={() => {console.log(it); id.current=undefined; filter(it)}}
           >
             {it.label}
           </button>
