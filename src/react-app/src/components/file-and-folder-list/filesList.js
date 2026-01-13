@@ -75,6 +75,8 @@ function FileList() {
                     size={file.size}
                     date={file.lastAccess}
                     location={file.parentName}
+                    isStarred={file.isStarred}
+                    isTrash={file.isInTrash}
                     funcOnClick={() => handleClick(file.id)}
                 />
                 )
