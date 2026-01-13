@@ -8,7 +8,6 @@ import { useNodes } from "../nodeListContext.jsx";
 function FileList() {
     const { nodes, setNodes, currentFolder, setCurrentFolder } = useNodes();
     const navigate = useNavigate();
-    const [menu, setMenu] = useState(null);
 
     const changeFolder = async (folderId) => {
         const url = `/api/folders/${folderId}`;
@@ -96,8 +95,6 @@ function FileList() {
                     const handleClick = file.type === "FILE" ? openFile : changeFolder;
                     console.log(file);
                     return (<ListElement
-                        menu={menu}
-                        setMenu={setMenu}
                         fileId={file.id}
                         fileName={file.name}
                         owner={file.uid}
