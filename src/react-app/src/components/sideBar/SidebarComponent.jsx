@@ -33,7 +33,12 @@ export default function Sidebar() {
     if( id === undefined ) {
         id = 0;
     }
-    const url = `/api/folders/${id}${item.suffix}`;
+    let url;
+    if (currentFolder !== 0) {
+      id = currentFolder;
+      url = `/api/folders/${id}`;
+    }
+    else url = `/api/folders/${id}${item.suffix}`
 
     try {
       const res = await fetchFromWebServer(url, {
@@ -143,6 +148,10 @@ export default function Sidebar() {
             type="text"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
+            onBlur={() => {
+                setFileName("");
+                setShowFileInput(false);
+            }}
             placeholder="File name"
             style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
             autoFocus
@@ -164,6 +173,10 @@ export default function Sidebar() {
             type="text"
             value={folderName}
             onChange={(e) => setFolderName(e.target.value)}
+            onBlur={() => {
+                setFolderName("");
+                setShowFolderInput(false);
+            }}
             placeholder="Folder name"
             style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
             autoFocus
