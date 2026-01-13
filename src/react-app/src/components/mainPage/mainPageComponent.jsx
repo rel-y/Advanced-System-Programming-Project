@@ -3,7 +3,7 @@ import CheckLogin from "../../logincheck";
 import { useNavigate } from "react-router-dom";
 import Sidebar from '../sideBar/SidebarComponent';
 import TopBar from '../TopBar/TopBarComponent';
-import FileList from '../file-and-folder-list/filesList';
+import FileList from "../file and folder list/filesList";
 export default function MainPage(){
     const navigate = useNavigate();
     useEffect(() => {
@@ -14,16 +14,26 @@ export default function MainPage(){
     }, [navigate]);
 
     return(
-        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-        <TopBar />
-        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-          <Sidebar />
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <div style={{zIndex: 1}}>
+          <TopBar />
+    </div>
 
-          <div style={{ flex: 1, padding: "24px", overflow: "auto" }}>
-            <FileList />
-          </div>
-        </div>
-      </div>
+  <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+    <Sidebar />
+
+    <div className="hello"
+      style={{
+        flex: 1,
+        minHeight: 0,
+        
+      }}
+    >
+      <FileList />
+    </div>
+  </div>
+</div>
+
 
     );
 }

@@ -1,0 +1,29 @@
+/* defaults */
+:root {
+  --app-bg: #ffffff;
+}
+
+/* if you use html.dark from earlier */
+html.dark {
+  --app-bg: #000000;
+}
+
+/* make the whole page use it */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+}
+:root {
+  --content-bg: #ffffff;
+}
+
+html.dark {
+  --content-bg: #000000;
+}
+html.dark .hello{
+  background: black;
+}

@@ -35,8 +35,8 @@ function FileList() {
     useEffect(() => {
         // Fetch file data
         const fetchFileData = async () => {
-            if (currentFolder === 0) {
-                setFolderName("MyDrive");
+            if(currentFolder === 0){
+                setFolderName("");
                 return;
             }
             try {
@@ -60,10 +60,19 @@ function FileList() {
     }, [currentFolder]);
 
     return (
-        <div>
+        <div
+            className='hello'
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                minHeight: 0,
+                
+              }}
+        >
             <p>
                 {folderName}
             </p>
+            <div style={{overflowY: "auto"}}>
             {nodes.map((file) => {
 
                 const handleClick = file.type === "FILE" ? openFile : changeFolder;
@@ -81,6 +90,7 @@ function FileList() {
                 />
                 )
             })}
+            </div>
         </div>
     );
 }
