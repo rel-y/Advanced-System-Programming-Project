@@ -17,7 +17,18 @@
     border-color: grey;
     color: white;
 }
+.buttonElement:hover {
+    background-color: var(--bs-secondary-bg);
+    filter: brightness(90%)
+}
 
+:root.dark .buttonElement:hover {
+    background-color: #6a6a6a;
+    color: white;
+}
+:root.dark .buttonElement{
+    color: white;
+}
 :root.dark .lineHover-bg:hover .detailBox {
     background-color: rgb(47, 46, 46);
 }
