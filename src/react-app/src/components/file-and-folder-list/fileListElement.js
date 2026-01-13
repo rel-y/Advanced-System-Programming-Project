@@ -92,7 +92,8 @@ function ListElement({ menu, setMenu, fileId, fileName, owner = "Unable to load 
     const formattedDate = new Date(date).toLocaleDateString('en-GB');
 
     return (
-        <ul className="list-group list-group-horizontal lineHover-bg" onContextMenu={customMenu} onClick={() => funcOnClick()}>
+        <ul className="list-group list-group-horizontal lineHover-bg" onContextMenu={customMenu} onBlur={() => setMenu(null)}
+  tabIndex={0} onClick={() => funcOnClick()}>
             <li className="p-2 list-group-item text-truncate detailBox" style={{ width: "35%" }}>{fileName}</li>
             <li className="p-2 list-group-item detailBox" style={{ width: "15%" }}>{formattedDate}</li>
             <li className="p-2 list-group-item detailBox" style={{ width: "10%" }}>{owner}</li>
