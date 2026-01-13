@@ -31,7 +31,12 @@ export default function Sidebar() {
     if( id === undefined ) {
         id = 0;
     }
-    const url = `/api/folders/${id}${item.suffix}`;
+    let url;
+    if(currentFolder !== 0){
+      id = currentFolder;
+      url = `/api/folders/${id}`;
+    }
+    else url = `/api/folders/${id}${item.suffix}`;
 
     try {
       const res = await fetchFromWebServer(url, {
@@ -43,8 +48,9 @@ export default function Sidebar() {
 
       const data = await res.json();
       console.log("Filter fetch data:", data);
-      setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
-      setCurrentFolder(0);
+      setFolderName(0);
+      const nextArray = Array.isArray(data) ? data : data.nodes ?? data.files ?? []
+      setNodes(nextArray);
     } catch (err) {
       console.error("Filter fetch failed:", err);
     }
@@ -112,15 +118,16 @@ export default function Sidebar() {
 
     setFolderName("");
     setShowFolderInput(false);
-    filter(items.filter(item => item.key === activeKey)[0]);
+    filter(items.filter(item => item.key === activeKey)[0],currentFolder);
   }
     useEffect(() => {
     const load = async () => {
-      await filter({ key: "home", label: "Home", suffix: "" });   // your async function
+      await filter({ key: "home", label: "Home", suffix: "" },currentFolder);   // your async function
     };
 
     load();
   }, []); // empty deps = run once on mount
+
   return (
     <aside className="sidebar">
 
@@ -159,7 +166,9 @@ export default function Sidebar() {
             key={it.key}
             type="button"
             className={`sidebar__item ${activeKey === it.key ? "active" : ""}`}
-            onClick={() => filter(it)}
+            onClick={() => {
+              filter(it); 
+            }}
           >
             {it.label}
           </button>
