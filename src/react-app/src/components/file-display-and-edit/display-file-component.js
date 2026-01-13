@@ -42,6 +42,22 @@ function DisplayFileComponent() {
     useEffect(() => {console.log(data);}, [data]);
     useEffect(() => {console.log(userPerms);}, [userPerms]);
 
+    const downloadFile = () => {
+        const blob = new Blob([data.content]);
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = data.name;
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+
+
   return (
     <div className="file-page container-fluid">
       <div className="row justify-content-center">
@@ -67,6 +83,11 @@ function DisplayFileComponent() {
             <button className="floating-btn secondary-btn"
                     onClick={() => navigate(`/api/files/${paramId}/permissions`)}>
                 Edit permissions
+            </button>)}
+        {data.type === "FILE" && (
+            <button className="floating-btn secondary-btn"
+                    onClick={downloadFile}>
+                Download File
             </button>)}
       </div>
     </div>

@@ -20,7 +20,11 @@ function FileList() {
             });
 
             if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-
+                window.history.pushState(
+                { page: "my-ui-state", node:nodes, folder: currentFolder},
+                    "",
+                    window.location.href
+                );
             const data = await res.json();
             console.log("Filter fetch data:", data);
             setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
@@ -59,7 +63,20 @@ function FileList() {
 
         fetchFileData();
     }, [currentFolder]);
+useEffect(() => {
+  const onPop = (event) => {
+    const state = event.state;
 
+    if (state?.page === "my-ui-state") {
+        console.log("idk:" + state.node);
+      setNodes(state.node);
+      setCurrentFolder(currentFolder);
+    }
+  };
+
+  window.addEventListener("popstate", onPop);
+  return () => window.removeEventListener("popstate", onPop);
+}, []);
     return (
         <div
             className="hello" >

@@ -18,8 +18,9 @@ the App uses JWTs for communication authentication.
 After logging in, the user is greeted with their drive. it shows them their file list, a side bar with various options for files to show, an add file & folder buttons, and a search feature.
 
 #### The Files List
-once clicking on a file, the user is transfered to viewing the file. there they are met (if they are allowed to) an edit file & edit permissions features.
+once clicking on a file, the user is transfered to viewing the file. there they are met with (if they are allowed to) edit file & edit permissions features. here users may also download files.
 once clicking a folder, the list is updated to show the files and folders within the selected folder.
+users may also right-click files/folders (and can for example, edit a folder's name like this).
 
 #### The Side Bar
 the user is prompted with their drive, their starred items, their trash, files shared with them and recent items.
@@ -44,4 +45,5 @@ $env:SERVERIP="[host machine ip]"; docker-compose up -d --build
 note that using 127.0.0.1 won't work even when running all containers on one pc because that refers to the ip of the containers themselves. check the ip the server is running on (for example on windows use ipconfig or on wsl use hostname -I, it is different from the ip of the windows machine).
 
 ### Example Run
+
 **an example run is added in it's own folder.**
