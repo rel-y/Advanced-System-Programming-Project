@@ -46,7 +46,7 @@ async function getReqController(req, res) {
     }
 }
 
-async function patchReqController(req, res) {    
+async function patchReqController(req, res) {
     const inputId = req.params.id;
 
     const fileNode = singletonMetadataModel.getFileNode(inputId);
@@ -57,27 +57,31 @@ async function patchReqController(req, res) {
     }
 
     const loggedInUsername = req.user.username;
-    let {name, data, starred} = req.body;
-    if (starred !== undefined && starred !== null) {
-        if (!singletonMetadataModel.isAbaleTo(loggedInUsername, inputId, "READ")) {
-            res.writeHead(401, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify({ error: 'user has no READ permissions for this file/folder' }));
-        }
-        console.log(starred);
-        singletonMetadataModel.setStarredStatus(inputId, starred,loggedInUsername);
-    }
+    let { name, data, starred, trash } = req.body;
 
-    if (!singletonMetadataModel.isAbaleTo(loggedInUsername, inputId, "WRITE")) {
+    if (!(starred === null || starred === undefined) && !singletonMetadataModel.isAbaleTo(loggedInUsername, inputId, "READ")) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user has no READ permissions for this file/folder' }));
+    }
+    if ((name || data) && !singletonMetadataModel.isAbaleTo(loggedInUsername, inputId, "WRITE")) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'user has no WRITE permissions for this file/folder' }));
     }
-
-    
-    if (!name && !data && !starred) {
+    if (!(trash === null || trash === undefined) && !singletonMetadataModel.isAbaleTo(loggedInUsername, inputId, "DELETE")) {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ error: 'user has no DELETE permissions for this file/folder' }));
+    }
+    //now for every action the user is doing we checked he has the permissions to do it
+    if (!name && !data && (starred === null || starred === undefined) && (trash === null || trash === undefined)) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'Empty change requset' }));
     }
-    
+    if (!(starred === null || starred === undefined)) {
+        singletonMetadataModel.setStarredStatus(inputId, starred, loggedInUsername);
+    }
+    if (!(trash === null || trash === undefined)) {
+        singletonMetadataModel.setTrashStatus(inputId, trash, loggedInUsername);
+    }
     // change name and data, if they are requested
     if (name) {
         try {
@@ -85,15 +89,15 @@ async function patchReqController(req, res) {
         } catch (err) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             return res.end(JSON.stringify({ error: err.message }));
-        } 
+        }
     }
     singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
     if (data && fileNode.type === NodeType.FILE) {
         let output = await fileModel.patchFile(inputId, data);
         const code = parseInt(output.slice(0, 3), 10);
-        singletonMetadataModel.setSize(inputId,data.length);
+        singletonMetadataModel.setSize(inputId, data.length);
         res.writeHead(code, { 'Content-Type': 'application/json' });
-    } else { // only name changes
+    } else { // didn't change data
         res.writeHead(204);
     }
 
@@ -117,7 +121,7 @@ async function deleteReqController(req, res) {
         return res.end(JSON.stringify({ error: 'user has no DELETE permissions for this file/folder' }));
     }
 
-    if(fileNode.isInTrash === false){
+    if (fileNode.isInTrash === false) {
         singletonMetadataModel.setTrashStatus(inputId, true);
         res.writeHead(204, { 'Content-Type': 'application/json' });
         return res.end();
