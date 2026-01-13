@@ -3,6 +3,7 @@ import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { useNodes } from "../nodeListContext.jsx";
 import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
+import { useEffect } from "react";
 
 export default function Sidebar() {
   const { pathname } = useLocation();
@@ -111,8 +112,15 @@ export default function Sidebar() {
 
     setFolderName("");
     setShowFolderInput(false);
+    filter(items.filter(item => item.key === activeKey)[0]);
   }
+    useEffect(() => {
+    const load = async () => {
+      await filter({ key: "home", label: "Home", suffix: "" });   // your async function
+    };
 
+    load();
+  }, []); // empty deps = run once on mount
   return (
     <aside className="sidebar">
 

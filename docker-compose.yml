@@ -20,27 +20,27 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SERVERIP: ${SERVERIP:-127.0.0.1}  # default to 127.0.0.1, this DOESNT work
+      SERVERIP: ${SERVERIP:-127.17.0.1}  # default to 127.0.0.1, this DOESNT work
     depends_on:
       - cpp-server
-    networks:
+    networks:         
       - app-network
 
-  react-app:
-    build:
-      context: ./src/react-app
-      dockerfile: Dockerfile
-    image: react-app
-    container_name: react-app
-    ports:
-      - "3000:3000"       # maps React dev server to host
-    volumes:
-      - ./src/react-app:/app   # mount source code for live reload
-      - /app/node_modules      # prevent host node_modules overwrite
-    environment:
-      CHOKIDAR_USEPOLLING: "true"  # ensures live reload works in Docker on Linux
-    networks:
-      - app-network
+  # react-app:
+  #   build:
+  #     context: ./src/react-app
+  #     dockerfile: Dockerfile
+  #   image: react-app
+  #   container_name: react-app
+  #   ports:
+  #     - "3000:3000"       # maps React dev server to host
+  #   volumes:
+  #     - ./src/react-app:/app   # mount source code for live reload
+  #     - /app/node_modules      # prevent host node_modules overwrite
+  #   environment:
+  #     CHOKIDAR_USEPOLLING: "true"  # ensures live reload works in Docker on Linux
+  #   networks:
+  #     - app-network
 
 networks:
   app-network:
