@@ -192,7 +192,7 @@ useEffect(() => {
             key={it.key}
             type="button"
             className={`sidebar__item ${activeKey === it.key ? "active" : ""}`}
-            onClick={() => filter(it)}
+            onClick={() => {setCurrentFolder(0); filter(it)}}
           >
             {it.label}
           </button>
