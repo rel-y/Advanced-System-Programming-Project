@@ -19,7 +19,11 @@ function FileList() {
             });
 
             if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-
+                window.history.pushState(
+                { page: "my-ui-state", node:nodes, folder: currentFolder},
+                    "",
+                    window.location.href
+                );
             const data = await res.json();
             console.log("Filter fetch data:", data);
             setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
@@ -35,9 +39,8 @@ function FileList() {
     useEffect(() => {
         // Fetch file data
         const fetchFileData = async () => {
-            if (currentFolder === 0) {
-                setFolderName("MyDrive");
-                return;
+            if(currentFolder === 0){
+                setFolderName("");
             }
             try {
                 const response = await fetchFromWebServer(`http://localhost:8080/api/files/${currentFolder}`, {
@@ -58,12 +61,34 @@ function FileList() {
 
         fetchFileData();
     }, [currentFolder]);
+useEffect(() => {
+  const onPop = (event) => {
+    const state = event.state;
 
+    if (state?.page === "my-ui-state") {
+        console.log("idk:" + state.node);
+      setNodes(state.node);
+      setCurrentFolder(currentFolder);
+    }
+  };
+
+  window.addEventListener("popstate", onPop);
+  return () => window.removeEventListener("popstate", onPop);
+}, []);
     return (
-        <div>
+        <div
+            className='hello'
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                minHeight: 0,
+                
+              }}
+        >
             <p>
                 {folderName}
             </p>
+            <div style={{overflowY: "auto"}}>
             {nodes.map((file) => {
 
                 const handleClick = file.type === "FILE" ? openFile : changeFolder;
@@ -79,6 +104,7 @@ function FileList() {
                 />
                 )
             })}
+            </div>
         </div>
     );
 }

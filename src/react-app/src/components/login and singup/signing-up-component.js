@@ -37,7 +37,7 @@ function SigningUpComponent() {
   }
   const onSubmit = (e) => {
     let data = { username: username, password: password, nickname: nickname, photo: photo };
-    fetch('http://localhost:8080/api/users', {
+    fetch('/api/users', {
       body: JSON.stringify(data),
       headers: {
         'content-type': 'application/json'

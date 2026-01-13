@@ -3,6 +3,7 @@ import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { useNodes } from "../nodeListContext.jsx";
 import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
+import { useEffect } from "react";
 
 export default function Sidebar() {
   const { pathname } = useLocation();
@@ -50,7 +51,9 @@ export default function Sidebar() {
 
       const data = await res.json();
       console.log("Filter fetch data:", data);
-      setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
+      setFolderName(0);
+      const nextArray = Array.isArray(data) ? data : data.nodes ?? data.files ?? []
+      setNodes(nextArray);
     } catch (err) {
       console.error("Filter fetch failed:", err);
     }
@@ -128,8 +131,15 @@ export default function Sidebar() {
 
     setFolderName("");
     setShowFolderInput(false);
-    filter(items.filter(item => item.key === activeKey)[0]);
+    filter(items.filter(item => item.key === activeKey)[0],currentFolder);
   }
+    useEffect(() => {
+    const load = async () => {
+      await filter({ key: "home", label: "Home", suffix: "" },currentFolder);   // your async function
+    };
+
+    load();
+  }, []); // empty deps = run once on mount
 
   return (
     <aside className="sidebar">
@@ -190,7 +200,9 @@ export default function Sidebar() {
             key={it.key}
             type="button"
             className={`sidebar__item ${activeKey === it.key ? "active" : ""}`}
-            onClick={() => filter(it)}
+            onClick={() => {
+              filter(it); 
+            }}
           >
             {it.label}
           </button>

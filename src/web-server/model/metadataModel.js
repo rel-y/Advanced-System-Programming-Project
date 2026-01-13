@@ -147,6 +147,43 @@ class MetadataNode {
     }
     return out;
   }
+  getAllNodes(username, ability, id = 0) {
+  // DFS over the tree, but "stop early" when a folder is accessible
+  const result = [];
+  const stack = [id];
+
+  while (stack.length > 0) {
+    const parentId = stack.pop();
+
+    const children = this.getAllFolderNodes(parentId); // returns [{id: childId}, ...]
+    for (const child of children) {
+      const childId = child.id;
+      const node = this.map.get(childId);
+      if (!node) continue;
+
+      const allowed = this.isAbaleTo(username, childId, ability);
+
+      if (node.type === "FILE") {
+        if (allowed) result.push(childId);
+        // if not allowed: ignore
+        continue;
+      }
+
+      if (node.type === "FOLDER") {
+        if (allowed) {
+          // add folder and DO NOT traverse inside it
+          result.push(childId);
+        } else {
+          // not allowed: traverse children
+          stack.push(childId);
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
   
   getAllBaseNodes() {
     return this.getAllFolderNodes();

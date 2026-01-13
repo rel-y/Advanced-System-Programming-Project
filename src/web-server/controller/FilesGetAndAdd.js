@@ -29,6 +29,17 @@ function getFolderFileController(req, res, filter = undefined) {
   res.status(200).json(metadata);
 }
 
+function getSharedNodes(req,res){
+  const loggedInUsername = req.user.username;
+  let list = singletonMetadataModel.getAllNodes(loggedInUsername,"READ");
+  if(!list){
+    return res.status(200).json([]);
+  }
+  list = list.filter(id => singletonMetadataModel.map.has(id));
+  list = list.map(id => singletonMetadataModel.getAllMetadata({id: id},loggedInUsername)).filter(data => data.uid !== loggedInUsername);
+  return res.status(200).json(list);
+}
+
 function createFileController(req, res) {
   let { name, type, parent, content} = req.body;
   const loggedInUsername = req.user.username;
@@ -104,7 +115,7 @@ function myDriveFilter(req) {
   return item => item.uid === req.user.username;
 }
 function sharedWithMeFilter(req) {
-  return item => item.uid !== req.user.username && item.isShared === true;
+  return item => item.uid !== req.user.username;
 }
 function recentFilter(req) {
   return item => singletonUsersModel.isFileAccessedByUser(req.user.username, item.id) || singletonMetadataModel.getFileNode(item.id).uid === req.user.username; 
@@ -112,4 +123,4 @@ function recentFilter(req) {
 function trashFilter(_req) {
   return item => item.isInTrash === true;
 }
-module.exports = { getFileController, createFileController,getFolderFileController, starFilter, myDriveFilter, sharedWithMeFilter, recentFilter, trashFilter,All };
+module.exports = {getSharedNodes, getFileController, createFileController,getFolderFileController, starFilter, myDriveFilter, sharedWithMeFilter, recentFilter, trashFilter,All };

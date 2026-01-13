@@ -34,7 +34,11 @@ here we also see the light/dark mode toggle.
 On the main folder (Advanced-System-Programming-Project), run:
 
 ```
+for linux:
 SERVERIP=[host machine ip] docker-compose up -d --build
+for windows:
+$env:SERVERIP="[host machine ip]"; docker-compose up -d --build
+
 ```
 
 [host machine ip] is the ip of the machine on which the containers are running. 
