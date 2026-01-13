@@ -1,10 +1,11 @@
-import { useState } from "react";
-import {useParams, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
 import { useNodes } from "../nodeListContext.jsx";
 import "./SidebarComponent.css";
 import fetchFromWebServer from "../../api.js";
 
 export default function Sidebar() {
+  const { pathname } = useLocation();
   let { id } = useParams();          
   const { nodes, setNodes, currentFolder, setCurrentFolder } = useNodes();
 
@@ -14,6 +15,9 @@ export default function Sidebar() {
 
   const [showFolderInput, setShowFolderInput] = useState(false);
   const [folderName, setFolderName] = useState("");
+
+  const [showFileInput, setShowFileInput] = useState(false);
+  const [fileName, setFileName] = useState("");
 
   const items = [
     { key: "home", label: "Home", suffix: "" },
@@ -42,23 +46,28 @@ export default function Sidebar() {
       const data = await res.json();
       console.log("Filter fetch data:", data);
       setNodes(Array.isArray(data) ? data : data.nodes ?? data.files ?? []);
-      setCurrentFolder(0);
-      navigate('/')
     } catch (err) {
       console.error("Filter fetch failed:", err);
     }
   }
 
   async function createFile() {
+    setShowFileInput(true); // show input field
+  }
+
+  async function handleFileSubmit (e) {
+    e.preventDefault();
+    console.log("New file name:", fileName); 
+
     try {
       const resCreate = await fetchFromWebServer(`http://localhost:8080/api/files/`, {
         method: "POST",
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "Name...",
+          name: fileName,
           type: "FILE",
-          content: "content...",
-          parent: currentFolder
+          parent: currentFolder,
+          content: ""
         })
 
       });
@@ -66,15 +75,18 @@ export default function Sidebar() {
       if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
 
       const data = await resCreate.json();
-      console.log("Filter fetch data:", data);
+      console.log("fetched data:", data);
       
       const newId = data[0].id; // i dont even know why this is an array
       console.log(newId);
-      navigate(`/api/files/${newId}/edit`);
 
     } catch (err) {
-      console.error("Filter fetch failed:", err);
+      console.error("fetch failed:", err);
     }
+
+    setFileName("");
+    setShowFileInput(false);
+    filter(items.filter(item => item.key === activeKey)[0]);
   }
 
   async function createFolder() {
@@ -100,17 +112,18 @@ export default function Sidebar() {
       if (!resCreate.ok) throw new Error(`Request failed: ${resCreate.status}`);
 
       const data = await resCreate.json();
-      console.log("Filter fetch data:", data);
+      console.log("fetched data:", data);
       
       const newId = data[0].id; // i dont even know why this is an array
       console.log(newId);
 
     } catch (err) {
-      console.error("Filter fetch failed:", err);
+      console.error("fetch failed:", err);
     }
 
     setFolderName("");
     setShowFolderInput(false);
+    filter(items.filter(item => item.key === activeKey)[0]);
   }
 
   return (
@@ -123,6 +136,19 @@ export default function Sidebar() {
       >
         + New File
       </button>
+
+      {showFileInput && (
+        <form onSubmit={handleFileSubmit} style={{ marginTop: "8px" }}>
+          <input
+            type="text"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+            placeholder="File name"
+            style={{ padding: "6px 8px", borderRadius: "6px", width: "calc(100% - 16px)" }}
+            autoFocus
+          />
+        </form>
+      )}
 
       <button
         type="button"

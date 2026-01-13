@@ -49,7 +49,7 @@ function DisplayFileComponent() {
           <div className="file-card">
             <div className="file-card-body">
               <h5 className="file-title text-center mb-3">{data.name}</h5>
-              <pre className="file-content">{data.content}</pre>
+              {data.type === "FILE" && (<pre className="file-content">{data.content}</pre>)}
             </div>
           </div>
         </div>

@@ -21,7 +21,7 @@ async function getReqController(req, res) {
     singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        const retjson = { id: inputId, ...fileNode };
+        const retjson = { id: inputId, ...fileNode, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
         
         delete retjson.filePermissions; // dont show permissions
         delete retjson.userFilePermissions;
@@ -34,6 +34,7 @@ async function getReqController(req, res) {
         if (code !== 200) {
             res.writeHead(code, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: "error reading file" }));
+            return;
         }
         output = output.slice(output.indexOf("\n\n") + 2);
         res.writeHead(200, { 'Content-Type': 'application/json' });
