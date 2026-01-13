@@ -31,12 +31,17 @@ export default function Sidebar() {
 const reqSeq = useRef(0);
 
 const filter = useCallback(async (item) => {
-  const mySeq = ++reqSeq.current;
-
-  setActiveKey(item.key);
-
-  const folderId = id ?? 0;
-  const url = `/api/folders/${folderId}${item.suffix}`;
+    const mySeq = ++reqSeq.current;
+    setActiveKey(item.key);
+    if( id === undefined ) {
+        id = 0;
+    }
+    let url;
+    if(currentFolder !== 0){
+      id = currentFolder;
+      url = `/api/folders/${id}`;
+    }
+    else url = `/api/folders/${id}${item.suffix}`;
 
   try {
     const res = await fetchFromWebServer(url, {
@@ -52,12 +57,12 @@ const filter = useCallback(async (item) => {
     if (mySeq !== reqSeq.current) return;
 
     setNodes(nextNodes);
-    setCurrentFolder(0);
+    //setCurrentFolder(id);
   } catch (err) {
     if (mySeq !== reqSeq.current) return;
     console.error("Filter fetch failed:", err);
   }
-}, [id, setNodes, setCurrentFolder]);
+}, [id, currentFolder, setNodes]);
 
   async function createFile() {
     setShowFileInput(true); // show input field
