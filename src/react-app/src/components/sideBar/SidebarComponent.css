@@ -114,10 +114,11 @@
   border-radius: var(--sb-radius);
   font-size: 14px;
   text-decoration: none;
+  margin: 4px;
 }
 
 .sidebar__item:hover {
-  background: var(--sb-hover);
+  background: var(--sb-newHover);
 }
 
 .sidebar__item.active {

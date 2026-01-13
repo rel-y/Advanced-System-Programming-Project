@@ -79,7 +79,7 @@ function SigningUpComponent() {
           </p>
           <p className="text-start">
             already have an acount:
-            <button onClick={moveToLogin} className="ms-2 btn btn-primary rounded-pill align-self-left">signup</button>
+            <button onClick={moveToLogin} className="ms-2 btn btn-primary rounded-pill align-self-left">login</button>
           </p>
         </div>
         <form className="form-style ms-auto" onSubmit={e => {
