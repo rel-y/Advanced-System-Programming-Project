@@ -80,7 +80,7 @@ function EditPermissionsComponent() {
           <div className="file-card">
             <div className="file-card-body">
 
-              <h4 className="text-center mb-4">Edit File Permissions</h4>
+              <h4 className="text-center mb-4">Edit Permissions</h4>
 
               {/* Username */}
               <div className="mb-3">

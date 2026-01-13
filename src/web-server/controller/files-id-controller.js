@@ -21,7 +21,7 @@ async function getReqController(req, res) {
     singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        const retjson = { id: inputId, ...fileNode };
+        const retjson = { id: inputId, ...fileNode, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
         
         delete retjson.filePermissions; // dont show permissions
         delete retjson.userFilePermissions;

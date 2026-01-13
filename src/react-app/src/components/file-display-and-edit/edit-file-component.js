@@ -49,7 +49,7 @@ function EditFileComponent() {
           <div className="file-card">
             <div className="file-card-body">
 
-              {/* File name input (replaces title) */}
+              {/* File name input */}
               <div className="mb-3">
                 <input
                   type="text"
@@ -60,15 +60,16 @@ function EditFileComponent() {
                 />
               </div>
 
-              {/* File content input (replaces <pre>) */}
-              <div className="mb-3">
+              {/* File content input */}
+              {data.type === "FILE" && 
+              (<div className="mb-3">
                 <textarea
                   className="form-control file-content-input"
                   placeholder="File content..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
-              </div>
+              </div>)}
 
             </div>
           </div>
@@ -116,7 +117,7 @@ function EditFileComponent() {
       {showSuccess && (
         <div className="success-popup-backdrop">
           <div className="success-popup">
-            <h5>File saved successfully</h5>
+            <h5>Saved Successfully</h5>
             <button
               className="btn btn-primary mt-3"
               onClick={() => {
