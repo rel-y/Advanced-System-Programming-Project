@@ -154,29 +154,4 @@ export function getTheme(mode = "light") {
   };
 }
 
-/**
- * Optional helper: convert theme tokens into CSS variables.
- * Example:
- *   const cssVars = toCssVars(getTheme("dark"));
- *   // then apply: Object.assign(document.documentElement.style, cssVars)
- */
-export function toCssVars(resolvedTheme, prefix = "--gd") {
-  const vars = {};
-
-  const setGroup = (groupName, obj) => {
-    for (const [k, v] of Object.entries(obj)) {
-      vars[`${prefix}-${groupName}-${k}`] = typeof v === "number" ? `${v}px` : String(v);
-    }
-  };
-
-  setGroup("color", resolvedTheme.colors);
-  setGroup("radius", resolvedTheme.radii);
-  setGroup("space", resolvedTheme.spacing);
-  setGroup("font", resolvedTheme.font);
-  setGroup("shadow", resolvedTheme.shadows);
-  setGroup("layout", resolvedTheme.layout);
-
-  return vars;
-}
-
 export default Theme;
