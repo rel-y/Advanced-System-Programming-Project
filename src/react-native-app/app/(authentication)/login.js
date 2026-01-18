@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router';
 import AppButton from '../../components/loginButton';
 import { getTheme } from '../../styles/Theme';
 import { createStyles } from '../../styles/loginPage.styles';
+import { SERVER_URL } from '../../config';
+import { setToken } from '../../api/api';
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -22,7 +24,6 @@ export default function Login() {
             setUsernameError("username is requried!");
             valid = 0;
         }
-        console.log(`pass: ${password}`)
         if (!password) {
             setPasswordError("password is requried!");
             valid = 0;
@@ -32,11 +33,30 @@ export default function Login() {
         }
         return valid;
     }
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
         if (!validateInput()) {
             return;
         }
+        e.preventDefault();
+        const data = { username: username, password: password };
 
+        fetch(`${SERVER_URL}/api/tokens`, {
+            body: JSON.stringify(data),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+        }).then(async (response) => {
+            if (response.status === 201) { //user was created passing to main page
+                const data = await response.json();
+                setToken(data.token);
+                router.replace('/(tabs)')
+            } else { //waiting for the response to tell the user what went wrong
+                const errorData = await response.json();
+                console.log(errorData);
+                setGeneralError(errorData.error || "Unknown error");
+            }
+        });
     }
     return (
         <View style={styles.page}>
@@ -62,7 +82,7 @@ export default function Login() {
                 {passwordError && <Text style={styles.inputTextError}>{passwordError}</Text>}
                 <AppButton
                     title="Login"
-                    onPress={() => { console.log(username + " password:" + password); handleSubmit() }}
+                    onPress={(e) => { handleSubmit(e) }}
                 />
             </View>
             <View style={styles.inline}>

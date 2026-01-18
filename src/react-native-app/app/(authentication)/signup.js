@@ -57,14 +57,11 @@ export default function Signup() {
         return valid;
     }
     const handleSubmit = () => {
-        console.log("a");
-
         if (!validateInput()) {
             return;
         }
 
         let data = { username: username, password: password, nickname: nickname, photo: photo };
-        console.log(SERVER_URL);
         fetch(`${SERVER_URL}/api/users`, {
             body: JSON.stringify(data),
             headers: {
@@ -72,7 +69,6 @@ export default function Signup() {
             },
             method: 'POST',
         }).then(async (response) => {
-            console.log(response);
             if (response.status === 200) { //user was created passing to login
                 router.replace('/login');
             } else { //waiting for the response to tell the user what went wrong
