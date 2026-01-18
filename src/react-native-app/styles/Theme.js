@@ -23,6 +23,9 @@ const Theme = {
     "primary": "#1a73e8",
     "primary-dark": "#8ab4f8",
 
+    "primaryBorder": "#1a6bd6",
+    "primaryBorder-dark": "#97bbf5",
+
     "primary-weak": "#e8f0fe",
     "primary-weak-dark": "#1a3a66",
 
