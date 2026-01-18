@@ -47,7 +47,7 @@ export default function Login() {
                     onChangeText={(username) => { setUsernameError(null); setUsername(username) }}
                     onFocus={() => { setIsUsernameSelected(true) }}
                     onBlur={() => { setIsUsernameSelected(false) }}
-                    style={[styles.input, usernameError && styles.inputError, isUsernameSelected && styles.selectedInput]}
+                    style={[styles.input, isUsernameSelected && styles.selectedInput, usernameError && styles.inputError]}
                     placeholder='Username'
                     autoCapitalize="none"></TextInput>
                 {usernameError && <Text style={styles.inputTextError}>{usernameError}</Text>}
@@ -55,7 +55,7 @@ export default function Login() {
                     onChangeText={(password) => { setPasswordError(null); setPassword(password) }}
                     onFocus={() => { setIsPasswordSelected(true) }}
                     onBlur={() => { setIsPasswordSelected(false) }}
-                    style={[styles.input, passwordError && styles.inputError, isPasswordSelected && styles.selectedInput]}
+                    style={[styles.input, isPasswordSelected && styles.selectedInput, passwordError && styles.inputError]}
                     placeholder='Password'
                     autoCapitalize="none"
                     secureTextEntry></TextInput>
