@@ -4,16 +4,21 @@ import { useRouter } from 'expo-router';
 import AppButton from '../../components/loginButton';
 import { getTheme } from '../../styles/Theme';
 import { createStyles } from '../../styles/loginPage.styles';
+import { SERVER_URL } from '../../config';
 export default function Signup() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [secPassword, setSecPassword] = useState("");
     const [nickname, setNickname] = useState("");
+    const [photo, setPhoto] = useState("a");
+
     //errors
     const [usernameError, setUsernameError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
     const [secPasswordError, setSecPasswordError] = useState(null);
     const [nicknameError, setNicknameError] = useState(null);
+    const [generalError, setGeneralError] = useState(null);
+
     //selected
     const [isUsernameSelected, setIsUsernameSelected] = useState(null);
     const [isPasswordSelected, setIsPasswordSelected] = useState(null);
@@ -52,10 +57,29 @@ export default function Signup() {
         return valid;
     }
     const handleSubmit = () => {
+        console.log("a");
+
         if (!validateInput()) {
             return;
         }
 
+        let data = { username: username, password: password, nickname: nickname, photo: photo };
+        console.log(SERVER_URL);
+        fetch(`${SERVER_URL}/api/users`, {
+            body: JSON.stringify(data),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+        }).then(async (response) => {
+            console.log(response);
+            if (response.status === 200) { //user was created passing to login
+                router.replace('/login');
+            } else { //waiting for the response to tell the user what went wrong
+                const errorData = await response.json();
+                setGeneralError(errorData.error || "Unknown error");
+            }
+        });
     }
     return (
         <View style={styles.page}>
@@ -99,8 +123,9 @@ export default function Signup() {
 
                 <AppButton
                     title="SingUp"
-                    onPress={() => {handleSubmit()}}
+                    onPress={() => { handleSubmit() }}
                 />
+                {generalError && <Text style={styles.inputTextError}>{generalError}</Text>}
             </View>
             <View style={styles.inline}>
                 <Text style={styles.text}>Already have an account?</Text>
