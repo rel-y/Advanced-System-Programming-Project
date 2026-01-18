@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import NodeHeaderScreen from './NodeItem/node[id]';
+import NodeHeaderScreen from './node';
 export default function RootLayout() {
   return (
     <Stack>

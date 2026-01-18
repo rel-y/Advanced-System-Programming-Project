@@ -1,4 +1,5 @@
 const { singletonMetadataModel, PermissionType, NodeType } = require("../model/metadataModel");
+const {singletonUsersModel} = require("../model/usersModel"); 
 const fileModel = require("../model/FileModel");
 
 async function getReqController(req, res) {
@@ -38,7 +39,9 @@ async function getReqController(req, res) {
         }
         output = output.slice(output.indexOf("\n\n") + 2);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        const retjson = { id: inputId, ...fileNode, content: output, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
+        const lastAccess = singletonUsersModel.getUser(loggedInUsername)?.filemap?.get(inputId)?.[0] ?? node.createdAt;
+        const isStarred = singletonUsersModel.getUser(loggedInUsername)?.filemap?.get(inputId)?.[1] ?? false;
+        const retjson = { id: inputId, ...fileNode,lastAccess:lastAccess,isStarred:isStarred, content: output, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
         
         delete retjson.filePermissions; // dont show permissions
         delete retjson.userFilePermissions;

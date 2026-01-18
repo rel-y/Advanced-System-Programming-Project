@@ -25,6 +25,14 @@ export function createStyles(theme) {
           elevation: 3,
         },
       }),
+        flexDirection: "row",          
+        alignItems: "center",          
+        justifyContent: "space-between", 
+    },
+    cardPressed: {
+    backgroundColor: theme.colors.hover,
+    transform: [{ scale: 0.995 }],
+    opacity: 0.96,
     },
 
     row: {
@@ -102,12 +110,28 @@ export function createStyles(theme) {
     },
 
     dotsText: {
-      color: theme.colors["text-muted"],
-      fontSize: 22,
-      lineHeight: 22,
-      marginTop: -2, // makes the vertical dots visually centered
+    fontSize: 24,                 // bigger
+    lineHeight: 24,
+    fontWeight: "700",            // thicker
+    color: theme.colors.text,     // stronger contrast than muted
+    opacity: 0.85,
     },
 
+    dotsBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 999,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    marginLeft: "auto",   // <<< push to right edge
+    },
+
+    star: {
+    color: "#fbbc04", // Google yellow star
+    fontSize: 14,
+    marginTop: 1,
+    },
     // --- optional loading skeleton ---
     skeletonLineLg: {
       width: 120,
