@@ -9,6 +9,8 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [usernameError, setUsernameError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
+    const [isUsernameSelected, setIsUsernameSelected] = useState(null);
+    const [isPasswordSelected, setIsPasswordSelected] = useState(null);
     const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     const scheme = useColorScheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
@@ -31,7 +33,7 @@ export default function Login() {
         return valid;
     }
     const handleSubmit = () => {
-        if(!validateInput()){
+        if (!validateInput()) {
             return;
         }
 
@@ -43,13 +45,17 @@ export default function Login() {
 
                 <TextInput value={username}
                     onChangeText={(username) => { setUsernameError(null); setUsername(username) }}
-                    style={[styles.input, usernameError && styles.inputError]}
+                    onFocus={() => { setIsUsernameSelected(true) }}
+                    onBlur={() => { setIsUsernameSelected(false) }}
+                    style={[styles.input, usernameError && styles.inputError, isUsernameSelected && styles.selectedInput]}
                     placeholder='Username'
                     autoCapitalize="none"></TextInput>
                 {usernameError && <Text style={styles.inputTextError}>{usernameError}</Text>}
                 <TextInput value={password}
                     onChangeText={(password) => { setPasswordError(null); setPassword(password) }}
-                    style={[styles.input, passwordError && styles.inputError]}
+                    onFocus={() => { setIsPasswordSelected(true) }}
+                    onBlur={() => { setIsPasswordSelected(false) }}
+                    style={[styles.input, passwordError && styles.inputError, isPasswordSelected && styles.selectedInput]}
                     placeholder='Password'
                     autoCapitalize="none"
                     secureTextEntry></TextInput>

@@ -40,6 +40,10 @@ export function createStyles(theme) {
         inputTextError: {
             color: theme.colors.danger,
             marginLeft: theme.spacing.xs,
+        },
+        selectedInput: {
+            borderColor: theme.colors["text-muted"],
+            borderWidth: 1,
         }
     });
 }
