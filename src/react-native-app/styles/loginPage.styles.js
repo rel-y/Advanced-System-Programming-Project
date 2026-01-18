@@ -17,11 +17,11 @@ export function createStyles(theme) {
             fontSize: theme.font["size-xl"],
             textAlign: 'center',
             fontWeight: theme.font["weight-semibold"],
-
         },
         input: {
             backgroundColor: theme.colors.surface,
             margin: theme.spacing.xs,
+            borderRadius: theme.radii.sm,
         },
         text: {
             alignItems: 'center',
@@ -32,6 +32,14 @@ export function createStyles(theme) {
         },
         inline: {
             marginTop: theme.spacing["2xl"],
+        },
+        inputError: {
+            borderColor: theme.colors.danger,
+            borderWidth: 1,
+        },
+        inputTextError: {
+            color: theme.colors.danger,
+            marginLeft: theme.spacing.xs,
         }
     });
 }
