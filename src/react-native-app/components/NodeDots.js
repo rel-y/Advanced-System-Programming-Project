@@ -58,8 +58,8 @@ export default function NodeDots({ visible, onClose, node, onNodeUpdate,onListUp
   }, [node?.type, theme.mode]);
 
   // --- Actions ---
-  function onShare(n) {}
-  function onManageAccess(n) {}
+  function onShare(n) {} //to do by who ever does premmissions
+  function onManageAccess(n) {}//to do by who ever does premmissions
 
   async function onAddToStarred(n) {
     if (!n?.id) return;
@@ -81,7 +81,7 @@ export default function NodeDots({ visible, onClose, node, onNodeUpdate,onListUp
     }
   }
 
-  function onMakeCopy(n) {}
+  function onMakeCopy(n) {}//might be removed
 
 async function onDownload(n) {
   if (!n?.name || n?.content == null) return;
@@ -120,7 +120,7 @@ async function onDownload(n) {
     setRenameOpen(true);
   }
 
-  function onMove(n) {}
+  function onMove(n) {}//TO DO by who ever does the list or by me after the list is made
   function onInfo(n) {
     if (!n) return;
     setInfoOpen(true);

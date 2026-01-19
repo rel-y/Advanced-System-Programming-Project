@@ -24,7 +24,7 @@ async function getReqController(req, res) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'user has no read permissions for this file/folder' }));
     }
-    if(!access)
+    if(access)
         singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
