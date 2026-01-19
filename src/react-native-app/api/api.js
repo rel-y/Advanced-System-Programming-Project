@@ -8,7 +8,7 @@ function fetchFromWebServer(url, request){
         ...request,
         headers: {
             ...request.headers,
-            authorization: token ? `Bearer ${jwtToken}` : undefined
+            authorization: jwtToken ? `Bearer ${jwtToken}` : undefined
         }
     });
 }
