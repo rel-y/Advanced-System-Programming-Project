@@ -6,7 +6,8 @@ export function createStyles(theme) {
             padding: theme.spacing.md,
             borderColor: theme.colors.primaryBorder,
             borderWidth: 2,
-            borderRadius: theme.radii.sm
+            borderRadius: theme.radii.sm,
+            margin: theme.spacing.xs
         },
         textEnter: {
             textAlign: 'center',

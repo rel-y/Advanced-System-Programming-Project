@@ -14,7 +14,8 @@ export default function Login() {
     const [isUsernameSelected, setIsUsernameSelected] = useState(null);
     const [isPasswordSelected, setIsPasswordSelected] = useState(null);
     const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    const scheme = useColorScheme();
+    let scheme = useColorScheme();
+    scheme = "dark";
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
     const router = useRouter();
@@ -69,6 +70,7 @@ export default function Login() {
                     onBlur={() => { setIsUsernameSelected(false) }}
                     style={[styles.input, isUsernameSelected && styles.selectedInput, usernameError && styles.inputError]}
                     placeholder='Username'
+                    placeholderTextColor={theme.colors["text-muted"]}
                     autoCapitalize="none"></TextInput>
                 {usernameError && <Text style={styles.inputTextError}>{usernameError}</Text>}
                 <TextInput value={password}
@@ -77,6 +79,7 @@ export default function Login() {
                     onBlur={() => { setIsPasswordSelected(false) }}
                     style={[styles.input, isPasswordSelected && styles.selectedInput, passwordError && styles.inputError]}
                     placeholder='Password'
+                    placeholderTextColor={theme.colors["text-muted"]}
                     autoCapitalize="none"
                     secureTextEntry></TextInput>
                 {passwordError && <Text style={styles.inputTextError}>{passwordError}</Text>}

@@ -25,7 +25,7 @@ export default function Signup() {
     const [isSecPasswordSelected, setIsSecPasswordSelected] = useState(null);
     const [isNicknameSelected, setIsNicknameSelected] = useState(null);
     const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    const scheme = useColorScheme();
+    const scheme = "dark"; //useColorScheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
     const router = useRouter();
@@ -88,6 +88,7 @@ export default function Signup() {
                     onBlur={() => { setIsUsernameSelected(false) }}
                     style={[styles.input, isUsernameSelected && styles.selectedInput, usernameError && styles.inputError]}
                     placeholder='Username'
+                    placeholderTextColor={theme.colors["text-muted"]}
                     autoCapitalize="none"></TextInput>
                 {usernameError && <Text style={styles.inputTextError}>{usernameError}</Text>}
                 <TextInput value={password}
@@ -96,6 +97,7 @@ export default function Signup() {
                     onBlur={() => { setIsPasswordSelected(false) }}
                     style={[styles.input, isPasswordSelected && styles.selectedInput, passwordError && styles.inputError]}
                     placeholder='Password'
+                    placeholderTextColor={theme.colors["text-muted"]}
                     autoCapitalize="none"
                     secureTextEntry></TextInput>
                 {passwordError && <Text style={styles.inputTextError}>{passwordError}</Text>}
@@ -105,6 +107,7 @@ export default function Signup() {
                     onBlur={() => { setIsSecPasswordSelected(false) }}
                     style={[styles.input, isSecPasswordSelected && styles.selectedInput, secPasswordError && styles.inputError]}
                     placeholder='verify Password'
+                    placeholderTextColor={theme.colors["text-muted"]}
                     autoCapitalize="none"
                     secureTextEntry></TextInput>
                 {secPasswordError && <Text style={styles.inputTextError}>{secPasswordError}</Text>}
@@ -114,6 +117,7 @@ export default function Signup() {
                     onBlur={() => { setIsNicknameSelected(false) }}
                     style={[styles.input, isNicknameSelected && styles.selectedInput, nicknameError && styles.inputError]}
                     placeholder='nickname'
+                    placeholderTextColor={theme.colors["text-muted"]}
                     autoCapitalize="none"></TextInput>
                 {nicknameError && <Text style={styles.inputTextError}>{nicknameError}</Text>}
 

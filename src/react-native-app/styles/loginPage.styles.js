@@ -3,7 +3,7 @@ export function createStyles(theme) {
     return StyleSheet.create({
         container: {
             backgroundColor: theme.colors.bg,
-            width: "100%"
+            width: "100%",
         },
         page: {
             flex: 1,
@@ -22,6 +22,7 @@ export function createStyles(theme) {
             backgroundColor: theme.colors.surface,
             margin: theme.spacing.xs,
             borderRadius: theme.radii.sm,
+            color: theme.colors.text,
         },
         text: {
             alignItems: 'center',
