@@ -66,6 +66,7 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
       const res = await fetchFromWebServer(url, {
         method: "GET",
         headers: { Accept: "application/json" },
+        body: {access: "false"},
       });
       console.log(res);
       const node = await res.json();
@@ -81,7 +82,6 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
 
     load();
   }, [id]);
-
   function OnItemPress(node) {
     if(node?.type === "FILE"){
       //TO DO by who ever is doing the file edit

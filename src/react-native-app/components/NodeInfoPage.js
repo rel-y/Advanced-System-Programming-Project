@@ -104,6 +104,7 @@ useEffect(() => {
       res = await fetchFromWebServer(url, {
         method: "GET",
         headers: { Accept: "application/json" },
+        body: {access: "false"},
       });
       const node = await res.json();
       setParentFolder(node.name);

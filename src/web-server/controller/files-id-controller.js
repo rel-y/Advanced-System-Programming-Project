@@ -6,6 +6,12 @@ async function getReqController(req, res) {
 
     const inputId = req.params.id;
 
+    let access = req.body.access;// to update last access or not
+    if(access === undefined || access === null){
+        access = true; // true by defualt so everything old still works
+    }
+    if(access === "false")
+        access = false;
     const fileNode = singletonMetadataModel.getFileNode(inputId);
 
     if (fileNode === undefined) {
@@ -18,8 +24,8 @@ async function getReqController(req, res) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'user has no read permissions for this file/folder' }));
     }
-
-    singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
+    if(!access)
+        singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
         const retjson = { id: inputId, ...fileNode, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
