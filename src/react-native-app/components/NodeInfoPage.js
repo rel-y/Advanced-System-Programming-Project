@@ -1,5 +1,5 @@
 // src/components/NodeInfoPage.jsx
-import React, { useMemo } from "react";
+import React, { useMemo, useState,useEffect } from "react";
 import {
   Modal,
   Pressable,
@@ -8,9 +8,11 @@ import {
   Image,
   useColorScheme,
   ScrollView,
+  
 } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { makeInfoStyles } from "../styles/nodeInfoPage.styles";
+import fetchFromWebServer from "../api/api";
 
 // DD Mon YYYY (ex: 16 Dec 2025)
 function formatDriveTime(input) {
@@ -62,11 +64,12 @@ export default function NodeInfoPage({
   location,
   size,
   lastAccessed, // Date | string
+  id,
 }) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => makeInfoStyles(theme), [theme]);
-
+  const [parentFolder, setParentFolder] = useState("My-Drive")
   const isFolder = type === "FOLDER";
 
   const iconSource = useMemo(() => {
@@ -81,9 +84,40 @@ export default function NodeInfoPage({
       : require("../assets/fileLight.jpg");
   }, [isFolder, theme.mode]);
 
+useEffect(() => {
+    async function load() {
+      if(location == 0){
+        setParentFolder("My-Drive");
+        return;
+      }
+      try{
+      let url = `http://10.0.2.2:8080/api/files/${location}/permmissions`;
+      let res = await fetchFromWebServer(url, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      });
+      if(!res.ok){
+        setParentFolder("shared with me");
+        return;
+      }
+      url = `http://10.0.2.2:8080/api/files/${location}`;
+      res = await fetchFromWebServer(url, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      });
+      const node = await res.json();
+      setParentFolder(node.name);
+    }catch(e){
+      console.error("error reciving node data:",e)
+    }
+    }
+
+    load();
+  }, [id]);
+
+
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <ScrollView>
         <View style={styles.page}>
           {/* Top bar */}
           <View style={styles.topBar}>
@@ -96,30 +130,23 @@ export default function NodeInfoPage({
             </Text>
           </View>
 
-          {/* Preview card (no real content, as requested) */}
-          <View style={styles.previewWrap}>
-            <View style={styles.previewInner}>
-              <View style={styles.previewIconWrap}>
-                <Image source={iconSource} style={styles.previewIcon} resizeMode="contain" />
-              </View>
-
-              <View style={styles.previewSheet} />
-            </View>
-          </View>
-
           {/* Details */}
           <View style={styles.section}>
             <Text style={styles.label}>Type</Text>
-            <Text style={styles.value}>{isFolder ? "Folder" : "File"}</Text>
+
+            <View style={styles.typeRow}>
+              <Image source={iconSource} style={styles.typeIcon} resizeMode="contain" />
+              <Text style={styles.value}>{isFolder ? "Folder" : "File"}</Text>
+            </View>
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.label}>Location</Text>
+            <Text style={styles.label}>location</Text>
             <View style={styles.rowInline}>
               <View style={styles.locationIconBox}>
                 <Text style={styles.locationIcon}>⌂</Text>
               </View>
-              <Text style={styles.value}>{location ?? ""}</Text>
+              <Text style={styles.value}>{parentFolder ?? ""}</Text>
             </View>
           </View>
 
@@ -135,10 +162,9 @@ export default function NodeInfoPage({
 
           <View style={styles.section}>
             <Text style={styles.label}>Last accessed</Text>
-            <Text style={styles.value}>{formatDriveTime(lastAccessed)}</Text>
+            <Text style={styles.value}>{lastAccessed}</Text>
           </View>
         </View>
-        </ScrollView>
     </Modal>
   );
 }

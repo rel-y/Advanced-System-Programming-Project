@@ -9,7 +9,7 @@ import NodeDots from "../components/NodeDots";
 import fetchFromWebServer from "../api/api";
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function NodeHeaderScreen({id = "2788d34710dd4f1a7ee93c5509f47bda", onListUpdate = ()=>{}}) {
+export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -145,7 +145,7 @@ export default function NodeHeaderScreen({id = "2788d34710dd4f1a7ee93c5509f47bda
             </Text>
             <View style={styles.subtitle}>
             <Text numberOfLines={1} style={styles.subtitle}>
-              {node?.isStarred && <Text style={styles.star}>★ </Text>}
+              {!node?.isStarred && <Text style={styles.star}>★ </Text>}
               You opened • {node?.timeText}
             </Text>
 

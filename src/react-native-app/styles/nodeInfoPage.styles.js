@@ -148,5 +148,16 @@ export function makeInfoStyles(theme) {
     col: {
       flex: 1,
     },
+    typeRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 10,
+},
+
+typeIcon: {
+  width: 28,
+  height: 28,
+},
+
   };
 }

@@ -216,7 +216,7 @@ async function onDownload(n) {
         <Row icon={<IconInfo color={styles._iconColor} />} label="Info" onPress={() => node && onInfo(node)} />
         <Row icon={<IconMove color={styles._iconColor} />} label="Move" onPress={() => node && onMove(node)} />
         <Row icon={<IconTrash color={styles._iconColor} />} label={node?.isInTrash?"remove from tash": "move to trash"} onPress={() => node && onTrash(node)} />
-        <Row icon={<IconTrash color={styles._iconColor} />} visible={node?.isInTrash} label={"delete"} onPress={() => node && onDelete(node)} />
+        <Row icon={<IconTrash color={styles._iconColor} />} hidden={!node?.isInTrash} label={"delete"} onPress={() => node && onDelete(node)} />
 
         <Pressable onPress={onClose} style={({ pressed }) => [styles.cancelBtn, pressed && styles.rowPressed]}>
           <Text style={styles.cancelText}>Close</Text>
@@ -235,9 +235,9 @@ async function onDownload(n) {
         onClose={() => setInfoOpen(false)}
         name={node?.name}
         type={node?.type}
-        location={node?.location}
+        location={node?.parent}
         size={node?.size}
-        lastAccessed={node?.lastAccessed}
+        lastAccessed={node?.timeText}
       />
     </Modal>
   );
