@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
   Platform,
+  ScrollView,
 } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { makeSheetStyles } from "../styles/node.styles";
@@ -49,12 +50,12 @@ export default function NodeDots({ visible, onClose, node, onNodeUpdate,onListUp
 
     if (type === "FOLDER") {
       return isDark
-        ? require("../assets/folderDark.jpg")
-        : require("../assets/folderLight.jpg");
+        ? require("../assets/folderDark.png")
+        : require("../assets/folderLight.png");
     }
     return isDark
-      ? require("../assets/fileDark.jpg")
-      : require("../assets/fileLight.jpg");
+      ? require("../assets/fileDark.png")
+      : require("../assets/fileLight.png");
   }, [node?.type, theme.mode]);
 
   // --- Actions ---
@@ -178,7 +179,7 @@ async function onDownload(n) {
 
       <Animated.View style={[styles.sheet, { transform: [{ translateY }] }]}>
         <View style={styles.handle} />
-
+    <ScrollView>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerIconWrap}>
@@ -193,12 +194,12 @@ async function onDownload(n) {
         </View>
 
         {/* Actions (disable by guarding node) */}
-        <Row icon={<IconShare color={styles._iconColor} />} label="Share" onPress={() => node && onShare(node)} />
-        <Row icon={<IconUsers color={styles._iconColor} />} label="Manage access" onPress={() => node && onManageAccess(node)} />
-        <Row icon={<IconStar color={styles._iconColor} />} label="Add to starred" onPress={() => node && onAddToStarred(node)} />
+        <Row icon={<IconShare/>} label="Share" onPress={() => node && onShare(node)} />
+        <Row icon={<IconUsers/>} label="Manage access" onPress={() => node && onManageAccess(node)} />
+        <Row icon={<IconStar/>} label={node?.isStarred?"remove from favorite":"Add to favorite"} onPress={() => node && onAddToStarred(node)} />
 
         <Row
-          icon={<IconDownload color={styles._iconColor} />}
+          icon={<IconDownload/>}
           label={isDownloading ? "Downloading..." : "Download"}
           onPress={() => node && onDownload(node)}
           showDivider
@@ -206,23 +207,24 @@ async function onDownload(n) {
         />
 
         <Row
-          icon={<IconCopy color={styles._iconColor} />}
+          icon={<IconCopy/>}
           label="Make a copy"
           onPress={() => node && onMakeCopy(node)}
           hidden={node?.type !== "FILE"}
         />
 
-        <Row icon={<IconEdit color={styles._iconColor} />} label="Rename" onPress={() => node && onRename(node)} />
-        <Row icon={<IconInfo color={styles._iconColor} />} label="Info" onPress={() => node && onInfo(node)} />
-        <Row icon={<IconMove color={styles._iconColor} />} label="Move" onPress={() => node && onMove(node)} />
-        <Row icon={<IconTrash color={styles._iconColor} />} label={node?.isInTrash?"remove from tash": "move to trash"} onPress={() => node && onTrash(node)} />
-        <Row icon={<IconTrash color={styles._iconColor} />} hidden={!node?.isInTrash} label={"delete"} onPress={() => node && onDelete(node)} />
+        <Row icon={<IconEdit/>} label="Rename" onPress={() => node && onRename(node)} />
+        <Row icon={<IconInfo/>} label="Info" onPress={() => node && onInfo(node)} />
+        <Row icon={<IconMove/>} label="Move" onPress={() => node && onMove(node)} />
+        <Row icon={<IconTrash/>} hidden={node?.isInTrash} label={"move to trash"} onPress={() => node && onTrash(node)} />
+        <Row icon={<IconRestore/>} hidden={!node?.isInTrash} label={"remove from tash"} onPress={() => node && onTrash(node)} />
+        <Row icon={<IconTrash/>} hidden={!node?.isInTrash} label={"delete"} onPress={() => node && onDelete(node)} />
 
         <Pressable onPress={onClose} style={({ pressed }) => [styles.cancelBtn, pressed && styles.rowPressed]}>
           <Text style={styles.cancelText}>Close</Text>
         </Pressable>
+        </ScrollView>
       </Animated.View>
-
       <RenameDialog
         visible={renameOpen}
         onClose={() => setRenameOpen(false)}
@@ -239,75 +241,60 @@ async function onDownload(n) {
         size={node?.size}
         lastAccessed={node?.timeText}
       />
+      
     </Modal>
   );
 }
 
-/* icons unchanged */
-function IconShare({ color }) {
+function IconImg({ source }) {
   return (
     <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>⤴</Text>
+      <Image
+        source={source}
+        style={{ width: 20, height: 20 }}
+        resizeMode="contain"
+      />
     </View>
   );
 }
-function IconInfo({ color }) {
-  return (
-    <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>🛈</Text>
-    </View>
-  );
+function IconShare() {
+  return <IconImg source={require("../assets/icons/share.png")} />;
 }
-function IconUsers({ color }) {
-  return (
-    <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>👥</Text>
-    </View>
-  );
-}
-function IconStar({ color }) {
-  return (
-    <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>☆</Text>
-    </View>
-  );
-}
-function IconDownload({ color }) {
-  return (
-    <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>⬇</Text>
-    </View>
-  );
-}
-function IconCopy({ color }) {
-  return (
-    <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>⧉</Text>
-    </View>
-  );
-}
-function IconEdit({ color }) {
-  return (
-    <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>✎</Text>
-    </View>
-  );
-}
-function IconMove({ color }) {
-  return (
-    <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>⤢</Text>
-    </View>
-  );
 
+function IconInfo() {
+  return <IconImg source={require("../assets/icons/info.png")} />;
 }
-function IconTrash({ color }) {
-  return (
-    <View style={{ width: 24, height: 24 }}>
-      <Text style={{ color, fontSize: 18 }}>🗑</Text>
-    </View>
-  );
 
+function IconUsers() {
+  return <IconImg source={require("../assets/icons/users.png")} />;
+}
+
+function IconStar() {
+  return <IconImg source={require("../assets/icons/star.png")} />;
+}
+
+function IconDownload() {
+  return <IconImg source={require("../assets/icons/download.png")} />;
+}
+
+function IconCopy() {
+  return <IconImg source={require("../assets/icons/copy.png")} />;
+}
+
+function IconEdit() {
+  return <IconImg source={require("../assets/icons/edit.png")} />;
+}
+
+function IconMove() {
+  return <IconImg source={require("../assets/icons/move.png")} />;
+}
+
+function IconTrash() {
+  return <IconImg source={require("../assets/icons/trash.png")} />;
+}
+
+function IconRestore() {
+  return <IconImg source={require("../assets/icons/restore.png")} />;
 }
   function toBase64(str) {
   return global.btoa(

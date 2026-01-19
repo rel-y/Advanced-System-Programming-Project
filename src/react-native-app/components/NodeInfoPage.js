@@ -76,12 +76,12 @@ export default function NodeInfoPage({
     const isDark = theme.mode === "dark";
     if (isFolder) {
       return isDark
-        ? require("../assets/folderDark.jpg")
-        : require("../assets/folderLight.jpg");
+        ? require("../assets/folderDark.png")
+        : require("../assets/folderLight.png");
     }
     return isDark
-      ? require("../assets/fileDark.jpg")
-      : require("../assets/fileLight.jpg");
+      ? require("../assets/fileDark.png")
+      : require("../assets/fileLight.png");
   }, [isFolder, theme.mode]);
 
 useEffect(() => {
@@ -91,7 +91,7 @@ useEffect(() => {
         return;
       }
       try{
-      let url = `http://10.0.2.2:8080/api/files/${location}/permmissions`;
+      let url = `http://10.0.2.2:8080/api/files/${location}/permissions`;
       let res = await fetchFromWebServer(url, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -103,8 +103,7 @@ useEffect(() => {
       url = `http://10.0.2.2:8080/api/files/${location}`;
       res = await fetchFromWebServer(url, {
         method: "GET",
-        headers: { Accept: "application/json" },
-        body: {access: "false"},
+        headers: { Accept: "application/json",access: "false" },
       });
       const node = await res.json();
       setParentFolder(node.name);
@@ -144,9 +143,6 @@ useEffect(() => {
           <View style={styles.section}>
             <Text style={styles.label}>location</Text>
             <View style={styles.rowInline}>
-              <View style={styles.locationIconBox}>
-                <Text style={styles.locationIcon}>⌂</Text>
-              </View>
               <Text style={styles.value}>{parentFolder ?? ""}</Text>
             </View>
           </View>

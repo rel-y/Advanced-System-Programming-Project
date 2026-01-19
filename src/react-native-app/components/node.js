@@ -5,11 +5,11 @@ import { useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { createStyles } from "../styles/nodeHeader.styles";
-import NodeDots from "./NodeDots";
+import NodeDots from "../components/NodeDots";
 import {fetchFromWebServer} from "../api/api";
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
+export default function NodeHeaderScreen({id = "7a72b336da5062c2b72c19a25b5cddd7", onListUpdate = ()=>{}}) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -65,8 +65,7 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
       const url = `http://10.0.2.2:8080/api/files/${id}`;
       const res = await fetchFromWebServer(url, {
         method: "GET",
-        headers: { Accept: "application/json" },
-        body: {access: "false"},
+        headers: { Accept: "application/json",access: "false" },
       });
       console.log(res);
       const node = await res.json();
@@ -101,14 +100,14 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
 
     if (type === "FILE") {
       return isDark
-        ? require("../assets/fileDark.jpg")
-        : require("../assets/fileLight.jpg");
+        ? require("../assets/fileDark.png")
+        : require("../assets/fileLight.png");
     }
 
     // default: folder
     return isDark
-      ? require("../assets/folderDark.jpg")
-      : require("../assets/folderLight.jpg");
+      ? require("../assets/folderDark.png")
+      : require("../assets/folderLight.png");
   }, [node?.type, scheme]);
 
   // if (!node) {
@@ -145,8 +144,8 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
             </Text>
             <View style={styles.subtitle}>
             <Text numberOfLines={1} style={styles.subtitle}>
-              {!node?.isStarred && <Text style={styles.star}>★ </Text>}
-              You opened • {node?.timeText}
+              {node?.isStarred && <IconStar/>}
+              last accessed by you • {node?.timeText}
             </Text>
 
           </View>
@@ -170,4 +169,19 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
       />
     </View>
   );
+}
+function IconImg({ source }) {
+  return (
+    <View style={{ width: 15, height: 15}}>
+      <Image
+        source={source}
+        style={{ width: 15, height: 15 }}
+        resizeMode="contain"
+      />
+    </View>
+  );
+}
+
+function IconStar() {
+  return <IconImg source={require("../assets/icons/star.png")} />;
 }
