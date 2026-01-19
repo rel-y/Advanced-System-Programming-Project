@@ -14,8 +14,7 @@ export default function Login() {
     const [isUsernameSelected, setIsUsernameSelected] = useState(null);
     const [isPasswordSelected, setIsPasswordSelected] = useState(null);
     const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    let scheme = useColorScheme();
-    scheme = "dark";
+    const scheme = useColorScheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
     const router = useRouter();
@@ -48,7 +47,7 @@ export default function Login() {
             },
             method: 'POST',
         }).then(async (response) => {
-            if (response.status === 201) { //user was created passing to main page
+            if (response.status === 201) { //user was created passign to main page
                 const data = await response.json();
                 setToken(data.token);
                 router.replace('/(tabs)')
@@ -91,7 +90,7 @@ export default function Login() {
             <View style={styles.inline}>
                 <Text style={styles.text}>Don't have an account?</Text>
                 <AppButton
-                    title="SingUp"
+                    title="Sign Up"
                     onPress={() => router.replace('/signup')}
                     style={"movePage"}
                 />
