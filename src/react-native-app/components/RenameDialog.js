@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Modal, Pressable, Text, TextInput, View, useColorScheme } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { makeRenameStyles } from "../styles/renameDialog.styles";
-import fetchFromWebServer from "../api/api";
+import {fetchFromWebServer} from "../api/api";
 export default function RenameDialog({ visible, onClose, node, onNodeUpdate }) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);

@@ -16,7 +16,7 @@ import { getTheme } from "../styles/Theme";
 import { makeSheetStyles } from "../styles/node.styles";
 import RenameDialog from "./RenameDialog";
 import NodeInfoPage from "./NodeInfoPage";
-import fetchFromWebServer from "../api/api"; // <-- make sure this path is correct
+import {fetchFromWebServer} from "../api/api"; // <-- make sure this path is correct
 import { File, Paths } from "expo-file-system";
 import * as FS from "expo-file-system/legacy";
 

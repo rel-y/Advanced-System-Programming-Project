@@ -6,7 +6,7 @@ import { useColorScheme } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { createStyles } from "../styles/nodeHeader.styles";
 import NodeDots from "../components/NodeDots";
-import fetchFromWebServer from "../api/api";
+import {fetchFromWebServer} from "../api/api";
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
 export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { makeInfoStyles } from "../styles/nodeInfoPage.styles";
-import fetchFromWebServer from "../api/api";
+import {fetchFromWebServer} from "../api/api";
 
 // DD Mon YYYY (ex: 16 Dec 2025)
 function formatDriveTime(input) {
