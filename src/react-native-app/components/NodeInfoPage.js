@@ -13,6 +13,7 @@ import {
 import { getTheme } from "../styles/Theme";
 import { makeInfoStyles } from "../styles/nodeInfoPage.styles";
 import {fetchFromWebServer} from "../api/api";
+import { SERVER_URL } from "../config";
 
 // DD Mon YYYY (ex: 16 Dec 2025)
 function formatDriveTime(input) {
@@ -91,7 +92,7 @@ useEffect(() => {
         return;
       }
       try{
-      let url = `http://10.0.2.2:8080/api/files/${location}/permissions`;
+      let url = `${SERVER_URL}/api/files/${location}/permissions`;
       let res = await fetchFromWebServer(url, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -100,7 +101,7 @@ useEffect(() => {
         setParentFolder("shared with me");
         return;
       }
-      url = `http://10.0.2.2:8080/api/files/${location}`;
+      url = `${SERVER_URL}/api/files/${location}`;
       res = await fetchFromWebServer(url, {
         method: "GET",
         headers: { Accept: "application/json",access: "false" },

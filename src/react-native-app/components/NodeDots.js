@@ -20,7 +20,7 @@ import NodeInfoPage from "./NodeInfoPage";
 import {fetchFromWebServer} from "../api/api"; // <-- make sure this path is correct
 import { File, Paths } from "expo-file-system";
 import * as FS from "expo-file-system/legacy";
-
+import { SERVER_URL } from "../config";
 
 export default function NodeDots({ visible, onClose, node, onNodeUpdate,onListUpdate }) {
   const scheme = useColorScheme();
@@ -66,7 +66,7 @@ export default function NodeDots({ visible, onClose, node, onNodeUpdate,onListUp
     if (!n?.id) return;
 
     try {
-      const response = await fetchFromWebServer(`http://10.0.2.2:8080/api/files/${n.id}`, {
+      const response = await fetchFromWebServer(`${SERVER_URL}/api/files/${n.id}`, {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ starred: !n.isStarred }),
         method: "PATCH",
@@ -128,7 +128,7 @@ async function onDownload(n) {
   }
   async function onTrash(n){
         try {
-            const response = await fetchFromWebServer(`http://10.0.2.2:8080/api/files/${n.id}`, {
+            const response = await fetchFromWebServer(`${SERVER_URL}/api/files/${n.id}`, {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     trash: !n.isInTrash
@@ -147,7 +147,7 @@ async function onDownload(n) {
   }
   async function onDelete(n){
     try {
-        const response = await fetchFromWebServer(`http://10.0.2.2:8080/api/files/${n.id}`, {
+        const response = await fetchFromWebServer(`${SERVER_URL}/api/files/${n.id}`, {
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'
         });
@@ -216,9 +216,9 @@ async function onDownload(n) {
         <Row icon={<IconEdit/>} label="Rename" onPress={() => node && onRename(node)} />
         <Row icon={<IconInfo/>} label="Info" onPress={() => node && onInfo(node)} />
         <Row icon={<IconMove/>} label="Move" onPress={() => node && onMove(node)} />
-        <Row icon={<IconTrash/>} hidden={node?.isInTrash} label={"move to trash"} onPress={() => node && onTrash(node)} />
-        <Row icon={<IconRestore/>} hidden={!node?.isInTrash} label={"remove from tash"} onPress={() => node && onTrash(node)} />
-        <Row icon={<IconTrash/>} hidden={!node?.isInTrash} label={"delete"} onPress={() => node && onDelete(node)} />
+        <Row icon={<IconTrash/>} hidden={node?.isInTrash} label={"Move to trash"} onPress={() => node && onTrash(node)} />
+        <Row icon={<IconRestore/>} hidden={!node?.isInTrash} label={"Remove from trash"} onPress={() => node && onTrash(node)} />
+        <Row icon={<IconTrash/>} hidden={!node?.isInTrash} label={"Delete"} onPress={() => node && onDelete(node)} />
 
         <Pressable onPress={onClose} style={({ pressed }) => [styles.cancelBtn, pressed && styles.rowPressed]}>
           <Text style={styles.cancelText}>Close</Text>

@@ -7,9 +7,10 @@ import { getTheme } from "../styles/Theme";
 import { createStyles } from "../styles/nodeHeader.styles";
 import NodeDots from "../components/NodeDots";
 import {fetchFromWebServer} from "../api/api";
+import { SERVER_URL } from "../config";
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function NodeHeaderScreen({id = "7a72b336da5062c2b72c19a25b5cddd7", onListUpdate = ()=>{}}) {
+export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -62,7 +63,7 @@ export default function NodeHeaderScreen({id = "7a72b336da5062c2b72c19a25b5cddd7
   useEffect(() => {
     async function load() {
       try{
-      const url = `http://10.0.2.2:8080/api/files/${id}`;
+      const url = `${SERVER_URL}/api/files/${id}`;
       const res = await fetchFromWebServer(url, {
         method: "GET",
         headers: { Accept: "application/json",access: "false" },
