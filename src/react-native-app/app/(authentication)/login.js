@@ -50,7 +50,7 @@ export default function Login() {
             if (response.status === 201) { //user was created passign to main page
                 const data = await response.json();
                 setToken(data.token);
-                router.replace('/(tabs)')
+                router.replace('/(tabs)/FileEdit')
             } else { //waiting for the response to tell the user what went wrong
                 const errorData = await response.json();
                 console.log(errorData);
