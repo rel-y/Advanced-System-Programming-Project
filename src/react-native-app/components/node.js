@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function NodeHeaderScreen({id = "a65fec49a378a93f23af2b8844085144", onListUpdate = ()=>{}}) {
+export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
