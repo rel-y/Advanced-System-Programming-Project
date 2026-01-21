@@ -21,12 +21,30 @@ import {fetchFromWebServer} from "../api/api"; // <-- make sure this path is cor
 import { File, Paths } from "expo-file-system";
 import * as FS from "expo-file-system/legacy";
 import { SERVER_URL } from "../config";
+//#region images
+import ShareSvg from "../assets/icons/share.svg";
+import InfoSvg from "../assets/icons/info.svg";
+import UsersSvg from "../assets/icons/users.svg";
+import StarSvg from "../assets/icons/star.svg";
+import DownloadSvg from "../assets/icons/download.svg";
+import CopySvg from "../assets/icons/copy.svg";
+import EditSvg from "../assets/icons/edit.svg";
+import MoveSvg from "../assets/icons/move.svg";
+import TrashSvg from "../assets/icons/trash.svg";
+import RestoreSvg from "../assets/icons/restore.svg";
+import FolderDarkSvg from "../assets/folderDark.svg";
+import FolderLightSvg from "../assets/folderLight.svg";
+import FileDarkSvg from "../assets/fileDark.svg"; 
+import FileLightSvg from "../assets/fileLight.svg";
+import { useTheme } from "../scheme";
+//#endregion
 
 export default function NodeDots({ visible, onClose, node, onNodeUpdate,onListUpdate }) {
-  const scheme = useColorScheme();
-  const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
+  const { scheme, setScheme } = useTheme();
+  const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => makeSheetStyles(theme), [theme]);
 
+  const iconColor = theme.colors["text-muted"] ?? theme.colors.text;
   const [renameOpen, setRenameOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [loadingNode, setLoadingNode] = useState(false);
@@ -44,19 +62,16 @@ export default function NodeDots({ visible, onClose, node, onNodeUpdate,onListUp
   }, [visible, translateY]);
 
   // Safe iconSource (works even when node is null)
-  const iconSource = useMemo(() => {
-    const isDark = theme.mode === "dark";
-    const type = node?.type;
+const IconComponent = useMemo(() => {
+  const isDark = theme.mode === "dark";
 
-    if (type === "FOLDER") {
-      return isDark
-        ? require("../assets/folderDark.png")
-        : require("../assets/folderLight.png");
-    }
-    return isDark
-      ? require("../assets/fileDark.png")
-      : require("../assets/fileLight.png");
-  }, [node?.type, theme.mode]);
+  if (node?.type === "FOLDER") {
+    return FolderLightSvg;
+  }
+
+  return FileLightSvg;
+}, [node, theme.mode]);
+
 
   // --- Actions ---
   function onShare(n) {} //to do by who ever does premmissions
@@ -183,7 +198,9 @@ async function onDownload(n) {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerIconWrap}>
-            <Image source={iconSource} style={styles.headerIcon} resizeMode="contain" />
+            <View style={styles.typeIcon}>
+              <IconComponent width={32} height={32} />
+            </View>
           </View>
 
           <Text numberOfLines={1} style={styles.headerTitle}>
@@ -194,12 +211,12 @@ async function onDownload(n) {
         </View>
 
         {/* Actions (disable by guarding node) */}
-        <Row icon={<IconShare/>} label="Share" onPress={() => node && onShare(node)} />
-        <Row icon={<IconUsers/>} label="Manage access" onPress={() => node && onManageAccess(node)} />
-        <Row icon={<IconStar/>} label={node?.isStarred?"remove from favorite":"Add to favorite"} onPress={() => node && onAddToStarred(node)} />
+        <Row icon={<IconShare />} label="Share" onPress={() => node && onShare(node)} />
+        <Row icon={<IconUsers />} label="Manage access" onPress={() => node && onManageAccess(node)} />
+        <Row icon={<IconStar  />} label={node?.isStarred?"remove from favorite":"Add to favorite"} onPress={() => node && onAddToStarred(node)} />
 
         <Row
-          icon={<IconDownload/>}
+          icon={<IconDownload />}
           label={isDownloading ? "Downloading..." : "Download"}
           onPress={() => node && onDownload(node)}
           showDivider
@@ -207,18 +224,18 @@ async function onDownload(n) {
         />
 
         <Row
-          icon={<IconCopy/>}
+          icon={<IconCopy />}
           label="Make a copy"
           onPress={() => node && onMakeCopy(node)}
           hidden={node?.type !== "FILE"}
         />
 
-        <Row icon={<IconEdit/>} label="Rename" onPress={() => node && onRename(node)} />
-        <Row icon={<IconInfo/>} label="Info" onPress={() => node && onInfo(node)} />
-        <Row icon={<IconMove/>} label="Move" onPress={() => node && onMove(node)} />
-        <Row icon={<IconTrash/>} hidden={node?.isInTrash} label={"Move to trash"} onPress={() => node && onTrash(node)} />
-        <Row icon={<IconRestore/>} hidden={!node?.isInTrash} label={"Remove from trash"} onPress={() => node && onTrash(node)} />
-        <Row icon={<IconTrash/>} hidden={!node?.isInTrash} label={"Delete"} onPress={() => node && onDelete(node)} />
+        <Row icon={<IconEdit />} label="Rename" onPress={() => node && onRename(node)} />
+        <Row icon={<IconInfo />} label="Info" onPress={() => node && onInfo(node)} />
+        <Row icon={<IconMove />} label="Move" onPress={() => node && onMove(node)} />
+        <Row icon={<IconTrash />} hidden={node?.isInTrash} label={"Move to trash"} onPress={() => node && onTrash(node)} />
+        <Row icon={<IconRestore />} hidden={!node?.isInTrash} label={"Remove from trash"} onPress={() => node && onTrash(node)} />
+        <Row icon={<IconTrash />} hidden={!node?.isInTrash} label={"Delete"} onPress={() => node && onDelete(node)} />
 
         <Pressable onPress={onClose} style={({ pressed }) => [styles.cancelBtn, pressed && styles.rowPressed]}>
           <Text style={styles.cancelText}>Close</Text>
@@ -246,55 +263,44 @@ async function onDownload(n) {
   );
 }
 
-function IconImg({ source }) {
+function IconSvg({ Svg, color }) {
   return (
-    <View style={{ width: 24, height: 24 }}>
-      <Image
-        source={source}
-        style={{ width: 20, height: 20 }}
-        resizeMode="contain"
-      />
+    <View style={{ width: 24, height: 24, alignItems: "center", justifyContent: "center" }}>
+      <Svg width={20} height={20} fill={color} />
     </View>
   );
 }
-function IconShare() {
-  return <IconImg source={require("../assets/icons/share.png")} />;
-}
 
-function IconInfo() {
-  return <IconImg source={require("../assets/icons/info.png")} />;
+// --- Icons ---
+function IconShare({ color = "#666" }) {
+  return <IconSvg Svg={ShareSvg} color={color} />;
 }
-
-function IconUsers() {
-  return <IconImg source={require("../assets/icons/users.png")} />;
+function IconInfo({ color = "#666" }) {
+  return <IconSvg Svg={InfoSvg} color={color} />;
 }
-
-function IconStar() {
-  return <IconImg source={require("../assets/icons/star.png")} />;
+function IconUsers({ color = "#666" }) {
+  return <IconSvg Svg={UsersSvg} color={color} />;
 }
-
-function IconDownload() {
-  return <IconImg source={require("../assets/icons/download.png")} />;
+function IconStar({ color = "#666" }) {
+  return <IconSvg Svg={StarSvg} color={color} />;
 }
-
-function IconCopy() {
-  return <IconImg source={require("../assets/icons/copy.png")} />;
+function IconDownload({ color = "#666" }) {
+  return <IconSvg Svg={DownloadSvg} color={color} />;
 }
-
-function IconEdit() {
-  return <IconImg source={require("../assets/icons/edit.png")} />;
+function IconCopy({ color = "#666" }) {
+  return <IconSvg Svg={CopySvg} color={color} />;
 }
-
-function IconMove() {
-  return <IconImg source={require("../assets/icons/move.png")} />;
+function IconEdit({ color = "#666" }) {
+  return <IconSvg Svg={EditSvg} color={color} />;
 }
-
-function IconTrash() {
-  return <IconImg source={require("../assets/icons/trash.png")} />;
+function IconMove({ color = "#666" }) {
+  return <IconSvg Svg={MoveSvg} color={color} />;
 }
-
-function IconRestore() {
-  return <IconImg source={require("../assets/icons/restore.png")} />;
+function IconTrash({ color = "#666" }) {
+  return <IconSvg Svg={TrashSvg} color={color} />;
+}
+function IconRestore({ color = "#666" }) {
+  return <IconSvg Svg={RestoreSvg} color={color} />;
 }
   function toBase64(str) {
   return global.btoa(

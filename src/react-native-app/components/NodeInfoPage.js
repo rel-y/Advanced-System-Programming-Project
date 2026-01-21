@@ -14,6 +14,12 @@ import { getTheme } from "../styles/Theme";
 import { makeInfoStyles } from "../styles/nodeInfoPage.styles";
 import {fetchFromWebServer} from "../api/api";
 import { SERVER_URL } from "../config";
+import FolderDarkSvg from "../assets/folderDark.svg";
+import FolderLightSvg from "../assets/folderLight.svg";
+import FileDarkSvg from "../assets/fileDark.svg";
+import FileLightSvg from "../assets/fileLight.svg";
+import { useTheme } from "../scheme";
+
 
 // DD Mon YYYY (ex: 16 Dec 2025)
 function formatDriveTime(input) {
@@ -67,23 +73,22 @@ export default function NodeInfoPage({
   lastAccessed, // Date | string
   id,
 }) {
-  const scheme = useColorScheme();
+  const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => makeInfoStyles(theme), [theme]);
   const [parentFolder, setParentFolder] = useState("My-Drive")
   const isFolder = type === "FOLDER";
 
-  const iconSource = useMemo(() => {
-    const isDark = theme.mode === "dark";
-    if (isFolder) {
-      return isDark
-        ? require("../assets/folderDark.png")
-        : require("../assets/folderLight.png");
-    }
-    return isDark
-      ? require("../assets/fileDark.png")
-      : require("../assets/fileLight.png");
-  }, [isFolder, theme.mode]);
+const IconComponent = useMemo(() => {
+  const isDark = theme.mode === "dark";
+
+  if (type === "FOLDER") {
+    return isDark ? FolderDarkSvg : FolderLightSvg;
+  }
+
+  return isDark ? FileDarkSvg : FileLightSvg;
+}, [type, theme.mode]);
+
 
 useEffect(() => {
     async function load() {
@@ -136,7 +141,9 @@ useEffect(() => {
             <Text style={styles.label}>Type</Text>
 
             <View style={styles.typeRow}>
-              <Image source={iconSource} style={styles.typeIcon} resizeMode="contain" />
+              <View style={styles.typeIcon}>
+                <IconComponent width={32} height={32} />
+              </View>
               <Text style={styles.value}>{isFolder ? "Folder" : "File"}</Text>
             </View>
           </View>

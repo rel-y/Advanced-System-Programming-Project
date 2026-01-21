@@ -5,9 +5,10 @@ import { getTheme } from "../styles/Theme";
 import { makeRenameStyles } from "../styles/renameDialog.styles";
 import {fetchFromWebServer} from "../api/api";
 import { SERVER_URL } from "../config";
+import { useTheme } from "../scheme";
 
 export default function RenameDialog({ visible, onClose, node, onNodeUpdate }) {
-  const scheme = useColorScheme();
+  const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => makeRenameStyles(theme), [theme]);
 

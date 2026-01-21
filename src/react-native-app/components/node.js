@@ -5,13 +5,21 @@ import { useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { createStyles } from "../styles/nodeHeader.styles";
-import NodeDots from "../components/NodeDots";
+import NodeDots from "./NodeDots";
 import {fetchFromWebServer} from "../api/api";
 import { SERVER_URL } from "../config";
+import StarSvg from "../assets/icons/star.svg";
+import FolderDarkSvg from "../assets/folderDark.svg";
+import FolderLightSvg from "../assets/folderLight.svg";
+import FileDarkSvg from "../assets/fileDark.svg";
+import FileLightSvg from "../assets/fileLight.svg";
+import { useTheme } from "../scheme";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
-  const scheme = useColorScheme();
+export default function NodeHeaderScreen({id = "a65fec49a378a93f23af2b8844085144", onListUpdate = ()=>{}}) {
+  const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -95,21 +103,16 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
     setIsSheetOpen(true);
   }
 
-  const iconSource = useMemo(() => {
-    const isDark = scheme === "dark";
-    const type = node?.type;
+const IconComponent = useMemo(() => {
+  const isDark = theme.mode === "dark";
 
-    if (type === "FILE") {
-      return isDark
-        ? require("../assets/fileDark.png")
-        : require("../assets/fileLight.png");
-    }
+  if (node?.type === "FOLDER") {
+    return FolderLightSvg;
+  }
 
-    // default: folder
-    return isDark
-      ? require("../assets/folderDark.png")
-      : require("../assets/folderLight.png");
-  }, [node?.type, scheme]);
+  return FileLightSvg;
+}, [node, theme.mode]);
+
 
   // if (!node) {
   //   return (
@@ -129,6 +132,7 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
   // }
 
   return (
+    <SafeAreaView>
     <View style={styles.page}>
       <Pressable
         onPress={OnItemPress(node)}
@@ -136,7 +140,9 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
       >
         <View style={styles.leftHit}>
           <View style={styles.iconWrap}>
-            <Image source={iconSource} style={styles.icon} resizeMode="contain" />
+            <View style={styles.typeIcon}>
+              <IconComponent width={32} height={32} />
+            </View>
           </View>
 
           <View style={styles.textCol}>
@@ -145,7 +151,7 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
             </Text>
             <View style={styles.subtitle}>
             <Text numberOfLines={1} style={styles.subtitle}>
-              {node?.isStarred && <IconStar/>}
+              {node?.isStarred && <IconStar />}
               last accessed by you • {node?.timeText}
             </Text>
 
@@ -169,20 +175,17 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
         theme={theme}
       />
     </View>
-  );
-}
-function IconImg({ source }) {
-  return (
-    <View style={{ width: 15, height: 15}}>
-      <Image
-        source={source}
-        style={{ width: 15, height: 15 }}
-        resizeMode="contain"
-      />
-    </View>
+    </SafeAreaView>
   );
 }
 
-function IconStar() {
-  return <IconImg source={require("../assets/icons/star.png")} />;
+function IconSvg({ Svg, color }) {
+  return (
+    <View style={{ width: 24, height: 15, alignItems: "center", justifyContent: "center" }}>
+      <Svg width={12} height={12} fill={color} />
+    </View>
+  );
+}
+function IconStar({ color = "#666" }) {
+  return <IconSvg Svg={StarSvg} color={color} />;
 }
