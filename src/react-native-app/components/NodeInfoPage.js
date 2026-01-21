@@ -141,7 +141,7 @@ useEffect(() => {
 
             <View style={styles.typeRow}>
               <View style={styles.typeIcon}>
-                <IconComponent width={32} height={32} />
+                <IconComponent width={32} height={32} fill={"#90D5FF"}/>
               </View>
               <Text style={styles.value}>{isFolder ? "Folder" : "File"}</Text>
             </View>

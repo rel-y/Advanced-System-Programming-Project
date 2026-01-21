@@ -198,7 +198,7 @@ async function onDownload(n) {
         <View style={styles.header}>
           <View style={styles.headerIconWrap}>
             <View style={styles.typeIcon}>
-              <IconComponent width={32} height={32} />
+              <IconComponent width={32} height={32} fill={"#90D5FF"}/>
             </View>
           </View>
 
@@ -212,7 +212,7 @@ async function onDownload(n) {
         {/* Actions (disable by guarding node) */}
         <Row icon={<IconShare />} label="Share" onPress={() => node && onShare(node)} />
         <Row icon={<IconUsers />} label="Manage access" onPress={() => node && onManageAccess(node)} />
-        <Row icon={<IconStar  />} label={node?.isStarred?"remove from favorite":"Add to favorite"} onPress={() => node && onAddToStarred(node)} />
+        <Row icon={<IconStar  />} label={node?.isStarred?"Remove from favorite":"Add to favorite"} onPress={() => node && onAddToStarred(node)} />
 
         <Row
           icon={<IconDownload />}
@@ -271,34 +271,34 @@ function IconSvg({ Svg, color }) {
 }
 
 // --- Icons ---
-function IconShare({ color = "#666" }) {
+function IconShare({ color = "#90D5FF"}) {
   return <IconSvg Svg={ShareSvg} color={color} />;
 }
-function IconInfo({ color = "#666" }) {
+function IconInfo({ color = "#90D5FF" }) {
   return <IconSvg Svg={InfoSvg} color={color} />;
 }
-function IconUsers({ color = "#666" }) {
+function IconUsers({  color = "#90D5FF" }) {
   return <IconSvg Svg={UsersSvg} color={color} />;
 }
-function IconStar({ color = "#666" }) {
+function IconStar({  color = "#90D5FF"}) {
   return <IconSvg Svg={StarSvg} color={color} />;
 }
-function IconDownload({ color = "#666" }) {
+function IconDownload({  color = "#90D5FF" }) {
   return <IconSvg Svg={DownloadSvg} color={color} />;
 }
-function IconCopy({ color = "#666" }) {
+function IconCopy({  color = "#90D5FF" }) {
   return <IconSvg Svg={CopySvg} color={color} />;
 }
-function IconEdit({ color = "#666" }) {
+function IconEdit({ color = "#90D5FF" }) {
   return <IconSvg Svg={EditSvg} color={color} />;
 }
-function IconMove({ color = "#666" }) {
+function IconMove({  color = "#90D5FF" }) {
   return <IconSvg Svg={MoveSvg} color={color} />;
 }
-function IconTrash({ color = "#666" }) {
+function IconTrash({  color = "#90D5FF" }) {
   return <IconSvg Svg={TrashSvg} color={color} />;
 }
-function IconRestore({ color = "#666" }) {
+function IconRestore({  color = "#90D5FF" }) {
   return <IconSvg Svg={RestoreSvg} color={color} />;
 }
   function toBase64(str) {

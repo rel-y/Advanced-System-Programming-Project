@@ -19,7 +19,7 @@ export default function RenameDialog({ visible, onClose, node, onNodeUpdate }) {
   }, [visible]);
 
   async function onRenamePress() {
-    if(value == node?.name || value === "") return;
+    if(value == node?.name || value.trim() === "") return;
     try{
         const response = await fetchFromWebServer(`${SERVER_URL}/api/files/${node?.id}`, {
             headers: { 'Content-Type': 'application/json' },

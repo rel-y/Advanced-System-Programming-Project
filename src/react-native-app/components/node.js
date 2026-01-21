@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { createStyles } from "../styles/nodeHeader.styles";
-import NodeDots from "./NodeDots";
+import NodeDots from "../components/NodeDots";
 import {fetchFromWebServer} from "../api/api";
 import { SERVER_URL } from "../config";
 import StarSvg from "../assets/icons/star.svg";
@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
+export default function NodeHeaderScreen({id = "96f6cf456491be041cfe1771b2a3a949", onListUpdate = ()=>{}}) {
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -140,7 +140,7 @@ const IconComponent = useMemo(() => {
         <View style={styles.leftHit}>
           <View style={styles.iconWrap}>
             <View style={styles.typeIcon}>
-              <IconComponent width={32} height={32} />
+              <IconComponent width={32} height={32} fill={"#90D5FF"} strokeWidth={2}/>
             </View>
           </View>
 
@@ -181,10 +181,10 @@ const IconComponent = useMemo(() => {
 function IconSvg({ Svg, color }) {
   return (
     <View style={{ width: 24, height: 15, alignItems: "center", justifyContent: "center" }}>
-      <Svg width={12} height={12} fill={color} />
+      <Svg width={12} height={12} fill={color}/>
     </View>
   );
 }
-function IconStar({ color = "#666" }) {
+function IconStar({ color = "#90D5FF" }) {
   return <IconSvg Svg={StarSvg} color={color} />;
 }
