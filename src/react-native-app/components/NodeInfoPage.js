@@ -80,13 +80,12 @@ export default function NodeInfoPage({
   const isFolder = type === "FOLDER";
 
 const IconComponent = useMemo(() => {
-  const isDark = theme.mode === "dark";
 
   if (type === "FOLDER") {
-    return isDark ? FolderDarkSvg : FolderLightSvg;
+    return FolderLightSvg;
   }
 
-  return isDark ? FileDarkSvg : FileLightSvg;
+  return FileLightSvg;
 }, [type, theme.mode]);
 
 

@@ -104,7 +104,6 @@ export default function NodeHeaderScreen({id, onListUpdate = ()=>{}}) {
   }
 
 const IconComponent = useMemo(() => {
-  const isDark = theme.mode === "dark";
 
   if (node?.type === "FOLDER") {
     return FolderLightSvg;

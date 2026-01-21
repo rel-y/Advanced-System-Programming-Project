@@ -63,7 +63,6 @@ export default function NodeDots({ visible, onClose, node, onNodeUpdate,onListUp
 
   // Safe iconSource (works even when node is null)
 const IconComponent = useMemo(() => {
-  const isDark = theme.mode === "dark";
 
   if (node?.type === "FOLDER") {
     return FolderLightSvg;
