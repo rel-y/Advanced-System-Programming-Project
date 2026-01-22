@@ -3,8 +3,8 @@ import { ThemeProvider } from "../scheme";
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <Stack screenOptions={{ headerShown: false }} />
-    </ThemeProvider>
+    <Stack>
+      <Stack.Screen name='(authentication)' options={{ headerShown: false }} />
+    </Stack>
   );
 }
