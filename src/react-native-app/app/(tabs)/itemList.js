@@ -10,15 +10,14 @@ import { getTheme } from "../../styles/Theme";
  * Props:
  *  - ids: array of node ids (string/number)
  */
-export default function NodeListScreen({ ids = ["9bb9a4dede7c57ccaaa06a606b9eda57","277f5c229dcb54dc2ad765c08adf2be6","35da5cebef1254c735bf587e35f6bd19",
-    "fecdfb607c2041de86b17c1959de40c7","263cfe1d5fedac02afc191f3e17f1adb","3bdf7ad2128f6b0b74f24857ee334cee"], page="home"}) {
+export default function NodeListScreen({ ids = ["56e95ad81802e038d2b777dcd68c8009","f8f4aabaa0e7a266806cad00b8210e53","a8f751c6a089fbcbe615cea54ef060b1","f34a935a126dc32736f280bf5a64b31a","f33805d6a982913089fe5123bca3b37f","65c4bd13ac1cc0257257760337200c96","4bc14f8ceb3fa6be5a5952c4abf86a34","72e856ef1a54841380381921777529f6","2f1ae4a920cf3a6766bea094a318cbf6","19870ea7280ea86ae5f4288f2e96cd18","964f62581df075f4f29a5edffbea3d24"], page="home"}) {
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [idList, setIdlist] = useState(ids);
   const [idAndReason, setIdTORemove] = useState({id:"", Reason:""});//id to delete and the reason
   useEffect(() => {
-    if(idAndReason.Reason === null || idAndReason.Reason === undefined) return;//no reason no responce
+    if(idAndReason.Reason === null || idAndReason.Reason === undefined) return;//no reason no responce still rerender
     if(idAndReason.Reason === "delete")
         setIdlist(prev =>
             prev.filter(idL => idL !== idAndReason.id)
@@ -43,7 +42,7 @@ export default function NodeListScreen({ ids = ["9bb9a4dede7c57ccaaa06a606b9eda5
         keyExtractor={(id, idx) => String(id ?? idx)}
         contentContainerStyle={styles.listContent}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item: id }) => <Node id={id} onListUpdate={setIdTORemove}/>}
+        renderItem={({ item: id }) => <Node id={id} onListUpdate={setIdTORemove} onFolderUpdate={setIdlist}/>}
       />
     </View>
   );

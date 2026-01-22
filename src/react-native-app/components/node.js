@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function Node({id, onListUpdate = ()=>{}}) {
+export default function Node({id, onListUpdate = ()=>{}, onFolderUpdate= ()=>{}}) {
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -90,11 +90,22 @@ export default function Node({id, onListUpdate = ()=>{}}) {
 
     load();
   }, [id]);
-  function OnItemPress(node) {
+  async function OnItemPress(node) {
     if(node?.type === "FILE"){
       //TO DO by who ever is doing the file edit
     } else {
-      //TO DO by who ever is doing the list of nodes
+      const url = `${SERVER_URL}/api/folders/${node?.id}`;
+      const res = await fetchFromWebServer(url, {
+        method: "GET",
+        headers: { Accept: "application/json",access: "false" },
+      });
+      if(res.ok){
+        const data = await res.json();
+        console.log(data);
+        const idList = data.filter(node=> node?.id).map(node => node?.id);
+        onFolderUpdate(idList);
+      } else
+        console.error("failed fetching children")
     }
   }
 
@@ -134,7 +145,7 @@ const IconComponent = useMemo(() => {
     
     <View style={styles.page}>
       <Pressable
-        onPress={OnItemPress(node)}
+        onPress={()=> OnItemPress(node)}
         style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       >
         <View style={styles.leftHit}>
