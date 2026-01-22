@@ -6,6 +6,7 @@ import AppButton from '../../components/loginButton';
 import { getTheme } from '../../styles/Theme';
 import { createStyles } from '../../styles/loginPage.styles';
 import { SERVER_URL } from '../../config';
+import { useTheme } from "../../scheme";
 export default function Signup() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -27,7 +28,7 @@ export default function Signup() {
     const [isSecPasswordSelected, setIsSecPasswordSelected] = useState(null);
     const [isNicknameSelected, setIsNicknameSelected] = useState(null);
     const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    const scheme = useColorScheme();
+    const {scheme, setScheme} = useTheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
     const router = useRouter();

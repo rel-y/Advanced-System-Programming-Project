@@ -1,20 +1,21 @@
 import { useMemo, useState } from 'react'
-import { View, Text, TextInput, useColorScheme } from 'react-native'
+import { View, Text, TextInput} from 'react-native'
 import { useRouter } from 'expo-router';
 import AppButton from '../../components/loginButton';
 import { getTheme } from '../../styles/Theme';
 import { createStyles } from '../../styles/loginPage.styles';
 import { SERVER_URL } from '../../config';
 import { setToken } from '../../api/api';
+import { useTheme } from '../../scheme';
 export default function Login() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("o2");
+    const [password, setPassword] = useState("12345678Aa");
     const [usernameError, setUsernameError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
     const [isUsernameSelected, setIsUsernameSelected] = useState(null);
     const [isPasswordSelected, setIsPasswordSelected] = useState(null);
     const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    const scheme = useColorScheme();
+    const {scheme, setScheme} = useTheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
     const router = useRouter();
@@ -50,7 +51,7 @@ export default function Login() {
             if (response.status === 201) { //user was created passign to main page
                 const data = await response.json();
                 setToken(data.token);
-                router.replace('/(tabs)')
+                router.replace('/(tabs)/itemList')
             } else { //waiting for the response to tell the user what went wrong
                 const errorData = await response.json();
                 console.log(errorData);

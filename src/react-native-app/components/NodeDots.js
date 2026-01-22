@@ -89,6 +89,8 @@ const IconComponent = useMemo(() => {
       if (!response.ok) console.error("error starring item");
       else {
         // optimistic update
+        if(node?.isStarred)
+          onListUpdate({id:n.id, Reason:"unstar"});
         onNodeUpdate({...node, isStarred: !node?.isStarred});
       }
     } catch (err) {
@@ -150,6 +152,10 @@ async function onDownload(n) {
                 method: 'PATCH'
             });
             if (response.ok) {
+                if(n.isInTrash)
+                  onListUpdate({id:n.id, Reason:"RemoveFromTrash"});
+                else
+                  onListUpdate({id:n.id, Reason:"toTrash"});
                 onNodeUpdate({...n, isInTrash: !n.isInTrash})
             } else {
                 console.error('error removing item from trash');
@@ -157,7 +163,6 @@ async function onDownload(n) {
         } catch (err) {
             console.error('Error fetching file:', err);
         }
-    onListUpdate();
   }
   async function onDelete(n){
     try {
@@ -166,7 +171,7 @@ async function onDownload(n) {
             method: 'DELETE'
         });
         if (response.ok) {
-            onListUpdate();
+            onListUpdate({id:n.id, Reason:"delete"});
         } else {
             console.error('error deleting item');
         }

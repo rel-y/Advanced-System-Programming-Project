@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { createStyles } from "../styles/nodeHeader.styles";
-import NodeDots from "../components/NodeDots";
+import NodeDots from "./NodeDots";
 import {fetchFromWebServer} from "../api/api";
 import { SERVER_URL } from "../config";
 import StarSvg from "../assets/icons/star.svg";
@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function NodeHeaderScreen({id = "96f6cf456491be041cfe1771b2a3a949", onListUpdate = ()=>{}}) {
+export default function Node({id, onListUpdate = ()=>{}}) {
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -131,7 +131,7 @@ const IconComponent = useMemo(() => {
   // }
 
   return (
-    <SafeAreaView>
+    
     <View style={styles.page}>
       <Pressable
         onPress={OnItemPress(node)}
@@ -174,7 +174,7 @@ const IconComponent = useMemo(() => {
         theme={theme}
       />
     </View>
-    </SafeAreaView>
+    
   );
 }
 
