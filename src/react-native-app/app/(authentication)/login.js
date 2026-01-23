@@ -35,12 +35,13 @@ export default function Login() {
         return valid;
     }
     const handleSubmit = (e) => {
+        
         if (!validateInput()) {
             return;
         }
         e.preventDefault();
         const data = { username: username, password: password };
-
+        
         fetch(`${SERVER_URL}/api/tokens`, {
             body: JSON.stringify(data),
             headers: {
@@ -48,10 +49,12 @@ export default function Login() {
             },
             method: 'POST',
         }).then(async (response) => {
+            console.log(response);
             if (response.status === 201) { //user was created passign to main page
                 const data = await response.json();
                 setToken(data.token);
-                router.replace('/(tabs)/itemList')
+                
+                router.replace('/(tabs)/mainPage');
             } else { //waiting for the response to tell the user what went wrong
                 const errorData = await response.json();
                 console.log(errorData);
