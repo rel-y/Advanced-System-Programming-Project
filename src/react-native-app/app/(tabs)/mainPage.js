@@ -66,7 +66,7 @@ export default function MainPage() {
         setIdlist(ids);
         setPage(folder);
     }
-    function saveIdList(folder, id, saveMemory = true) {//to be used by the tabs
+    function saveIdList(folder, ids, saveMemory = true) {//to be used by the tabs
         if (saveMemory) {
             folderStackRef.current.push({ ids: idList, folder: page });
         }
@@ -98,7 +98,7 @@ export default function MainPage() {
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1, backgroundColor:styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
-                    <NodeList ids={idList} page={page} SaveList={saveNodeList} />
+                    <NodeList ids={idList} page={page} SaveList={saveNodeList} SaveIdList={saveIdList} />
                 </View>
             </SafeAreaView>
         </SafeAreaProvider >

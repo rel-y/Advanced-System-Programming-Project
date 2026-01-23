@@ -10,7 +10,7 @@ import { getTheme } from "../styles/Theme";
  * Props:
  *  - ids: array of node ids (string/number)
  */
-export default function NodeList({ SaveList = () => { }, page = "home", ids = [] }) {
+export default function NodeList({SaveIdList = ()=>{}, SaveNodeList = () => { }, page = "home", ids = [] }) {
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -20,13 +20,13 @@ export default function NodeList({ SaveList = () => { }, page = "home", ids = []
   useEffect(() => {
     if (idAndReason.Reason === null || idAndReason.Reason === undefined) return;//no reason no responce still rerender
     if (idAndReason.Reason === "delete")
-      SaveList(page, ids.filter(id => id !== idAndReason.id), false);
+      SaveIdList(page, ids.filter(id => id !== idAndReason.id), false);
     if (idAndReason.Reason === "toTrash" && page !== "bin")
-      SaveList(page, ids.filter(id => id !== idAndReason.id), false);
+      SaveIdList(page, ids.filter(id => id !== idAndReason.id), false);
     if (idAndReason.Reason === "RemoveFromTrash" && page === "bin")
-      SaveList(page, ids.filter(id => id !== idAndReason.id), false);
+      SaveIdList(page, ids.filter(id => id !== idAndReason.id), false);
     if (idAndReason.Reason === "unstar" && page === "star")
-      SaveList(page, ids.filter(id => id !== idAndReason.id), false);
+      SaveIdList(page, ids.filter(id => id !== idAndReason.id), false);
   }, [idAndReason]);
   return (
     <View style={styles.page}>
@@ -35,7 +35,7 @@ export default function NodeList({ SaveList = () => { }, page = "home", ids = []
         keyExtractor={(id, idx) => String(id ?? idx)}
         contentContainerStyle={styles.listContent}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item: id }) => <Node id={id} onListUpdate={setIdTORemove} onFolderUpdate={nodes => SaveList(page,nodes)} />}
+        renderItem={({ item: id }) => <Node id={id} onListUpdate={setIdTORemove} onFolderUpdate={nodes => SaveNodeList(page,nodes)} />}
       />
     </View>
   );
