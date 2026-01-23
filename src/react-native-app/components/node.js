@@ -6,7 +6,7 @@ import { useColorScheme } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { createStyles } from "../styles/nodeHeader.styles";
 import NodeDots from "./NodeDots";
-import {fetchFromWebServer} from "../api/api";
+import { fetchFromWebServer } from "../api/api";
 import { SERVER_URL } from "../config";
 import StarSvg from "../assets/icons/star.svg";
 import FolderDarkSvg from "../assets/folderDark.svg";
@@ -18,7 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
-export default function Node({id, onListUpdate = ()=>{}, onFolderUpdate= ()=>{}}) {
+export default function Node({ id, onListUpdate = () => { }, onFolderUpdate = () => { } }) {
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -27,131 +27,114 @@ export default function Node({id, onListUpdate = ()=>{}, onFolderUpdate= ()=>{}}
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   function formatDriveTime(input) {
-  if (!input) return "";
+    if (!input) return "";
 
-  // Handle string / number / Date
-  let date;
-  if (input instanceof Date) {
-    date = input;
-  } else if (typeof input === "string" || typeof input === "number") {
-    date = new Date(input);
-  } else if (input?.$date) {
-    date = new Date(input.$date);
-  } else {
-    return "";
+    // Handle string / number / Date
+    let date;
+    if (input instanceof Date) {
+      date = input;
+    } else if (typeof input === "string" || typeof input === "number") {
+      date = new Date(input);
+    } else if (input?.$date) {
+      date = new Date(input.$date);
+    } else {
+      return "";
+    }
+
+    if (isNaN(date.getTime())) return "";
+
+    const now = new Date();
+
+    const isSameDay =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
+
+    if (isSameDay) {
+      const h = String(date.getHours()).padStart(2, "0");
+      const m = String(date.getMinutes()).padStart(2, "0");
+      return `${h}:${m}`;
+    }
+
+    const day = date.getDate();
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const year = date.getFullYear();
+
+    if (year === now.getFullYear()) {
+      return `${day} ${month}`;
+    }
+
+    return `${day} ${month} ${year}`;
   }
-
-  if (isNaN(date.getTime())) return "";
-
-  const now = new Date();
-
-  const isSameDay =
-    date.getFullYear() === now.getFullYear() &&
-    date.getMonth() === now.getMonth() &&
-    date.getDate() === now.getDate();
-
-  if (isSameDay) {
-    const h = String(date.getHours()).padStart(2, "0");
-    const m = String(date.getMinutes()).padStart(2, "0");
-    return `${h}:${m}`;
-  }
-
-  const day = date.getDate();
-  const month = date.toLocaleString("en-US", { month: "short" });
-  const year = date.getFullYear();
-
-  if (year === now.getFullYear()) {
-    return `${day} ${month}`;
-  }
-
-  return `${day} ${month} ${year}`;
-}
 
 
   useEffect(() => {
     async function load() {
-      try{
-      const url = `${SERVER_URL}/api/files/${id}`;
-      const res = await fetchFromWebServer(url, {
-        method: "GET",
-        headers: { Accept: "application/json",access: "false" },
-      });
-      console.log(res);
-      const node = await res.json();
-      console.log(node.lastAccess);
+      try {
+        const url = `${SERVER_URL}/api/files/${id}`;
+        const res = await fetchFromWebServer(url, {
+          method: "GET",
+          headers: { Accept: "application/json", access: "false" },
+        });
+        console.log(res);
+        const node = await res.json();
+        console.log(node.lastAccess);
 
-      node.subtitle = "you opened";
-      node.timeText = formatDriveTime(node.lastAccess);
-      setNode(node);
-    }catch(e){
-      console.error("error reciving node data:",e)
-    }
+        node.subtitle = "you opened";
+        node.timeText = formatDriveTime(node.lastAccess);
+        setNode(node);
+      } catch (e) {
+        console.error("error reciving node data:", e)
+      }
     }
 
     load();
   }, [id]);
   async function OnItemPress(node) {
-    if(node?.type === "FILE"){
+    if (node?.type === "FILE") {
       //TO DO by who ever is doing the file edit
     } else {
       const url = `${SERVER_URL}/api/folders/${node?.id}`;
       const res = await fetchFromWebServer(url, {
         method: "GET",
-        headers: { Accept: "application/json",access: "false" },
+        headers: { Accept: "application/json", access: "false" },
       });
-      if(res.ok){
+      if (res.ok) {
         const data = await res.json();
         console.log(data);
-        const idList = data.filter(node=> node?.id).map(node => node?.id);
-        onFolderUpdate(node?.id,idList);
+        const idList = data.filter(node => node?.id).map(node => node?.id);
+        onFolderUpdate(node?.id, idList);
       } else
         console.error("failed fetching children")
     }
   }
 
-  function OnDotsPress(_node) {
+  function OnDotsPress() {
     setSelectedId(node?.id ?? String(id ?? ""));
     setIsSheetOpen(true);
   }
 
-const IconComponent = useMemo(() => {
+  const IconComponent = useMemo(() => {
 
-  if (node?.type === "FOLDER") {
-    return FolderLightSvg;
-  }
+    if (node?.type === "FOLDER") {
+      return FolderLightSvg;
+    }
 
-  return FileLightSvg;
-}, [node, theme.mode]);
+    return FileLightSvg;
+  }, [node, theme.mode]);
 
-
-  // if (!node) {
-  //   return (
-  //     <View style={styles.screen}>
-  //       <View style={styles.card}>
-  //         <View style={styles.row}>
-  //           <View style={styles.iconWrap} />
-  //           <View style={styles.textCol}>
-  //             <View style={styles.skeletonLineLg} />
-  //             <View style={styles.skeletonLineSm} />
-  //           </View>
-  //           <View style={styles.dotsHit} />
-  //         </View>
-  //       </View>
-  //     </View>
-  //   );
-  // }
 
   return (
-    
+
     <View style={styles.page}>
       <Pressable
-        onPress={()=> OnItemPress(node)}
+        onPress={() => OnItemPress(node)}
         style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       >
         <View style={styles.leftHit}>
           <View style={styles.iconWrap}>
             <View style={styles.typeIcon}>
-              <IconComponent width={32} height={32} fill={"#90D5FF"} strokeWidth={2}/>
+              <IconComponent width={32} height={32} fill={"#90D5FF"} strokeWidth={2} />
             </View>
           </View>
 
@@ -160,18 +143,18 @@ const IconComponent = useMemo(() => {
               {node?.name ?? ""}
             </Text>
             <View style={styles.subtitle}>
-            <Text numberOfLines={1} style={styles.subtitle}>
-              {node?.isStarred && <IconStar />}
-              last accessed by you • {node?.timeText}
-            </Text>
+              <Text numberOfLines={1} style={styles.subtitle}>
+                {node?.isStarred && <IconStar />}
+                last accessed by you • {node?.timeText}
+              </Text>
 
-          </View>
+            </View>
           </View>
         </View>
 
         <Pressable hitSlop={10} onPress={OnDotsPress}
-         style={({ pressed }) => [styles.dotsBtn, pressed && styles.dotsHitPressed]}
-         >
+          style={({ pressed }) => [styles.dotsBtn, pressed && styles.dotsHitPressed]}
+        >
           <Text style={styles.dotsText}>⋮</Text>
         </Pressable>
       </Pressable>
@@ -185,14 +168,14 @@ const IconComponent = useMemo(() => {
         theme={theme}
       />
     </View>
-    
+
   );
 }
 
 function IconSvg({ Svg, color }) {
   return (
     <View style={{ width: 24, height: 15, alignItems: "center", justifyContent: "center" }}>
-      <Svg width={12} height={12} fill={color}/>
+      <Svg width={12} height={12} fill={color} />
     </View>
   );
 }

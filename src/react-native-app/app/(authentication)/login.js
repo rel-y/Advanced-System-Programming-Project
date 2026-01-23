@@ -67,7 +67,6 @@ export default function Login() {
         <View style={styles.page}>
             <View style={styles.container}>
                 <Text style={styles.AppName}> Drive </Text>
-
                 <TextInput value={username}
                     onChangeText={(username) => { setUsernameError(null); setUsername(username) }}
                     onFocus={() => { setIsUsernameSelected(true) }}
@@ -99,6 +98,7 @@ export default function Login() {
                     onPress={() => router.replace('/signup')}
                     style={"movePage"}
                 />
+                {generalError && <Text style={styles.inputTextError}>{generalError}</Text>}
             </ View>
         </View>
     );
