@@ -35,7 +35,7 @@ export default function NodeList({ SaveList = () => { }, page = "home", ids = []
         keyExtractor={(id, idx) => String(id ?? idx)}
         contentContainerStyle={styles.listContent}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item: id }) => <Node id={id} onListUpdate={setIdTORemove} onFolderUpdate={SaveList} />}
+        renderItem={({ item: id }) => <Node id={id} onListUpdate={setIdTORemove} onFolderUpdate={nodes => SaveList(page,nodes)} />}
       />
     </View>
   );

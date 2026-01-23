@@ -7,6 +7,8 @@ import { createStyles } from "../../styles/itemList.styles";
 import { useTheme } from "../../scheme";
 import { getTheme } from "../../styles/Theme";
 import NodeList from "../../components/itemList";
+import { SERVER_URL } from "../../config";
+import { fetchFromWebServer } from "../../api/api";
 
 export default function MainPage() {
     const router = useRouter();
@@ -15,15 +17,50 @@ export default function MainPage() {
 
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
-
     const [idList, setIdlist] = useState([]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function load() {
+            const url = `${SERVER_URL}/api/folders/0`;
+            const res = await fetchFromWebServer(url, {
+                method: "GET",
+                headers: { Accept: "application/json", access: "false" },
+            });
+
+            if (!cancelled && res.ok) {
+                const data = await res.json();
+                const ids = data
+                    .filter(node => node?.id && !node?.isInTrash)
+                    .map(node => node.id);
+
+                setIdlist(ids);
+            }
+        }
+
+        load();
+
+        return () => { cancelled = true; };
+    }, []);
+
+
 
     const [page, setPage] = useState("home");
 
-    function saveList(folder, ids, saveMemory = true) {
+    function saveList(folder, nodes, saveMemory = true) {
         if (saveMemory) {
             folderStackRef.current.push({ ids: idList, folder: page });
         }
+        let ids;
+        ids = nodes.filter(node => node?.id && !node?.isInTrash)
+            .map(node => node.id);
+        if (page === "star")
+            ids = nodes.filter(node => node?.id && node?.isStarred && !node?.isInTrash).map(node => node.id);
+        else if (page !== "bin")
+            ids = nodes.filter(node => node?.id && !node?.isInTrash).map(node => node.id);
+        if (page === "bin")
+            ids = nodes.filter(node => node?.id && node?.isInTrash).map(node => node.id);
         setIdlist(ids);
         setPage(folder);
     }
@@ -49,6 +86,7 @@ export default function MainPage() {
     }, [goBackFolder]);
 
     return (
+
         <View style={{ flex: 1 }}>
             <NodeList ids={idList} page={page} SaveList={saveList} />
         </View>
