@@ -14,6 +14,7 @@ export default function Login() {
     const [passwordError, setPasswordError] = useState(null);
     const [isUsernameSelected, setIsUsernameSelected] = useState(null);
     const [isPasswordSelected, setIsPasswordSelected] = useState(null);
+    const [generalError, setGeneralError] = useState(null);
     const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     const {scheme, setScheme} = useTheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
