@@ -9,6 +9,8 @@ import { getTheme } from "../../styles/Theme";
 import NodeList from "../../components/itemList";
 import { SERVER_URL } from "../../config";
 import { fetchFromWebServer } from "../../api/api";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function MainPage() {
     const router = useRouter();
@@ -48,7 +50,7 @@ export default function MainPage() {
 
     const [page, setPage] = useState("home");
 
-    function saveList(folder, nodes, saveMemory = true) {
+    function saveNodeList(folder, nodes, saveMemory = true) {
         if (saveMemory) {
             folderStackRef.current.push({ ids: idList, folder: page });
         }
@@ -61,6 +63,13 @@ export default function MainPage() {
             ids = nodes.filter(node => node?.id && !node?.isInTrash).map(node => node.id);
         if (page === "bin")
             ids = nodes.filter(node => node?.id && node?.isInTrash).map(node => node.id);
+        setIdlist(ids);
+        setPage(folder);
+    }
+    function saveIdList(folder, id, saveMemory = true) {//to be used by the tabs
+        if (saveMemory) {
+            folderStackRef.current.push({ ids: idList, folder: page });
+        }
         setIdlist(ids);
         setPage(folder);
     }
@@ -86,9 +95,12 @@ export default function MainPage() {
     }, [goBackFolder]);
 
     return (
-
-        <View style={{ flex: 1 }}>
-            <NodeList ids={idList} page={page} SaveList={saveList} />
-        </View>
+        <SafeAreaProvider>
+            <SafeAreaView style={{ flex: 1, backgroundColor:styles.page.backgroundColor }}>
+                <View style={{ flex: 1 }}>
+                    <NodeList ids={idList} page={page} SaveList={saveNodeList} />
+                </View>
+            </SafeAreaView>
+        </SafeAreaProvider >
     );
 }
