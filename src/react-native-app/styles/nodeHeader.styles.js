@@ -132,19 +132,5 @@ export function createStyles(theme) {
     fontSize: 14,
     marginTop: 1,
     },
-    // --- optional loading skeleton ---
-    skeletonLineLg: {
-      width: 120,
-      height: 18,
-      borderRadius: 9,
-      backgroundColor: theme.colors.hover,
-      marginBottom: 8,
-    },
-    skeletonLineSm: {
-      width: 160,
-      height: 14,
-      borderRadius: 7,
-      backgroundColor: theme.colors.hover,
-    },
-  });
+   });
 }
