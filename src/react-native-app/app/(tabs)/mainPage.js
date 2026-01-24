@@ -98,7 +98,7 @@ export default function MainPage() {
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1, backgroundColor:styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
-                    <NodeList ids={idList} page={page} SaveList={saveNodeList} SaveIdList={saveIdList} />
+                    <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
                 </View>
             </SafeAreaView>
         </SafeAreaProvider >

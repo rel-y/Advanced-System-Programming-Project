@@ -125,7 +125,7 @@ export default function Node({ id, onListUpdate = () => { }, onFolderUpdate = ()
 
   return (
 
-    <View style={styles.page}>
+    <View>
       <Pressable
         onPress={() => OnItemPress(node)}
         style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
