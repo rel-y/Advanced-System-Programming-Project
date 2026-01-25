@@ -3,7 +3,7 @@ export function createStyles(theme) {
     return StyleSheet.create({
         tab: {
             backgroundColor: theme.colors.border,
-            padding: theme.spacing.md,
+            padding: theme.spacing.sm,
             width: "25%",
             alignItems: "center",
         },

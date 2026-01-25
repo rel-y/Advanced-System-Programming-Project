@@ -5,6 +5,9 @@ import { createStyles } from "../styles/navigationTabs.styles";
 import { fetchFromWebServer } from "../api/api";
 import { SERVER_URL } from "../config";
 import StarSvg from "../assets/icons/star.svg";
+import homeSVG from "../assets/icons/house-door.svg";
+import UsersSvg from "../assets/icons/users.svg";
+import FilesSvg from "../assets/icons/folder2.svg";
 import { useTheme } from "../scheme";
 
 export default function NavTabs({ onTabUpdate = () => { } }) {
@@ -38,24 +41,28 @@ export default function NavTabs({ onTabUpdate = () => { } }) {
                 onPress={() => OnItemPress("")}
                 style={[styles.tab, currentTab === "home" && styles.selectedTab]}
             >
+                <IconHome color={theme.colors.text} />
                 <Text style={styles.text} >home</Text>
             </Pressable>
             <Pressable
                 onPress={() => OnItemPress("/starred")}
                 style={[styles.tab, currentTab === "star" && styles.selectedTab]}
             >
+                <IconStar color={theme.colors.text} />
                 <Text style={styles.text} >Starred</Text>
             </Pressable>
             <Pressable
                 onPress={() => OnItemPress("/shared")}
                 style={[styles.tab, currentTab === "shared" && styles.selectedTab]}
             >
+                <IconShared color={theme.colors.text} />
                 <Text style={styles.text} >Shared</Text>
             </Pressable>
             <Pressable
                 onPress={() => OnItemPress("/mydrive")}
                 style={[styles.tab, currentTab === "myDrive" && styles.selectedTab]}
             >
+                <IconFiles color={theme.colors.text} />
                 <Text style={styles.text} >Files</Text>
             </Pressable>
 
@@ -66,11 +73,20 @@ export default function NavTabs({ onTabUpdate = () => { } }) {
 
 function IconSvg({ Svg, color }) {
     return (
-        <View style={{ width: 24, height: 15, alignItems: "center", justifyContent: "center" }}>
-            <Svg width={12} height={12} fill={color} />
+        <View style={{alignItems: "center", justifyContent: "center" }}>
+            <Svg  fill={color} />
         </View>
     );
 }
+function IconHome({ color }) {
+    return <IconSvg Svg={homeSVG} color={color} />;
+}
 function IconStar({ color }) {
     return <IconSvg Svg={StarSvg} color={color} />;
+}
+function IconShared({ color }) {
+    return <IconSvg Svg={UsersSvg} color={color} />;
+}
+function IconFiles({ color }) {
+    return <IconSvg Svg={FilesSvg} color={color} />;
 }

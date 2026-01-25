@@ -58,11 +58,9 @@ export default function MainPage() {
         let ids;
         ids = nodes.filter(node => node?.id && !node?.isInTrash)
             .map(node => node.id);
-        if (page === "star")
-            ids = nodes.filter(node => node?.id && node?.isStarred && !node?.isInTrash).map(node => node.id);
-        else if (page !== "bin")
+        if (page !== "bin")
             ids = nodes.filter(node => node?.id && !node?.isInTrash).map(node => node.id);
-        if (page === "bin")
+        else
             ids = nodes.filter(node => node?.id && node?.isInTrash).map(node => node.id);
         setIdlist(ids);
         setPage(folder);
@@ -101,7 +99,7 @@ export default function MainPage() {
                 <View style={{ flex: 1 }}>
                     <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
                 </View>
-                <View style={{height: "7%"}}>
+                <View style={{height: "8%"}}>
                     <NavTabs onTabUpdate={saveIdList}/>
                 </View>
             </SafeAreaView>
