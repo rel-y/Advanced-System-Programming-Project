@@ -1,8 +1,8 @@
-const { MetadataNode, NodeType, PermissionType, AbilityRequirement } = require("../models/metadataModelMongo");
-const User = require("../models/usersModelMongo");
+const { MetadataNode, NodeType, PermissionType, AbilityRequirement } = require("../model/metadataModelMongo");
+const User = require("../model/usersModelMongo");
 
 const crypto = require("crypto");
-const idLengthBytes = 16;
+const idLength = 16;
 
 const ensureRootExists = async () => { // do this upon connection
   const exists = await MetadataNode.exists({ _id: "0" });
@@ -335,6 +335,8 @@ const getAllMetadata = async (nodeIdItem, userId) => {
         { username: String(userId) },
         { filemap: 1 }
     ).lean();
+
+    const nodeId = idString;
 
     const fileEntry = user?.filemap?.[nodeId]; // with lean(), filemap is a plain object
     const lastAccess = fileEntry?.lastAccessed ?? node.createdAt;

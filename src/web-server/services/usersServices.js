@@ -1,7 +1,10 @@
-const User = require('../models/usersModelMongo');
+const User = require('../model/usersModelMongo');
 
-const getUser = async (username) => { // rets null when didnt find
-    return User.findOne({username});
+const getUser = async (username) => {
+    const user = await User.findOne({username});
+    console.log(`user: ${user}`)
+    if (!user) return undefined;
+    return user;
 };
 
 const addUser = async (username, password, nickname, photo) => {

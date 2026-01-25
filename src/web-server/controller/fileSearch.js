@@ -1,5 +1,6 @@
-const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const {searchFiles, getFile} = require("../model/FileModel");
+
+const { ensureRootExists, toClientNode, getFileNode, listChildIds, listChildren, addFileNode, deleteFileNode,updateLastAccess,renameFileNode,searchFileIdByName,isAbaleTo,getFilePermissionsForUser,getFilePermission,setFilePermission,setUserFilePermission,setStarredStatus,setTrashStatus,setSize,getAllFolderNodes,getAllBaseNodes,getAllMetadata,getAllNodes} = require("../services/metadataServices");
 
 async function getSearchFileController(req, res) {
     const { query } = req.params;
@@ -9,7 +10,7 @@ async function getSearchFileController(req, res) {
     }
 
     // from metadata model
-    const idsFromMetadata = singletonMetadataModel.searchFileIdByName(query); // array of ids
+    const idsFromMetadata = await searchFileIdByName(query); // array of ids
 
     // from searchFiles
     let idsFromSearch = [];
@@ -33,8 +34,22 @@ async function getSearchFileController(req, res) {
     ])];
 
     const loggedInUsername = req.user.username;
-    const filteredByPermissions = combinedIds.filter(id => singletonMetadataModel.isAbaleTo(loggedInUsername, id, "READ"));
-    const metadata = filteredByPermissions.map(id => {return singletonMetadataModel.getAllMetadata({id:id}, loggedInUsername); });
+
+    const filteredByPermissions = (
+        await Promise.all(
+        combinedIds.map(async (id) => {
+            const allowed = await isAbaleTo(loggedInUsername, id, "READ");
+            return allowed ? item : null;
+        })
+        )
+    ).filter(Boolean);
+
+    const metadata = await Promise.all(
+        filteredByPermissions.map((id) =>
+        getAllMetadata({id:id}, loggedInUsername)
+        )
+    );
+
     return res.status(200).json(metadata);
 }
 

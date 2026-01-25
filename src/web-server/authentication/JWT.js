@@ -1,12 +1,12 @@
-const {singletonUsersModel} = require("../model/usersModel")
+const {getUser, addUser, updateUserTokenVersion, getUsertokenVersion, isFileAccessedByUser} = require("../services/usersServices");
 const jwt = require("jsonwebtoken")
 const {key} = require("../.secret");
-function isLoggedIn(req, res, next) {
+async function isLoggedIn(req, res, next) {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(" ")[1];
         try {
             const data = jwt.verify(token, key);
-            const version = singletonUsersModel.getUsertokenVersion(data.username);
+            const version = await getUsertokenVersion(data.username);
             if(version === null || version === undefined){
                 return res.status(401).send("Invalid Token");
             }
@@ -26,12 +26,12 @@ function isLoggedIn(req, res, next) {
     else
         return res.status(403).send('Token required');
 }
-function CheckToken(req, res) {//returns true if the token is valid else returns false
+async function CheckToken(req, res) {//returns true if the token is valid else returns false
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(" ")[1];
         try {
             const data = jwt.verify(token, key);
-            const version = singletonUsersModel.getUsertokenVersion(data.username);
+            const version = await getUsertokenVersion(data.username);
             if(version === null || version === undefined){
                 return res.status(200).send("false");
             }
