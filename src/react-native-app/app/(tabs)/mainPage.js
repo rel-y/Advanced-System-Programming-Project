@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BackHandler, View } from "react-native";
 import { useRouter } from "expo-router";
-
+import { useFocusEffect } from "@react-navigation/native";
 import { createStyles } from "../../styles/itemList.styles";
 import { useTheme } from "../../scheme";
 import { getTheme } from "../../styles/Theme";
@@ -85,18 +85,19 @@ export default function MainPage() {
         return false;
     }, []);
 
-    useEffect(() => {
-        const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-            const handled = goBackFolder();
-            if (handled) return true;
-            return false; // let router/system handle
-        });
-        return () => sub.remove();
-    }, [goBackFolder]);
+    useFocusEffect(
+        useCallback(() => {
+            const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+                const handled = goBackFolder();
+                return handled; // true = handled, false = let system/router handle
+            });
 
+            return () => sub.remove();
+        }, [goBackFolder])
+    );
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1, backgroundColor:styles.page.backgroundColor }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
                     <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
                 </View>

@@ -19,12 +19,15 @@ import RenameDialog from "../../components/RenameDialog";
 import {fetchFromWebServer} from "../../api/api";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
-
-export default function FileEditPage({id = "54e3f5f45d7846eab6fc82e6e3158df8"}) {
+import { SERVER_URL } from "../../config";
+import { useLocalSearchParams } from "expo-router";
+import { useTheme } from "../../scheme";
+export default function FileEditPage() {
+  const { id } = useLocalSearchParams(); 
+  const { scheme } = useTheme();
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => makeFileEditStyles(theme, insets), [theme, insets]);
 
@@ -52,7 +55,7 @@ export default function FileEditPage({id = "54e3f5f45d7846eab6fc82e6e3158df8"}) 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetchFromWebServer(`http://10.0.2.2:8080/api/files/${id}`, 
+        const res = await fetchFromWebServer(`${SERVER_URL}/api/files/${id}`, 
             {
                 headers: { 'Content-Type': 'application/json' },
                  method: 'GET'
@@ -80,7 +83,7 @@ export default function FileEditPage({id = "54e3f5f45d7846eab6fc82e6e3158df8"}) 
 
   async function onSubmit() {
     try {
-      const res = await fetchFromWebServer(`http://10.0.2.2:8080/api/files/${id}`, {
+      const res = await fetchFromWebServer(`${SERVER_URL}/api/files/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({data: content }),
