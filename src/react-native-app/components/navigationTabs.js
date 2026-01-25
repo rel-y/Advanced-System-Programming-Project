@@ -39,42 +39,50 @@ export default function NavTabs({ onTabUpdate = () => { } }) {
         <View style={{ flex: 1, flexDirection: "row" }}>
             <Pressable
                 onPress={() => OnItemPress("")}
-                style={[styles.tab, currentTab === "home" && styles.selectedTab]}
+                style={styles.tab}
             >
-                <IconHome color={theme.colors.text} />
+                <View style={[styles.iconPart, currentTab === "home" && styles.activeTab]}>
+                    <IconHome color={theme.colors.text} />
+                </View>
                 <Text style={styles.text} >home</Text>
             </Pressable>
             <Pressable
                 onPress={() => OnItemPress("/starred")}
-                style={[styles.tab, currentTab === "star" && styles.selectedTab]}
+                style={styles.tab}
             >
-                <IconStar color={theme.colors.text} />
+                <View style={[styles.iconPart, currentTab === "star" && styles.activeTab]}>
+                    <IconStar color={theme.colors.text} />
+                </View>
                 <Text style={styles.text} >Starred</Text>
-            </Pressable>
+            </Pressable >
             <Pressable
                 onPress={() => OnItemPress("/shared")}
-                style={[styles.tab, currentTab === "shared" && styles.selectedTab]}
+                style={styles.tab}
             >
-                <IconShared color={theme.colors.text} />
+                <View style={[styles.iconPart, currentTab === "shared" && styles.activeTab]}>
+                    <IconShared color={theme.colors.text} />
+                </View>
                 <Text style={styles.text} >Shared</Text>
             </Pressable>
             <Pressable
                 onPress={() => OnItemPress("/mydrive")}
-                style={[styles.tab, currentTab === "myDrive" && styles.selectedTab]}
+                style={styles.tab}
             >
-                <IconFiles color={theme.colors.text} />
+                <View style={[styles.iconPart, currentTab === "myDrive" && styles.activeTab]}>
+                    <IconFiles color={theme.colors.text} />
+                </View>
                 <Text style={styles.text} >Files</Text>
             </Pressable>
 
-        </View>
+        </View >
 
     );
 }
 
 function IconSvg({ Svg, color }) {
     return (
-        <View style={{alignItems: "center", justifyContent: "center" }}>
-            <Svg  fill={color} />
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Svg fill={color} />
         </View>
     );
 }

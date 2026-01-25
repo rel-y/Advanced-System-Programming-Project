@@ -7,8 +7,15 @@ export function createStyles(theme) {
             width: "25%",
             alignItems: "center",
         },
-        selectedTab: {
-            backgroundColor: theme.colors.hover
+        activeTab: {
+            backgroundColor: theme.colors.active,
+            borderRadius: 5,
+            paddingLeft: 15,
+            paddingRight: 15,
+        },
+        iconPart: {
+            paddingTop: 3,
+            paddingBottom: 3,
         },
         text: {
             fontWeight: theme.font["weight-semibold"],
