@@ -1,81 +1,73 @@
-// src/styles/renameDialog.styles.js
 export function makeRenameStyles(theme) {
-  const c = theme.colors;
-
   return {
     backdrop: {
       flex: 1,
-      backgroundColor: theme.mode === "dark" ? "rgba(0,0,0,0.55)" : "rgba(0,0,0,0.35)",
+      backgroundColor: "rgba(0,0,0,0.35)",
     },
 
     centerWrap: {
       position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
+      inset: 0,
       justifyContent: "center",
-      paddingHorizontal: theme.spacing.lg,
+      alignItems: "center",
+      paddingHorizontal: 18,          // a bit tighter
     },
 
     card: {
-      backgroundColor: c.surface,
-      borderRadius: 28,
-      paddingHorizontal: theme.spacing.xl,
-      paddingTop: theme.spacing.xl,
-      paddingBottom: theme.spacing.lg,
-      borderWidth: 1,
-      borderColor: c.border,
-
-      // Android
-      elevation: theme.mode === "dark" ? 18 : 12,
-
-      // iOS
+      width: "86%",                   // smaller than before
+      maxWidth: 340,                  // cap on tablets
+      borderRadius: 16,
+      backgroundColor: theme.colors.bg,
+      paddingHorizontal: 16,          // reduced padding
+      paddingTop: 14,
+      paddingBottom: 12,
+      elevation: 6,
       shadowColor: "#000",
-      shadowOpacity: theme.mode === "dark" ? 0.45 : 0.18,
-      shadowRadius: 22,
-      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.15,
+      shadowRadius: 10,
+      shadowOffset: { width: 0, height: 6 },
     },
 
     title: {
-      color: c.text,
-      fontSize: 34,
+      fontSize: 18,                   // smaller title
       fontWeight: "700",
-      marginBottom: theme.spacing.lg,
+      color: theme.colors.text,
+      marginBottom: 10,
     },
 
     input: {
-      height: 92,
-      borderRadius: 12,
-      borderWidth: 4,
-      borderColor: theme.mode === "dark" ? c.primary : "#415a8b", // close to screenshot
-      backgroundColor: theme.mode === "dark" ? c["surface-2"] : "#e7ebf5",
-      color: c.text,
-      fontSize: 42,
-      paddingHorizontal: theme.spacing.lg,
+      height: 46,                     // smaller input
+      borderWidth: 2,
+      borderColor: theme.colors.primary,
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      fontSize: 16,
+      color: theme.colors.text,
+      backgroundColor: theme.colors["surface"] ?? theme.colors.bg,
+      marginBottom: 12,
     },
 
     actionsRow: {
-      marginTop: theme.spacing.xl,
       flexDirection: "row",
       justifyContent: "flex-end",
-      gap: theme.spacing.xl,
+      gap: 14,                        // smaller gap
+      paddingTop: 2,
     },
 
     actionBtn: {
-      paddingVertical: 10,
+      paddingVertical: 8,             // smaller buttons
       paddingHorizontal: 10,
-      borderRadius: 999,
-    },
-
-    pressed: {
-      backgroundColor: c.hover,
+      borderRadius: 10,
     },
 
     actionText: {
-      color: theme.mode === "dark" ? c.primary : "#415a8b",
-      fontSize: 32,
+      fontSize: 16,                   // smaller text
       fontWeight: "600",
+      color: theme.colors.primary,
+    },
+
+    pressed: {
+      opacity: 0.65,
     },
   };
 }

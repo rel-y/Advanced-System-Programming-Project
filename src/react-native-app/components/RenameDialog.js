@@ -4,8 +4,11 @@ import { Modal, Pressable, Text, TextInput, View, useColorScheme } from "react-n
 import { getTheme } from "../styles/Theme";
 import { makeRenameStyles } from "../styles/renameDialog.styles";
 import {fetchFromWebServer} from "../api/api";
+import { SERVER_URL } from "../config";
+import { useTheme } from "../scheme";
+
 export default function RenameDialog({ visible, onClose, node, onNodeUpdate }) {
-  const scheme = useColorScheme();
+  const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => makeRenameStyles(theme), [theme]);
 
@@ -16,9 +19,9 @@ export default function RenameDialog({ visible, onClose, node, onNodeUpdate }) {
   }, [visible]);
 
   async function onRenamePress() {
-    if(value == node?.name || value === "") return;
+    if(value == node?.name || value.trim() === "") return;
     try{
-        const response = await fetchFromWebServer(`http://10.0.2.2:8080/api/files/${node?.id}`, {
+        const response = await fetchFromWebServer(`${SERVER_URL}/api/files/${node?.id}`, {
             headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ // only include fields if user inputted them. 
                     ...(value ? { name: value} : {}),

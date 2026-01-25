@@ -1,10 +1,17 @@
 const { singletonMetadataModel, PermissionType, NodeType } = require("../model/metadataModel");
+const {singletonUsersModel} = require("../model/usersModel"); 
 const fileModel = require("../model/FileModel");
 
 async function getReqController(req, res) {
 
     const inputId = req.params.id;
 
+    let access = req.headers.access;// to update last access or not
+    if(access === undefined || access === null){
+        access = true; // true by defualt so everything old still works
+    }
+    if(access === "false")
+        access = false;
     const fileNode = singletonMetadataModel.getFileNode(inputId);
 
     if (fileNode === undefined) {
@@ -17,8 +24,8 @@ async function getReqController(req, res) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ error: 'user has no read permissions for this file/folder' }));
     }
-
-    singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
+    if(access)
+        singletonMetadataModel.updateLastAccess(inputId, loggedInUsername);
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
         const retjson = { id: inputId, ...fileNode, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
@@ -38,7 +45,9 @@ async function getReqController(req, res) {
         }
         output = output.slice(output.indexOf("\n\n") + 2);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        const retjson = { id: inputId, ...fileNode, content: output, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
+        const lastAccess = singletonUsersModel.getUser(loggedInUsername)?.filemap?.get(inputId)?.[0] ?? fileNode.createdAt;
+        const isStarred = singletonUsersModel.getUser(loggedInUsername)?.filemap?.get(inputId)?.[1] ?? false;
+        const retjson = { id: inputId, ...fileNode,lastAccess:lastAccess,isStarred:isStarred, content: output, permissionsForFile: singletonMetadataModel.getFilePermissionsForUser(loggedInUsername, inputId) };
         
         delete retjson.filePermissions; // dont show permissions
         delete retjson.userFilePermissions;

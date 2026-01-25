@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
-import { View, Text, TextInput, useColorScheme } from 'react-native'
+import { View, Text, TextInput} from 'react-native'
 import { useRouter } from 'expo-router';
 import AppButton from '../../components/loginButton';
 import { getTheme } from '../../styles/Theme';
 import { createStyles } from '../../styles/loginPage.styles';
 import { SERVER_URL } from '../../config';
 import { setToken } from '../../api/api';
+import { useTheme } from '../../scheme';
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -13,8 +14,9 @@ export default function Login() {
     const [passwordError, setPasswordError] = useState(null);
     const [isUsernameSelected, setIsUsernameSelected] = useState(null);
     const [isPasswordSelected, setIsPasswordSelected] = useState(null);
+    const [generalError, setGeneralError] = useState(null);
     const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    const scheme = useColorScheme();
+    const {scheme, setScheme} = useTheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
     const router = useRouter();
@@ -34,12 +36,13 @@ export default function Login() {
         return valid;
     }
     const handleSubmit = (e) => {
+        
         if (!validateInput()) {
             return;
         }
         e.preventDefault();
         const data = { username: username, password: password };
-
+        
         fetch(`${SERVER_URL}/api/tokens`, {
             body: JSON.stringify(data),
             headers: {
@@ -47,10 +50,12 @@ export default function Login() {
             },
             method: 'POST',
         }).then(async (response) => {
+            console.log(response);
             if (response.status === 201) { //user was created passign to main page
                 const data = await response.json();
                 setToken(data.token);
-                router.replace('/(tabs)/FileEdit')
+                
+                router.replace('/(tabs)/mainPage');
             } else { //waiting for the response to tell the user what went wrong
                 const errorData = await response.json();
                 console.log(errorData);
@@ -62,7 +67,6 @@ export default function Login() {
         <View style={styles.page}>
             <View style={styles.container}>
                 <Text style={styles.AppName}> Drive </Text>
-
                 <TextInput value={username}
                     onChangeText={(username) => { setUsernameError(null); setUsername(username) }}
                     onFocus={() => { setIsUsernameSelected(true) }}
@@ -94,6 +98,7 @@ export default function Login() {
                     onPress={() => router.replace('/signup')}
                     style={"movePage"}
                 />
+                {generalError && <Text style={styles.inputTextError}>{generalError}</Text>}
             </ View>
         </View>
     );
