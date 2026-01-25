@@ -133,7 +133,7 @@ export default function Node({ id, onListUpdate = () => { }, onFolderUpdate = ()
         <View style={styles.leftHit}>
           <View style={styles.iconWrap}>
             <View style={styles.typeIcon}>
-              <IconComponent width={32} height={32} fill={"#90D5FF"} strokeWidth={2} />
+              <IconComponent width={32} height={32} fill={theme.colors["text-muted"]} strokeWidth={2} />
             </View>
           </View>
 
@@ -143,7 +143,7 @@ export default function Node({ id, onListUpdate = () => { }, onFolderUpdate = ()
             </Text>
             <View style={styles.subtitle}>
               <Text numberOfLines={1} style={styles.subtitle}>
-                {node?.isStarred && <IconStar />}
+                {node?.isStarred && <IconStar color={theme.colors["text-muted"]}/>}
                 last accessed by you • {node?.timeText}
               </Text>
 
@@ -178,6 +178,6 @@ function IconSvg({ Svg, color }) {
     </View>
   );
 }
-function IconStar({ color = "#90D5FF" }) {
+function IconStar({ color = "#ff0000" }) { //red if there is a problem
   return <IconSvg Svg={StarSvg} color={color} />;
 }

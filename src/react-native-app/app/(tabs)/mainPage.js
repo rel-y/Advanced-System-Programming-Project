@@ -7,6 +7,7 @@ import { createStyles } from "../../styles/itemList.styles";
 import { useTheme } from "../../scheme";
 import { getTheme } from "../../styles/Theme";
 import NodeList from "../../components/itemList";
+import NavTabs from "../../components/navigationTabs";
 import { SERVER_URL } from "../../config";
 import { fetchFromWebServer } from "../../api/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -57,11 +58,9 @@ export default function MainPage() {
         let ids;
         ids = nodes.filter(node => node?.id && !node?.isInTrash)
             .map(node => node.id);
-        if (page === "star")
-            ids = nodes.filter(node => node?.id && node?.isStarred && !node?.isInTrash).map(node => node.id);
-        else if (page !== "bin")
+        if (page !== "bin")
             ids = nodes.filter(node => node?.id && !node?.isInTrash).map(node => node.id);
-        if (page === "bin")
+        else
             ids = nodes.filter(node => node?.id && node?.isInTrash).map(node => node.id);
         setIdlist(ids);
         setPage(folder);
@@ -99,6 +98,9 @@ export default function MainPage() {
             <SafeAreaView style={{ flex: 1, backgroundColor:styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
                     <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
+                </View>
+                <View style={{height: "8%"}}>
+                    <NavTabs onTabUpdate={saveIdList}/>
                 </View>
             </SafeAreaView>
         </SafeAreaProvider >
