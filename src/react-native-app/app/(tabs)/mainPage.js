@@ -7,6 +7,7 @@ import { createStyles } from "../../styles/itemList.styles";
 import { useTheme } from "../../scheme";
 import { getTheme } from "../../styles/Theme";
 import NodeList from "../../components/itemList";
+import NavTabs from "../../components/navigationTabs";
 import { SERVER_URL } from "../../config";
 import { fetchFromWebServer } from "../../api/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -99,6 +100,9 @@ export default function MainPage() {
             <SafeAreaView style={{ flex: 1, backgroundColor:styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
                     <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
+                </View>
+                <View style={{height: "7%"}}>
+                    <NavTabs onTabUpdate={saveIdList}/>
                 </View>
             </SafeAreaView>
         </SafeAreaProvider >
