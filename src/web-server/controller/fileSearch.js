@@ -39,7 +39,7 @@ async function getSearchFileController(req, res) {
         await Promise.all(
         combinedIds.map(async (id) => {
             const allowed = await isAbaleTo(loggedInUsername, id, "READ");
-            return allowed ? item : null;
+            return allowed ? id : null;
         })
         )
     ).filter(Boolean);
