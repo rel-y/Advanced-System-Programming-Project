@@ -8,8 +8,8 @@ import { SERVER_URL } from '../../config';
 import { setToken } from '../../api/api';
 import { useTheme } from '../../scheme';
 export default function Login() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("o2");
+    const [password, setPassword] = useState("12345678Aa");
     const [usernameError, setUsernameError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
     const [isUsernameSelected, setIsUsernameSelected] = useState(null);

@@ -83,10 +83,13 @@ export default function FileEditPage() {
 
   async function onSubmit() {
     try {
+      let contentToSubmit = content;
+      if(content === "")
+        contentToSubmit = " ";
       const res = await fetchFromWebServer(`${SERVER_URL}/api/files/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({data: content }),
+        body: JSON.stringify({data: contentToSubmit }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -104,7 +107,7 @@ export default function FileEditPage() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
         style={styles.page}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : ""}
         keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
       >
         {/* Status banner */}
