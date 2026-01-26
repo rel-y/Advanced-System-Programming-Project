@@ -197,7 +197,6 @@ async function onDownload(n) {
       <Pressable style={styles.backdrop} onPress={onClose} />
 
       <Animated.View style={[styles.sheet, { transform: [{ translateY }] }]}>
-        <View style={styles.handle} />
     <ScrollView>
         {/* Header */}
         <View style={styles.header}>
