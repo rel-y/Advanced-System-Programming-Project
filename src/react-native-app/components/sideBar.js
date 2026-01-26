@@ -8,13 +8,14 @@ import TrashSvg from "../assets/icons/trash.svg";
 import RecentSVG from "../assets/icons/clock.svg";
 import LightSvg from "../assets/icons/sun.svg";
 import DarkSVG from "../assets/icons/moon.svg";
+import UploadSVG from "../assets/icons/upload.svg";
 import { useTheme } from "../scheme";
-
-export default function SideBar({ visible, onClose = () => { console.log("hi") }, onTabUpdate = () => { } }) {
+import * as DocumentPicker from "expo-document-picker"
+import { File } from "expo-file-system"
+export default function SideBar({ visible, onClose = () => { }, onTabUpdate = () => { } }) {
     const { scheme, setScheme } = useTheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
-    const [currentTab, setCurrentTab] = useState("home");
     const FOLDERNAMES = {
         "/trash": "bin",
         "/recent": "recent",
@@ -27,12 +28,46 @@ export default function SideBar({ visible, onClose = () => { console.log("hi") }
         });
         if (res.ok) {
             const data = await res.json();
-            setCurrentTab(FOLDERNAMES[item]);
             onTabUpdate(FOLDERNAMES[item], data.filter(node => node?.id).map(node => node.id), false);
         } else
-            console.error("failed fetching files")
+            console.error(`failed fetching files ${res.status}`)
+        onClose();
     }
 
+    const uploadFile = async () => {
+        const file = await DocumentPicker.getDocumentAsync({
+            copyToCacheDirectory: true
+        })
+        console.log(file.assets[0]);
+        if (file.canceled) {
+            return null;
+        }
+        const response = new File(file.assets[0].uri);
+        console.log(response);
+
+        const content = await response.text();
+        // console.log("content:" + JSON.stringify(content))
+        const body =  JSON.stringify({
+                    name: file.assets[0].name,
+                    content: content,
+                    type: 'FILE', //not supporting folder uploads
+                });
+                console.log(body)
+        try {
+            const res = await fetchFromWebServer(`${SERVER_URL}/api/files`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: body,
+            });
+            if (!res.ok){
+                 console.log(res)
+                 throw new Error(`failed to fetch ${res.status}`);
+                }
+
+        } catch (e) {
+            console.error("Failed to submit:", e);
+        }
+    }
     const LightDarkSwitch = () => {
         const [isEnabled, setIsEnabled] = useState(scheme === "dark");
         //dark = true
@@ -67,7 +102,7 @@ export default function SideBar({ visible, onClose = () => { console.log("hi") }
                             onPress={() => OnItemPress("/recent")}
                             style={styles.tab}
                         >
-                            <View style={[styles.iconPart, currentTab === "Recent" && styles.activeTab]}>
+                            <View style={styles.iconPart}>
                                 <IconRecent color={theme.colors.text} />
                             </View>
                             <Text style={styles.text} >Recent</Text>
@@ -79,7 +114,7 @@ export default function SideBar({ visible, onClose = () => { console.log("hi") }
                             onPress={() => OnItemPress("/trash")}
                             style={styles.tab}
                         >
-                            <View style={[styles.iconPart, currentTab === "trash" && styles.activeTab]}>
+                            <View style={styles.iconPart}>
                                 <IconTrash color={theme.colors.text} />
                             </View>
                             <Text style={styles.text} >Trash</Text>
@@ -101,9 +136,20 @@ export default function SideBar({ visible, onClose = () => { console.log("hi") }
                             <LightDarkSwitch />
                         </View>
                     </View>
+
+                    <View style={styles.rowElement}>
+                        <Pressable
+                            onPress={() => uploadFile()}
+                            style={styles.tab}
+                        >
+                            <View style={styles.iconPart}>
+                                <IconUpload color={theme.colors.text} />
+                            </View>
+                            <Text style={styles.text} >Upload</Text>
+                        </Pressable >
+                    </View>
                 </ScrollView >
             </View >
-
         </Modal >
     );
 }
@@ -126,4 +172,7 @@ function IconLight({ color }) {
 }
 function IconDark({ color }) {
     return <IconSvg Svg={DarkSVG} color={color} />;
+}
+function IconUpload({ color }) {
+    return <IconSvg Svg={UploadSVG} color={color} />;
 }
