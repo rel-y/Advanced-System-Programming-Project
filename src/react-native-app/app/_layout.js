@@ -1,9 +1,10 @@
-import { Stack } from 'expo-router';
-
+import { Stack } from "expo-router";
+import { ThemeProvider } from "../scheme";
+import Login from "./(authentication)/login";
 export default function RootLayout() {
   return (
-    <Stack>{/* currently empty */}
-      
-    </Stack>
+    <ThemeProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </ThemeProvider>
   );
 }
