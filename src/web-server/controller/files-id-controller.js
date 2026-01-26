@@ -25,8 +25,16 @@ async function getReqController(req, res) {
     if (req.headers.access !== "false") await updateLastAccess(inputId, loggedInUsername);
     if(fileNode.type === NodeType.FOLDER){
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        const retjson = { id: inputId, ...fileNode, permissionsForFile: await getFilePermissionsForUser(loggedInUsername, inputId) };
         
+        const allMetadata = await getAllMetadata({id: inputId}, loggedInUsername);
+        const retjson = { 
+            id: inputId, 
+            ...fileNode, 
+            permissionsForFile: await getFilePermissionsForUser(loggedInUsername, inputId),
+            lastAccess: allMetadata.lastAccess,
+            isStarred: allMetadata.isStarred
+        };
+
         delete retjson.filePermissions; // dont show permissions
         delete retjson.userFilePermissions;
 
