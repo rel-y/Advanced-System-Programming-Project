@@ -7,8 +7,8 @@ import {
   FlatList,
   Pressable,
   ActivityIndicator,
-  SafeAreaView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useTheme } from "../../scheme";
 import { getTheme } from "../../styles/Theme";

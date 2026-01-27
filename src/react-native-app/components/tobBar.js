@@ -16,8 +16,6 @@ import { useRouter } from "expo-router";
 import { fetchFromWebServer } from "../api/api";
 import { SERVER_URL } from "../config";
 // If you use react-native-svg-transformer, these imports work:
-import Moon from "../assets/icons/moon.svg"; // light mode icon
-import MoonFill from "../assets/icons/moon-fill.svg"; // dark mode icon
 import SearchBarWithResults from "./searchBar";
 
 export default function TopBar({ onListChange = (nodes) => { } }) {
@@ -110,18 +108,6 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
         {/* Search */}
         <SearchBarWithResults onListChange={onListChange} />
 
-        {/* Theme toggle */}
-        <Pressable
-          onPress={toggleScheme}
-          style={({ pressed }) => [styles.iconBtn, pressed && styles.iconBtnPressed]}
-          hitSlop={10}
-        >
-          {scheme === "dark" ? (
-            <Moon fill={"white"} width={20} height={20} />
-          ) : (
-            <MoonFill width={20} height={20} />
-          )}
-        </Pressable>
 
         {/* User picture */}
         <Pressable
