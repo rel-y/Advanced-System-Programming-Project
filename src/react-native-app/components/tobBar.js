@@ -20,7 +20,7 @@ import Moon from "../assets/icons/moon.svg"; // light mode icon
 import MoonFill from "../assets/icons/moon-fill.svg"; // dark mode icon
 import SearchBarWithResults from "./searchBar";
 
-export default function TopBar({onListChange = (nodes) => {}}) {
+export default function TopBar({ onListChange = (nodes) => { } }) {
   const router = useRouter();
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
@@ -51,7 +51,7 @@ export default function TopBar({onListChange = (nodes) => {}}) {
           setUser({
             name: data.username || "No Name",
             nickname: data.nickname || "No Nickname",
-            photoUri: data.photo || null,
+            photoUri: data.photo.uri || null,
           });
         } else {
           console.error("Failed to fetch user data");
@@ -77,7 +77,7 @@ export default function TopBar({onListChange = (nodes) => {}}) {
       });
       if (res.ok) {
         // Redirect to login page
-        
+
         router.replace("/(authentication)/login");
       } else {
         console.error("Logout failed");
@@ -92,71 +92,73 @@ export default function TopBar({onListChange = (nodes) => {}}) {
   };
 
   return (
-      <View>
-        <View style={styles.bar}>
-          {/* Hamburger */}
-          <Pressable
-            onPress={onHamburgerPress}
-            style={({ pressed }) => [styles.iconBtn, pressed && styles.iconBtnPressed]}
-            hitSlop={10}
-          >
-            <View style={styles.hamburger}>
-              <View style={styles.hLine} />
-              <View style={styles.hLine} />
-              <View style={styles.hLine} />
+    <View>
+      <View style={styles.bar}>
+        {/* Hamburger */}
+        <Pressable
+          onPress={onHamburgerPress}
+          style={({ pressed }) => [styles.iconBtn, pressed && styles.iconBtnPressed]}
+          hitSlop={10}
+        >
+          <View style={styles.hamburger}>
+            <View style={styles.hLine} />
+            <View style={styles.hLine} />
+            <View style={styles.hLine} />
+          </View>
+        </Pressable>
+
+        {/* Search */}
+        <SearchBarWithResults onListChange={onListChange} />
+
+        {/* Theme toggle */}
+        <Pressable
+          onPress={toggleScheme}
+          style={({ pressed }) => [styles.iconBtn, pressed && styles.iconBtnPressed]}
+          hitSlop={10}
+        >
+          {scheme === "dark" ? (
+            <Moon fill={"white"} width={20} height={20} />
+          ) : (
+            <MoonFill width={20} height={20} />
+          )}
+        </Pressable>
+
+        {/* User picture */}
+        <Pressable
+          onPress={() => setMenuOpen((v) => !v)}
+          style={({ pressed }) => [styles.avatarWrap, pressed && styles.avatarPressed]}
+          hitSlop={8}
+        >
+          {user.photoUri ? (
+            <View style={styles.avatarCircle}>
+              <Image source={{ uri: user.photoUri }} style={styles.avatarImage} />
             </View>
-          </Pressable>
+          ) : (
+            <View style={styles.avatarPlaceholder} />
+          )}
+        </Pressable>
+      </View>
 
-          {/* Search */}
-          <SearchBarWithResults onListChange={onListChange}/>
+      {/* Dropdown */}
+      {menuOpen && (
+        <View style={styles.menu}>
+          <Text style={styles.menuLine}>
+            <Text style={styles.menuLabel}>Name: </Text>
+            <Text style={styles.menuValue}>{user.name}</Text>
+          </Text>
+          <Text style={styles.menuLine}>
+            <Text style={styles.menuLabel}>Nickname: </Text>
+            <Text style={styles.menuValue}>{user.nickname}</Text>
+          </Text>
 
-          {/* Theme toggle */}
           <Pressable
-            onPress={toggleScheme}
-            style={({ pressed }) => [styles.iconBtn, pressed && styles.iconBtnPressed]}
-            hitSlop={10}
+            onPress={onLogout}
+            style={({ pressed }) => [styles.logoutBtn, pressed && styles.logoutPressed]}
           >
-            {scheme === "dark" ? (
-              <Moon fill={"white"} width={20} height={20} />
-            ) : (
-              <MoonFill width={20} height={20} />
-            )}
-          </Pressable>
-
-          {/* User picture */}
-          <Pressable
-            onPress={() => setMenuOpen((v) => !v)}
-            style={({ pressed }) => [styles.avatarWrap, pressed && styles.avatarPressed]}
-            hitSlop={8}
-          >
-            {user.photoUri ? (
-              <Image source={{ uri: user.photoUri }} style={styles.avatar} />
-            ) : (
-              <View style={styles.avatarPlaceholder} />
-            )}
+            <Text style={styles.logoutText}>Logout</Text>
           </Pressable>
         </View>
-
-        {/* Dropdown */}
-        {menuOpen && (
-          <View style={styles.menu}>
-            <Text style={styles.menuLine}>
-              <Text style={styles.menuLabel}>Name: </Text>
-              <Text style={styles.menuValue}>{user.name}</Text>
-            </Text>
-            <Text style={styles.menuLine}>
-              <Text style={styles.menuLabel}>nickname: </Text>
-              <Text style={styles.menuValue}>{user.nickname}</Text>
-            </Text>
-
-            <Pressable
-              onPress={onLogout}
-              style={({ pressed }) => [styles.logoutBtn, pressed && styles.logoutPressed]}
-            >
-              <Text style={styles.logoutText}>Logout</Text>
-            </Pressable>
-          </View>
-        )}
-      </View>
+      )}
+    </View>
   );
 }
