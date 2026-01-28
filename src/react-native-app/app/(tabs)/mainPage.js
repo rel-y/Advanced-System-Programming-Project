@@ -124,7 +124,7 @@ export default function MainPage() {
                     </View>
                 </View>
                 <View style={{height: "8%"}}>
-                    <NavTabs onTabUpdate={saveIdList}/>
+                    <NavTabs currentTab={page} setCurrentTab={setPage} onTabUpdate={saveIdList}/>
                 </View>
             </SafeAreaView>
         </SafeAreaProvider >
