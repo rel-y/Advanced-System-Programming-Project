@@ -8,6 +8,18 @@ services:
     ports:
       - "12345:12345"
     command: ["12345"]
+    volumes:
+      - cpp_data:/usr/myapp/files
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
     networks:
       - app-network
 
@@ -20,12 +32,35 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SERVERIP: ${SERVERIP:-127.0.0.1}  # default to 127.0.0.1, this DOESNT work
+      SERVERIP: cpp-server               # connect to cpp container by service name
+      WEB_SERVER_PORT: 8080
+      MONGO_URI: mongodb://mongo:27017/apidb
     depends_on:
       - cpp-server
+      - mongo
+    networks:
+      - app-network
+
+  react-app:
+    build:
+      context: ./src/react-app
+      dockerfile: Dockerfile
+    image: react-app
+    container_name: react-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src/react-app:/app
+      - /app/node_modules
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mongo_data:
+  cpp_data:

@@ -80,7 +80,9 @@ export default function Signup() {
             return;
         }
 
-        let data = { username: username, password: password, nickname: nickname, photo: photo };
+        const mimeType = photo.mimeType || "image/jpeg";
+        const photoData = `data:${mimeType};base64,${photo.base64}`;
+        let data = { username: username, password: password, nickname: nickname, photo: photoData };
         fetch(`${SERVER_URL}/api/users`, {
             body: JSON.stringify(data),
             headers: {

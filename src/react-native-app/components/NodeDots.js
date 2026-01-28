@@ -202,7 +202,7 @@ async function onDownload(n) {
         <View style={styles.header}>
           <View style={styles.headerIconWrap}>
             <View style={styles.typeIcon}>
-              <IconComponent width={32} height={32} fill={"#90D5FF"}/>
+              <IconComponent width={32} height={32} fill={theme.colors["text-muted"]}/>
             </View>
           </View>
 
@@ -214,12 +214,12 @@ async function onDownload(n) {
         </View>
 
         {/* Actions (disable by guarding node) */}
-        <Row icon={<IconShare />} label="Share" onPress={() => node && onShare(node)} />
-        <Row icon={<IconUsers />} label="Manage access" onPress={() => node && onManageAccess(node)} />
-        <Row icon={<IconStar  />} label={node?.isStarred?"Remove from favorite":"Add to favorite"} onPress={() => node && onAddToStarred(node)} />
+        <Row icon={<IconShare color={theme.colors["text-muted"]}/>} label="Share" onPress={() => node && onShare(node)} />
+        <Row icon={<IconUsers color={theme.colors["text-muted"]}/>} label="Manage access" onPress={() => node && onManageAccess(node)} />
+        <Row icon={<IconStar  color={theme.colors["text-muted"]}/>} label={node?.isStarred?"Remove from favorite":"Add to favorite"} onPress={() => node && onAddToStarred(node)} />
 
         <Row
-          icon={<IconDownload />}
+          icon={<IconDownload color={theme.colors["text-muted"]}/>}
           label={isDownloading ? "Downloading..." : "Download"}
           onPress={() => node && onDownload(node)}
           showDivider
@@ -227,11 +227,12 @@ async function onDownload(n) {
         />
 
 
-        <Row icon={<IconEdit />} label="Rename" onPress={() => node && onRename(node)} />
-        <Row icon={<IconInfo />} label="Info" onPress={() => node && onInfo(node)} />
-        <Row icon={<IconTrash />} hidden={node?.isInTrash} label={"Move to trash"} onPress={() => node && onTrash(node)} />
-        <Row icon={<IconRestore />} hidden={!node?.isInTrash} label={"Remove from trash"} onPress={() => node && onTrash(node)} />
-        <Row icon={<IconTrash />} hidden={!node?.isInTrash} label={"Delete"} onPress={() => node && onDelete(node)} />
+        <Row icon={<IconEdit color={theme.colors["text-muted"]}/>} label="Rename" onPress={() => node && onRename(node)} />
+        <Row icon={<IconInfo color={theme.colors["text-muted"]}/>} label="Info" onPress={() => node && onInfo(node)} />
+        <Row icon={<IconMove color={theme.colors["text-muted"]}/>} label="Move" onPress={() => node && onMove(node)} />
+        <Row icon={<IconTrash color={theme.colors["text-muted"]}/>} hidden={node?.isInTrash} label={"Move to trash"} onPress={() => node && onTrash(node)} />
+        <Row icon={<IconRestore color={theme.colors["text-muted"]}/>} hidden={!node?.isInTrash} label={"Remove from trash"} onPress={() => node && onTrash(node)} />
+        <Row icon={<IconTrash color={theme.colors["text-muted"]}/>} hidden={!node?.isInTrash} label={"Delete"} onPress={() => node && onDelete(node)} />
 
         <Pressable onPress={onClose} style={({ pressed }) => [styles.cancelBtn, pressed && styles.rowPressed]}>
           <Text style={styles.cancelText}>Close</Text>
@@ -268,34 +269,34 @@ function IconSvg({ Svg, color }) {
 }
 
 // --- Icons ---
-function IconShare({ color = "#90D5FF"}) {
+function IconShare({ color = "#ff0000"}) {
   return <IconSvg Svg={ShareSvg} color={color} />;
 }
-function IconInfo({ color = "#90D5FF" }) {
+function IconInfo({ color = "#ff0000" }) {
   return <IconSvg Svg={InfoSvg} color={color} />;
 }
-function IconUsers({  color = "#90D5FF" }) {
+function IconUsers({  color = "#ff0000" }) {
   return <IconSvg Svg={UsersSvg} color={color} />;
 }
-function IconStar({  color = "#90D5FF"}) {
+function IconStar({  color = "#ff0000"}) {
   return <IconSvg Svg={StarSvg} color={color} />;
 }
-function IconDownload({  color = "#90D5FF" }) {
+function IconDownload({  color = "#ff0000" }) {
   return <IconSvg Svg={DownloadSvg} color={color} />;
 }
-function IconCopy({  color = "#90D5FF" }) {
+function IconCopy({  color = "#ff0000" }) {
   return <IconSvg Svg={CopySvg} color={color} />;
 }
-function IconEdit({ color = "#90D5FF" }) {
+function IconEdit({ color = "#ff0000" }) {
   return <IconSvg Svg={EditSvg} color={color} />;
 }
-function IconMove({  color = "#90D5FF" }) {
+function IconMove({  color = "#ff0000" }) {
   return <IconSvg Svg={MoveSvg} color={color} />;
 }
-function IconTrash({  color = "#90D5FF" }) {
+function IconTrash({  color = "#ff0000" }) {
   return <IconSvg Svg={TrashSvg} color={color} />;
 }
-function IconRestore({  color = "#90D5FF" }) {
+function IconRestore({  color = "#ff0000" }) {
   return <IconSvg Svg={RestoreSvg} color={color} />;
 }
   function toBase64(str) {

@@ -2,11 +2,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BackHandler, View } from "react-native";
 import { useRouter } from "expo-router";
-
+import { useFocusEffect } from "@react-navigation/native";
 import { createStyles } from "../../styles/itemList.styles";
 import { useSearchValueFolder, useTheme } from "../../scheme";
 import { getTheme } from "../../styles/Theme";
 import NodeList from "../../components/itemList";
+import NavTabs from "../../components/navigationTabs";
 import { SERVER_URL } from "../../config";
 import { fetchFromWebServer } from "../../api/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -77,11 +78,9 @@ export default function MainPage() {
         setPage(folder);
         ids = nodes.filter(node => node?.id && !node?.isInTrash)
             .map(node => node.id);
-        if (folder === "star")
-            ids = nodes.filter(node => node?.id && node?.isStarred && !node?.isInTrash).map(node => node.id);
-        else if (folder !== "bin")
+        if (page !== "bin")
             ids = nodes.filter(node => node?.id && !node?.isInTrash).map(node => node.id);
-        if (folder === "bin")
+        else
             ids = nodes.filter(node => node?.id && node?.isInTrash).map(node => node.id);
         setIdlist(ids);
     }
@@ -111,15 +110,16 @@ export default function MainPage() {
         return false;
     }, []);
 
-    useEffect(() => {
-        const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-            const handled = goBackFolder();
-            if (handled) return true;
-            return false; // let router/system handle
-        });
-        return () => sub.remove();
-    }, [goBackFolder]);
+    useFocusEffect(
+        useCallback(() => {
+            const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+                const handled = goBackFolder();
+                return handled; // true = handled, false = let system/router handle
+            });
 
+            return () => sub.remove();
+        }, [goBackFolder])
+    );
     return (
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1, backgroundColor: styles.page.backgroundColor }}>
@@ -130,6 +130,9 @@ export default function MainPage() {
                         <AddItemButton page={page} AddNode={AddItem} />
                         {/*the is so that the button apears only on top of the list and not on top of the nav bar or other items */}
                     </View>
+                </View>
+                <View style={{height: "8%"}}>
+                    <NavTabs onTabUpdate={saveIdList}/>
                 </View>
             </SafeAreaView>
         </SafeAreaProvider >

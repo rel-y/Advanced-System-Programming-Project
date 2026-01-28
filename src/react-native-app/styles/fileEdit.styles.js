@@ -57,7 +57,6 @@ export function makeFileEditStyles(theme, insets = { bottom: 0, top: 0 }) {
     bottomBar: {
       paddingHorizontal: 14,
       paddingTop: 12,
-      paddingBottom: Math.max(14, (insets.bottom || 0) + 18),
       borderTopWidth: 1,
       borderTopColor: theme.colors.border,
       backgroundColor: topbar,
