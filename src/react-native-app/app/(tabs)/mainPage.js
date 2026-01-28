@@ -67,7 +67,7 @@ export default function MainPage() {
     }, [searchValueFolder]);
 
 
-    const [page, setPage] = useState("home");
+    const [page, setPage] = useState("bin");
 
     function saveNodeList(folder, nodes, saveMemory = true) {
         if (saveMemory) {
@@ -124,8 +124,8 @@ export default function MainPage() {
                     <TopBar onListChange={(nodes) => saveNodeList(page, nodes)} />
                     <View style={{ flex: 1, position: 'relative' }}>
                         <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
-                        <AddItemButton page={page} AddNode={AddItem} /> {/*the is so that the button apears only 
-                        on top of the list and not on top of the nav bar or other items */ }
+                        <AddItemButton page={page} AddNode={AddItem} />
+                        {/*the is so that the button apears only on top of the list and not on top of the nav bar or other items */}
                     </View>
                 </View>
             </SafeAreaView>
