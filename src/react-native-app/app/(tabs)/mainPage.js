@@ -11,7 +11,7 @@ import NavTabs from "../../components/navigationTabs";
 import { SERVER_URL } from "../../config";
 import { fetchFromWebServer } from "../../api/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import TopBar from "../../components/tobBar";
+import TopBar from "../../components/topBar";
 
 
 export default function MainPage() {
@@ -67,7 +67,7 @@ export default function MainPage() {
     }, [searchValueFolder]);
 
 
-    const [page, setPage] = useState("home");
+    const [page, setPage] = useState("Home");
 
     function saveNodeList(folder, nodes, saveMemory = true) {
         if (saveMemory) {
@@ -76,14 +76,20 @@ export default function MainPage() {
         let ids;
         ids = nodes.filter(node => node?.id && !node?.isInTrash)
             .map(node => node.id);
-        if (page !== "bin")
+        if (page !== "Bin")
             ids = nodes.filter(node => node?.id && !node?.isInTrash).map(node => node.id);
         else
             ids = nodes.filter(node => node?.id && node?.isInTrash).map(node => node.id);
         setIdlist(ids);
         setPage(folder);
     }
-    function saveIdList(folder, ids, saveMemory = true) {//to be used by the tabs
+    function saveIdList(folder, ids, saveMemory = true, addToCurrent = false) {//to be used by the tabs
+        if(addToCurrent){
+            if(page === "Starred" || page === "Bin" || page === "Shared")
+                return
+            setIdlist((prevIds) => [...prevIds, ids]);
+            return
+        }
         if (saveMemory) {
             folderStackRef.current.push({ ids: idList, folder: page });
         }
@@ -117,14 +123,14 @@ export default function MainPage() {
             <SafeAreaView style={{ flex: 1, backgroundColor: styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ zIndex: 1000, elevation: 1000, position: "relative" }}>
-                        <TopBar onListChange={(nodes) => saveNodeList(page, nodes)} />
+                        <TopBar page={page} onListChange={(nodes) => saveNodeList(page, nodes)} saveIdList={saveIdList} saveNodeList={saveNodeList} />
                     </View>
                     <View style={{ flex: 1, zIndex: 0, elevation: 0, position: "relative" }}>
                         <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
                     </View>
                 </View>
                 <View style={{height: "8%"}}>
-                    <NavTabs onTabUpdate={saveIdList}/>
+                    <NavTabs currentTab={page} setCurrentTab={setPage} onTabUpdate={saveIdList}/>
                 </View>
             </SafeAreaView>
         </SafeAreaProvider >
