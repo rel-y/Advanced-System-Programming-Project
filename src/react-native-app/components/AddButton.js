@@ -29,7 +29,7 @@ export default function AddItemButton({ page = "home", AddNode = (node) => { } }
                     ? {
                         type: "FILE",
                         name: "new file",
-                        content: "write somthing",
+                        content: " ",
                     }
                     : {
                         type: "FOLDER",
