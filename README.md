@@ -8,8 +8,12 @@ Our app is a file compression & backup system, like google drive.
 
 1. a file backup system is operating in the background.
 2. a node server acts as a front for the system.
-3. a react app is used for frontend.
+3. a react-native app is used for frontend.
 4. mongoDB is used for metadata and file structure saving.
+
+### Our Work Process
+
+we divided work between the three of us at the start. we did mongo migration, and worked simultaneously on the react-native. it was very similar to the previous exercise, so we had to think less about what goes where and the likes.
 
 ### How To Run The App
 On the main folder (Advanced-System-Programming-Project), run:
