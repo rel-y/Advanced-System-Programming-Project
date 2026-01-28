@@ -11,6 +11,7 @@ import { SERVER_URL } from "../../config";
 import { fetchFromWebServer } from "../../api/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import TopBar from "../../components/tobBar";
+import AddItemButton from "../../components/AddButton";
 
 
 export default function MainPage() {
@@ -47,7 +48,7 @@ export default function MainPage() {
         return () => { cancelled = true; };
     }, []);
     useEffect(() => {
-        if(searchValueFolder==="" || searchValueFolder === undefined) return;
+        if (searchValueFolder === "" || searchValueFolder === undefined) return;
         console.log("searchValueFolder changed:", searchValueFolder);
         async function update() {
             const url = `${SERVER_URL}/api/folders/${searchValueFolder}`;
@@ -58,7 +59,7 @@ export default function MainPage() {
             if (res.ok) {
                 const data = await res.json();
                 console.log(data);
-                saveNodeList(searchValueFolder,data);
+                saveNodeList(searchValueFolder, data);
             } else
                 console.error("failed fetching children")
         }
@@ -91,6 +92,10 @@ export default function MainPage() {
         setIdlist(ids);
         setPage(folder);
     }
+    function AddItem(node) {
+        if (page === "star" || page === "bin" || page === "shared") return;//do not show new item in these pages
+        setIdlist((prevIds) => [...prevIds, node.id]);
+    }
 
     const goBackFolder = useCallback(() => {
         const stack = folderStackRef.current;
@@ -116,11 +121,11 @@ export default function MainPage() {
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1, backgroundColor: styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
-                    <View style={{ zIndex: 1000, elevation: 1000, position: "relative" }}>
-                        <TopBar onListChange={(nodes) => saveNodeList(page, nodes)} />
-                    </View>
-                    <View style={{ flex: 1, zIndex: 0, elevation: 0, position: "relative" }}>
+                    <TopBar onListChange={(nodes) => saveNodeList(page, nodes)} />
+                    <View style={{ flex: 1, position: 'relative' }}>
                         <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
+                        <AddItemButton page={page} AddNode={AddItem} /> {/*the is so that the button apears only 
+                        on top of the list and not on top of the nav bar or other items */ }
                     </View>
                 </View>
             </SafeAreaView>
