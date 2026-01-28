@@ -7,7 +7,7 @@ services:
     container_name: cpp-server
     ports:
       - "12345:12345"
-    command: ["12345"]
+    command: [ "12345" ]
     volumes:
       - cpp_data:/usr/myapp/files
     networks:
@@ -32,7 +32,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SERVERIP: cpp-server               # connect to cpp container by service name
+      SERVERIP: cpp-server # connect to cpp container by service name
       WEB_SERVER_PORT: 8080
       MONGO_URI: mongodb://mongo:27017/apidb
     depends_on:
@@ -41,19 +41,44 @@ services:
     networks:
       - app-network
 
-  react-app:
+  # react-app:
+  #   build:
+  #     context: ./src/react-app
+  #     dockerfile: Dockerfile
+  #   image: react-app
+  #   container_name: react-app
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./src/react-app:/app
+  #     - /app/node_modules
+  #   environment:
+  #     CHOKIDAR_USEPOLLING: "true"
+  #   networks:
+  #     - app-network
+  react-native-app:
     build:
-      context: ./src/react-app
+      context: ./src/react-native-app
       dockerfile: Dockerfile
-    image: react-app
-    container_name: react-app
+    image: react-native-app
+    container_name: react-native-app
     ports:
-      - "3000:3000"
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
     volumes:
-      - ./src/react-app:/app
+      - ./src/react-native-app:/app
       - /app/node_modules
     environment:
       CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+      # Advertise a reachable host in the QR (tester sets IP)
+      REACT_NATIVE_PACKAGER_HOSTNAME: ${IP}
+      # Your app.config.js reads this into Constants.expoConfig.extra.IP
+      IP: ${IP}
+    tty: true
+    stdin_open: true
     networks:
       - app-network
 

@@ -130,7 +130,7 @@ export default function MainPage() {
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1, backgroundColor: styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
-                    <TopBar onListChange={(nodes) => saveNodeList(page, nodes)} />
+                    <TopBar page={page} onListChange={(nodes) => saveNodeList(page, nodes)} saveIdList={saveIdList} saveNodeList={saveNodeList}/>
                     <View style={{ flex: 1, position: 'relative' }}>
                         <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
                         <AddItemButton page={page} AddNode={AddItem} />

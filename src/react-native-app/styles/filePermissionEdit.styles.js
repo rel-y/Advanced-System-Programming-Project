@@ -60,7 +60,7 @@ export function makeFileEditStyles(theme, insets = { bottom: 0, top: 0 }) {
         submitBar: {
             paddingHorizontal: 14,
             paddingTop: 12,
-            backgroundColor: topbar,
+            backgroundColor: theme.colors.bg,
         },
 
         submitBtn: {
