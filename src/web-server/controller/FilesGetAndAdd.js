@@ -1,8 +1,8 @@
-const {createFile} = require("../model/FileModel");
-const {getUser, addUser, updateUserTokenVersion, getUsertokenVersion, isFileAccessedByUser} = require("../services/usersServices");
+const { createFile } = require("../model/FileModel");
+const { getUser, addUser, updateUserTokenVersion, getUsertokenVersion, isFileAccessedByUser } = require("../services/usersServices");
 
-const {NodeType} = require("../model/metadataModelMongo");
-const { ensureRootExists, toClientNode, getFileNode, listChildIds, listChildren, addFileNode, deleteFileNode,updateLastAccess,renameFileNode,searchFileIdByName,isAbaleTo,getFilePermissionsForUser,getFilePermission,setFilePermission,setUserFilePermission,setStarredStatus,setTrashStatus,setSize,getAllFolderNodes,getAllBaseNodes,getAllMetadata,getAllNodes} = require("../services/metadataServices");
+const { NodeType } = require("../model/metadataModelMongo");
+const { ensureRootExists, toClientNode, getFileNode, listChildIds, listChildren, addFileNode, deleteFileNode, updateLastAccess, renameFileNode, searchFileIdByName, isAbaleTo, getFilePermissionsForUser, getFilePermission, setFilePermission, setUserFilePermission, setStarredStatus, setTrashStatus, setSize, getAllFolderNodes, getAllBaseNodes, getAllMetadata, getAllNodes } = require("../services/metadataServices");
 const { get } = require("mongoose");
 
 async function getFileController(req, res) {
@@ -28,11 +28,11 @@ async function getFolderFileController(req, res, filter = undefined) {
   const loggedInUsername = req.user.username;
   let folderId = req.params.id;
   let Folder = await getFileNode(folderId);
-  if(folderId === undefined || folderId === null)
+  if (folderId === undefined || folderId === null)
     return res.status(400).json({ error: "bad request, folder id is invalid1" });
-  if(Folder === undefined || Folder.type !== NodeType.FOLDER)
+  if (Folder === undefined || Folder.type !== NodeType.FOLDER)
     return res.status(404).json({ error: "folder does not exist or is a file" });
-  
+
   const data = await getAllFolderNodes(folderId);
   const filteredByPermissions = (
     await Promise.all(
@@ -47,16 +47,24 @@ async function getFolderFileController(req, res, filter = undefined) {
       getAllMetadata(item, loggedInUsername)
     )
   );
-  
-  if(filter !== undefined) // help me
-    metadata = metadata.filter(filter(req));//apply additional filter
+
+  if (filter !== undefined) { // help me
+    const pred = await filter(req);
+    
+    const results = await Promise.all(metadata.map(async item => ({
+      item,
+      keep: await pred(item)
+    })));
+
+    metadata = results.filter(r => r.keep).map(r => r.item);
+  }
   res.status(200).json(metadata);
 }
 
-async function getSharedNodes(req,res){
+async function getSharedNodes(req, res) {
   const loggedInUsername = req.user.username;
-  let list = await getAllNodes(loggedInUsername,"READ");
-  if(!list){
+  let list = await getAllNodes(loggedInUsername, "READ");
+  if (!list) {
     return res.status(200).json([]);
   }
   const existingNodes = (
@@ -80,7 +88,7 @@ async function getSharedNodes(req,res){
 }
 
 async function createFileController(req, res) {
-  let { name, type, parent, content} = req.body;
+  let { name, type, parent, content } = req.body;
   const loggedInUsername = req.user.username;
   const uid = loggedInUsername;
 
@@ -107,8 +115,7 @@ async function createFileController(req, res) {
     }
     //create the file in the file server
     let id;
-    try 
-    {
+    try {
       id = await addFileNode(name, type, parent, uid);
     } catch (err) {
       return res.status(400).json({ error: err.message });
@@ -144,9 +151,9 @@ async function createFileController(req, res) {
   try {
     let id = await addFileNode(name, type, parent, uid);
     return res.status(201).json([{
-          id: id,
-          name: name
-        }]);
+      id: id,
+      name: name
+    }]);
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
@@ -165,9 +172,9 @@ function sharedWithMeFilter(req) {
   return item => item.uid !== req.user.username;
 }
 async function recentFilter(req) {
-  return async item => isFileAccessedByUser(req.user.username, item.id) || getFileNode(item.id).uid === req.user.username; 
+  return async item => isFileAccessedByUser(req.user.username, item.id) || getFileNode(item.id).uid === req.user.username;
 }//if the user is the owner and just created it, it might not be in the accessed list yet
 function trashFilter(_req) {
   return item => item.isInTrash === true;
 }
-module.exports = {getSharedNodes, getFileController, createFileController,getFolderFileController, starFilter, myDriveFilter, sharedWithMeFilter, recentFilter, trashFilter,All };
+module.exports = { getSharedNodes, getFileController, createFileController, getFolderFileController, starFilter, myDriveFilter, sharedWithMeFilter, recentFilter, trashFilter, All };

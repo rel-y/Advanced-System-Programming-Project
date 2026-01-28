@@ -7,17 +7,14 @@ export function createStyles(theme) {
       flex: 1,
       backgroundColor: theme.colors.bg,
     },
-
-    listContent: {
-      paddingVertical: theme.spacing.md,
+    title: {
+      fontSize: 20,
+      fontWeight: "600",
+      marginTop: 12,
+      paddingHorizontal: 16,
+      paddingBottom: 16,
+      color: theme.colors.text, // or similar
     },
-title: {
-  fontSize: 20,
-  fontWeight: "600",
-  marginTop: 12,
-  paddingHorizontal: 16,
-  color: theme.colors.text, // or similar
-},
 
     separator: {
       height: 8,

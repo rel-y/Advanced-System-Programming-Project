@@ -18,8 +18,9 @@ import { SERVER_URL } from "../config";
 // If you use react-native-svg-tra
 // nsformer, these imports work:
 import SearchBarWithResults from "./searchBar";
+import SideBar from "./sideBar";
 
-export default function TopBar({ onListChange = (nodes) => { } }) {
+export default function TopBar({ page, onListChange = () => { }, saveNodeList = () => { }, saveIdList = () => { } }) {
   const router = useRouter();
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
@@ -27,6 +28,7 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
 
   const [searchValue, setSearchValue] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sideBarOpen, setSideBarOpen] = useState(false);
 
   // placeholder user data
   const [user, setUser] = useState({
@@ -50,7 +52,7 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
           setUser({
             name: data.username || "No Name",
             nickname: data.nickname || "No Nickname",
-            photoUri: data.photo.uri || null,
+            photoUri: data.photo || null,
           });
         } else {
           console.error("Failed to fetch user data");
@@ -65,8 +67,9 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
 
 
   // empty functions (as requested)
-  const onHamburgerPress = () => { };
-  const onSearchPress = () => { };
+  const onHamburgerPress = () => {
+    setSideBarOpen(true);
+  };
   async function onLogout() {
     try {
       const url = `${SERVER_URL}/api/users/logout`;
@@ -85,11 +88,6 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
       console.error("Error during logout:", err);
     }
   }
-
-  const toggleScheme = () => {
-    setScheme?.((prev) => (prev === "dark" ? "light" : "dark"));
-  };
-
   return (
     <View>
       <View style={styles.bar}>
@@ -148,6 +146,7 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
           </Pressable>
         </Pressable>
       </Modal>
+      <SideBar page={page} visible={sideBarOpen} onClose={() => setSideBarOpen(false)} saveNodeList={saveNodeList} saveIdList={saveIdList} />
     </View>
   );
 }
