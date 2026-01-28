@@ -11,6 +11,7 @@ import NavTabs from "../../components/navigationTabs";
 import { SERVER_URL } from "../../config";
 import { fetchFromWebServer } from "../../api/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import AddItemButton from "../../components/AddButton";
 import TopBar from "../../components/topBar";
 
 
@@ -48,7 +49,7 @@ export default function MainPage() {
         return () => { cancelled = true; };
     }, []);
     useEffect(() => {
-        if(searchValueFolder==="" || searchValueFolder === undefined) return;
+        if (searchValueFolder === "" || searchValueFolder === undefined) return;
         console.log("searchValueFolder changed:", searchValueFolder);
         async function update() {
             const url = `${SERVER_URL}/api/folders/${searchValueFolder}`;
@@ -59,7 +60,7 @@ export default function MainPage() {
             if (res.ok) {
                 const data = await res.json();
                 console.log(data);
-                saveNodeList(searchValueFolder,data);
+                saveNodeList(searchValueFolder, data);
             } else
                 console.error("failed fetching children")
         }
@@ -74,6 +75,7 @@ export default function MainPage() {
             folderStackRef.current.push({ ids: idList, folder: page });
         }
         let ids;
+        setPage(folder);
         ids = nodes.filter(node => node?.id && !node?.isInTrash)
             .map(node => node.id);
         if (page !== "Bin")
@@ -81,7 +83,6 @@ export default function MainPage() {
         else
             ids = nodes.filter(node => node?.id && node?.isInTrash).map(node => node.id);
         setIdlist(ids);
-        setPage(folder);
     }
     function saveIdList(folder, ids, saveMemory = true, addToCurrent = false) {//to be used by the tabs
         if(addToCurrent){
@@ -95,6 +96,13 @@ export default function MainPage() {
         }
         setIdlist(ids);
         setPage(folder);
+    }
+    function AddItem(node) {
+        if (page === "Star" || page === "Bin" || page === "Shared") return;//do not show new item in these pages
+        setIdlist((prevIds) => [...prevIds, node.id]);
+    }
+    (nodes) => {
+        saveNodeList(page, nodes + ids);
     }
 
     const goBackFolder = useCallback(() => {
@@ -122,11 +130,11 @@ export default function MainPage() {
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1, backgroundColor: styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
-                    <View style={{ zIndex: 1000, elevation: 1000, position: "relative" }}>
-                        <TopBar page={page} onListChange={(nodes) => saveNodeList(page, nodes)} saveIdList={saveIdList} saveNodeList={saveNodeList} />
-                    </View>
-                    <View style={{ flex: 1, zIndex: 0, elevation: 0, position: "relative" }}>
+                    <TopBar onListChange={(nodes) => saveNodeList(page, nodes)} />
+                    <View style={{ flex: 1, position: 'relative' }}>
                         <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
+                        <AddItemButton page={page} AddNode={AddItem} />
+                        {/*the is so that the button apears only on top of the list and not on top of the nav bar or other items */}
                     </View>
                 </View>
                 <View style={{height: "8%"}}>

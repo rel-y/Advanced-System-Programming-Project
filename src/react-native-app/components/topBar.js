@@ -7,19 +7,20 @@ import {
   TextInput,
   Image,
   TouchableWithoutFeedback,
+  Modal,
 } from "react-native";
-
 import { useTheme } from "../scheme"; // adjust path if needed
 import { getTheme } from "../styles/Theme"; // your Theme/getTheme file
 import { createStyles } from "../styles/topBar.styles";
 import { useRouter } from "expo-router";
 import { fetchFromWebServer } from "../api/api";
 import { SERVER_URL } from "../config";
-// If you use react-native-svg-transformer, these imports work:
+// If you use react-native-svg-tra
+// nsformer, these imports work:
 import SearchBarWithResults from "./searchBar";
 import SideBar from "./sideBar";
 
-export default function TopBar({page, onListChange = () => { }, saveNodeList = () => { }, saveIdList = () => { } }) {
+export default function TopBar({ page, onListChange = () => { }, saveNodeList = () => { }, saveIdList = () => { } }) {
   const router = useRouter();
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
@@ -51,7 +52,7 @@ export default function TopBar({page, onListChange = () => { }, saveNodeList = (
           setUser({
             name: data.username || "No Name",
             nickname: data.nickname || "No Nickname",
-            photoUri: data.photo || null,
+            photoUri: data.photo.uri || null,
           });
         } else {
           console.error("Failed to fetch user data");
@@ -124,27 +125,28 @@ export default function TopBar({page, onListChange = () => { }, saveNodeList = (
       </View>
 
       {/* Dropdown */}
-      {menuOpen && (
-        <View style={styles.menu}>
-          <Text style={styles.menuLine}>
-            <Text style={styles.menuLabel}>Name: </Text>
-            <Text style={styles.menuValue}>{user.name}</Text>
-          </Text>
-          <Text style={styles.menuLine}>
-            <Text style={styles.menuLabel}>Nickname: </Text>
-            <Text style={styles.menuValue}>{user.nickname}</Text>
-          </Text>
+      <Modal visible={menuOpen} transparent onRequestClose={() => setMenuOpen((v) => !v)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setMenuOpen((v) => !v)}>
+          <Pressable style={styles.menu} onPress={(e) => e.stopPropagation()}>
+            <Text style={styles.menuLine}>
+              <Text style={styles.menuLabel}>Name: </Text>
+              <Text style={styles.menuValue}>{user.name}</Text>
+            </Text>
+            <Text style={styles.menuLine}>
+              <Text style={styles.menuLabel}>Nickname: </Text>
+              <Text style={styles.menuValue}>{user.nickname}</Text>
+            </Text>
 
-          <Pressable
-            onPress={onLogout}
-            style={({ pressed }) => [styles.logoutBtn, pressed && styles.logoutPressed]}
-          >
-            <Text style={styles.logoutText}>Logout</Text>
+            <Pressable
+              onPress={onLogout}
+              style={({ pressed }) => [styles.logoutBtn, pressed && styles.logoutPressed]}
+            >
+              <Text style={styles.logoutText}>Logout</Text>
+            </Pressable>
           </Pressable>
-        </View>
-      )}
-      {/*sideBar*/}
-      <SideBar page={page} visible={sideBarOpen} onClose={() => setSideBarOpen(false)} saveNodeList={saveNodeList} saveIdList={saveIdList}/>
+        </Pressable>
+      </Modal>
+      <SideBar page={page} visible={sideBarOpen} onClose={() => setSideBarOpen(false)} saveNodeList={saveNodeList} saveIdList={saveIdList} />
     </View>
   );
 }
