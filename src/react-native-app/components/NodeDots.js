@@ -226,16 +226,9 @@ async function onDownload(n) {
           hidden={node?.type !== "FILE"}
         />
 
-        <Row
-          icon={<IconCopy />}
-          label="Make a copy"
-          onPress={() => node && onMakeCopy(node)}
-          hidden={node?.type !== "FILE"}
-        />
 
         <Row icon={<IconEdit />} label="Rename" onPress={() => node && onRename(node)} />
         <Row icon={<IconInfo />} label="Info" onPress={() => node && onInfo(node)} />
-        <Row icon={<IconMove />} label="Move" onPress={() => node && onMove(node)} />
         <Row icon={<IconTrash />} hidden={node?.isInTrash} label={"Move to trash"} onPress={() => node && onTrash(node)} />
         <Row icon={<IconRestore />} hidden={!node?.isInTrash} label={"Remove from trash"} onPress={() => node && onTrash(node)} />
         <Row icon={<IconTrash />} hidden={!node?.isInTrash} label={"Delete"} onPress={() => node && onDelete(node)} />

@@ -96,6 +96,9 @@ export default function MainPage() {
         if (page === "Star" || page === "Bin" || page === "Shared") return;//do not show new item in these pages
         setIdlist((prevIds) => [...prevIds, node.id]);
     }
+    (nodes) => {
+        saveNodeList(page, nodes + ids);
+    }
 
     const goBackFolder = useCallback(() => {
         const stack = folderStackRef.current;
