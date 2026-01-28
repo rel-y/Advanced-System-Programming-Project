@@ -29,7 +29,7 @@ export default function AddItemButton({ page = "home", AddNode = (node) => { } }
                     ? {
                         type: "FILE",
                         name: "new file",
-                        content: " ",
+                        content: "",
                     }
                     : {
                         type: "FOLDER",
@@ -77,7 +77,7 @@ export default function AddItemButton({ page = "home", AddNode = (node) => { } }
                         style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
                     >
                         <Text style={styles.menuText}>Folder</Text>
-                        <FolderIcon width={18} height={18} fill={"#90D5FF"}/>
+                        <FolderIcon width={18} height={18} fill={theme.colors.text}/>
                     </Pressable>
 
                     <View style={styles.divider} />
@@ -87,7 +87,7 @@ export default function AddItemButton({ page = "home", AddNode = (node) => { } }
                         style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
                     >
                         <Text style={styles.menuText}>File</Text>
-                        <FileIcon width={18} height={18} fill={"#90D5FF"}/>
+                        <FileIcon width={18} height={18} fill={theme.colors.text}/>
                     </Pressable>
                 </View>
             )}
