@@ -93,7 +93,7 @@ export default function MainPage() {
         setPage(folder);
     }
     function AddItem(node) {
-        if (page === "star" || page === "bin" || page === "shared") return;//do not show new item in these pages
+        if (page === "Star" || page === "Bin" || page === "Shared") return;//do not show new item in these pages
         setIdlist((prevIds) => [...prevIds, node.id]);
     }
 
