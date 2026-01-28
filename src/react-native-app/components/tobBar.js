@@ -7,15 +7,16 @@ import {
   TextInput,
   Image,
   TouchableWithoutFeedback,
+  Modal,
 } from "react-native";
-
 import { useTheme } from "../scheme"; // adjust path if needed
 import { getTheme } from "../styles/Theme"; // your Theme/getTheme file
 import { createStyles } from "../styles/topBar.styles";
 import { useRouter } from "expo-router";
 import { fetchFromWebServer } from "../api/api";
 import { SERVER_URL } from "../config";
-// If you use react-native-svg-transformer, these imports work:
+// If you use react-native-svg-tra
+// nsformer, these imports work:
 import SearchBarWithResults from "./searchBar";
 
 export default function TopBar({ onListChange = (nodes) => { } }) {
@@ -126,25 +127,27 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
       </View>
 
       {/* Dropdown */}
-      {menuOpen && (
-        <View style={styles.menu}>
-          <Text style={styles.menuLine}>
-            <Text style={styles.menuLabel}>Name: </Text>
-            <Text style={styles.menuValue}>{user.name}</Text>
-          </Text>
-          <Text style={styles.menuLine}>
-            <Text style={styles.menuLabel}>Nickname: </Text>
-            <Text style={styles.menuValue}>{user.nickname}</Text>
-          </Text>
+      <Modal visible={menuOpen} transparent onRequestClose={() => setMenuOpen((v) => !v)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setMenuOpen((v) => !v)}>
+          <Pressable style={styles.menu} onPress={(e) => e.stopPropagation()}>
+            <Text style={styles.menuLine}>
+              <Text style={styles.menuLabel}>Name: </Text>
+              <Text style={styles.menuValue}>{user.name}</Text>
+            </Text>
+            <Text style={styles.menuLine}>
+              <Text style={styles.menuLabel}>Nickname: </Text>
+              <Text style={styles.menuValue}>{user.nickname}</Text>
+            </Text>
 
-          <Pressable
-            onPress={onLogout}
-            style={({ pressed }) => [styles.logoutBtn, pressed && styles.logoutPressed]}
-          >
-            <Text style={styles.logoutText}>Logout</Text>
+            <Pressable
+              onPress={onLogout}
+              style={({ pressed }) => [styles.logoutBtn, pressed && styles.logoutPressed]}
+            >
+              <Text style={styles.logoutText}>Logout</Text>
+            </Pressable>
           </Pressable>
-        </View>
-      )}
+        </Pressable>
+      </Modal>
     </View>
   );
 }
