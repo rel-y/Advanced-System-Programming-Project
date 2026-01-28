@@ -42,7 +42,7 @@ export default function Login() {
         }
         e.preventDefault();
         const data = { username: username, password: password };
-        
+        console.log(SERVER_URL);
         fetch(`${SERVER_URL}/api/tokens`, {
             body: JSON.stringify(data),
             headers: {

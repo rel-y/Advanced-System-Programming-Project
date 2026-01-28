@@ -1,4 +1,5 @@
-const WEB_SERVER_URL = "http://10.209.158.218:8080";
-const EMULATOR_SERVER_URL = "http://10.0.2.2:8080";
-const WEB_BROWSER_URL = "http://localhost:8080"
-export const SERVER_URL = WEB_SERVER_URL;
+import Constants from "expo-constants";
+
+const IP = Constants.expoConfig.extra.IP;
+
+export const SERVER_URL = `http://${IP}:8080`;

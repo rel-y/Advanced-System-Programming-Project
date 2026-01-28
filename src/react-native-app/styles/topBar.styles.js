@@ -87,15 +87,20 @@ export function createStyles(theme) {
         },
 
         menu: {
-            alignSelf: "flex-end",
-            marginTop: theme.spacing.xs,
-            marginRight: theme.spacing.md,
+            position: "absolute",
+            top: theme.layout["topbar-height"] + theme.spacing.xs,
+            right: theme.spacing.xs,
             width: 240,
             backgroundColor: theme.colors.surface,
             borderWidth: 1,
             borderColor: theme.colors.border,
             borderRadius: theme.radii.md,
             padding: theme.spacing.md,
+        },
+        modalOverlay: {
+            flex: 1,
+            alignItems: "flex-end",
+            justifyContent: "flex-start",
         },
 
         menuLine: {

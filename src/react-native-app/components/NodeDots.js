@@ -226,12 +226,6 @@ async function onDownload(n) {
           hidden={node?.type !== "FILE"}
         />
 
-        <Row
-          icon={<IconCopy color={theme.colors["text-muted"]}/>}
-          label="Make a copy"
-          onPress={() => node && onMakeCopy(node)}
-          hidden={node?.type !== "FILE"}
-        />
 
         <Row icon={<IconEdit color={theme.colors["text-muted"]}/>} label="Rename" onPress={() => node && onRename(node)} />
         <Row icon={<IconInfo color={theme.colors["text-muted"]}/>} label="Info" onPress={() => node && onInfo(node)} />
