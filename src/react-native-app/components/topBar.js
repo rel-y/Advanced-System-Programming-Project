@@ -19,7 +19,7 @@ import { SERVER_URL } from "../config";
 import SearchBarWithResults from "./searchBar";
 import SideBar from "./sideBar";
 
-export default function TopBar({ onListChange = () => { }, saveNodeList = () => { }, saveIdList = () => { } }) {
+export default function TopBar({page, onListChange = () => { }, saveNodeList = () => { }, saveIdList = () => { } }) {
   const router = useRouter();
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
@@ -144,7 +144,7 @@ export default function TopBar({ onListChange = () => { }, saveNodeList = () => 
         </View>
       )}
       {/*sideBar*/}
-      <SideBar visible={sideBarOpen} onClose={() => setSideBarOpen(false)} saveNodeList={saveNodeList} saveIdList={saveIdList}/>
+      <SideBar page={page} visible={sideBarOpen} onClose={() => setSideBarOpen(false)} saveNodeList={saveNodeList} saveIdList={saveIdList}/>
     </View>
   );
 }

@@ -12,7 +12,7 @@ import UploadSVG from "../assets/icons/upload.svg";
 import { useTheme } from "../scheme";
 import * as DocumentPicker from "expo-document-picker"
 import { File } from "expo-file-system"
-export default function SideBar({ visible, onClose = () => { }, saveNodeList = () => { }, saveIdList = () => { }}) {
+export default function SideBar({ page, visible, onClose = () => { }, saveNodeList = () => { }, saveIdList = () => { } }) {
     const { scheme, setScheme } = useTheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
@@ -28,19 +28,19 @@ export default function SideBar({ visible, onClose = () => { }, saveNodeList = (
         });
         if (res.ok) {
             const data = await res.json();
-            if(item === "/trash"){
+            if (item === "/trash") {
                 saveIdList(FOLDERNAMES[item], data.filter(node => node?.id).map(node => node.id))
-            }else{
+            } else {
                 saveNodeList(FOLDERNAMES[item], data);
             }
-        } else{
+        } else {
             console.log(res)
             console.error(`failed fetching files ${res.status}`)
         }
         onClose();
     }
 
-    const uploadFile = async () => {
+    const uploadFile = async (saveIdList) => {
         const file = await DocumentPicker.getDocumentAsync({
             copyToCacheDirectory: true
         })
@@ -52,13 +52,12 @@ export default function SideBar({ visible, onClose = () => { }, saveNodeList = (
         console.log(response);
 
         const content = await response.text();
-        // console.log("content:" + JSON.stringify(content))
         const body = JSON.stringify({
             name: file.assets[0].name,
             content: content,
             type: 'FILE', //not supporting folder uploads
+            parent: (page.length < 20) ? null : page
         });
-        console.log(body)
         try {
             const res = await fetchFromWebServer(`${SERVER_URL}/api/files`, {
                 method: 'POST',
@@ -69,7 +68,8 @@ export default function SideBar({ visible, onClose = () => { }, saveNodeList = (
                 console.log(res)
                 throw new Error(`failed to fetch ${res.status}`);
             }
-
+            const json = await res.json()
+            saveIdList(page, json[0].id, false, true);
         } catch (e) {
             console.error("Failed to submit:", e);
         }
@@ -145,7 +145,7 @@ export default function SideBar({ visible, onClose = () => { }, saveNodeList = (
 
                     <View style={styles.rowElement}>
                         <Pressable
-                            onPress={() => uploadFile()}
+                            onPress={() => uploadFile(saveIdList)}
                             style={styles.tab}
                         >
                             <View style={styles.iconPart}>

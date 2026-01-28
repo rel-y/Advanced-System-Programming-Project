@@ -83,7 +83,13 @@ export default function MainPage() {
         setIdlist(ids);
         setPage(folder);
     }
-    function saveIdList(folder, ids, saveMemory = true) {//to be used by the tabs
+    function saveIdList(folder, ids, saveMemory = true, addToCurrent = false) {//to be used by the tabs
+        if(addToCurrent){
+            if(page === "Starred" || page === "Bin" || page === "Shared")
+                return
+            setIdlist((prevIds) => [...prevIds, ids]);
+            return
+        }
         if (saveMemory) {
             folderStackRef.current.push({ ids: idList, folder: page });
         }
@@ -117,7 +123,7 @@ export default function MainPage() {
             <SafeAreaView style={{ flex: 1, backgroundColor: styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ zIndex: 1000, elevation: 1000, position: "relative" }}>
-                        <TopBar onListChange={(nodes) => saveNodeList(page, nodes)} saveIdList={saveIdList} saveNodeList={saveNodeList} />
+                        <TopBar page={page} onListChange={(nodes) => saveNodeList(page, nodes)} saveIdList={saveIdList} saveNodeList={saveNodeList} />
                     </View>
                     <View style={{ flex: 1, zIndex: 0, elevation: 0, position: "relative" }}>
                         <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
