@@ -22,7 +22,7 @@ On the main folder (Advanced-System-Programming-Project), run:
 
 ```
 $env:IP="<value>"
-docker compose up react-native-app
+docker compose up
 ```
 building may take a minute.
 
