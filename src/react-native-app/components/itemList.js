@@ -11,7 +11,7 @@ import { SERVER_URL } from "../config";
  * Props:
  *  - ids: array of node ids (string/number)
  */
-export default function NodeList({ SaveIdList = () => { }, SaveNodeList = () => { }, page = "home", ids = [] }) {
+export default function NodeList({ SaveIdList = () => { }, SaveNodeList = () => { }, page = "Home", ids = [] }) {
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -22,15 +22,15 @@ export default function NodeList({ SaveIdList = () => { }, SaveNodeList = () => 
     if (idAndReason.Reason === null || idAndReason.Reason === undefined) return;//no reason no responce still rerender
     if (idAndReason.Reason === "delete")
       SaveIdList(page, ids.filter(id => id !== idAndReason.id), false);
-    if (idAndReason.Reason === "toTrash" && page !== "bin")
+    if (idAndReason.Reason === "toTrash" && page !== "Bin")
       SaveIdList(page, ids.filter(id => id !== idAndReason.id), false);
-    if (idAndReason.Reason === "RemoveFromTrash" && page === "bin")
+    if (idAndReason.Reason === "RemoveFromTrash" && page === "Bin")
       SaveIdList(page, ids.filter(id => id !== idAndReason.id), false);
-    if (idAndReason.Reason === "unstar" && page === "star")
+    if (idAndReason.Reason === "unstar" && page === "Starred")
       SaveIdList(page, ids.filter(id => id !== idAndReason.id), false);
   }, [idAndReason]);
   useEffect(() => {
-    if(page == "0") return setName("home");
+    if(page == "0") return setName("Home");
     if (page.length <= 20) return setName(page);//normal page (ids are at list 32 char long)
     else {setName("loading ...");
       console.log("fetching page name for id:", page);

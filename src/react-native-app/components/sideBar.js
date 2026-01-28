@@ -12,13 +12,13 @@ import UploadSVG from "../assets/icons/upload.svg";
 import { useTheme } from "../scheme";
 import * as DocumentPicker from "expo-document-picker"
 import { File } from "expo-file-system"
-export default function SideBar({ visible, onClose = () => { }, onTabUpdate = () => { } }) {
+export default function SideBar({ visible, onClose = () => { }, saveNodeList = () => { }, saveIdList = () => { }}) {
     const { scheme, setScheme } = useTheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
     const FOLDERNAMES = {
-        "/trash": "bin",
-        "/recent": "recent",
+        "/trash": "Bin",
+        "/recent": "Recent",
     };
     async function OnItemPress(item) {
         const url = `${SERVER_URL}/api/folders/0${item}`;
@@ -28,9 +28,15 @@ export default function SideBar({ visible, onClose = () => { }, onTabUpdate = ()
         });
         if (res.ok) {
             const data = await res.json();
-            onTabUpdate(FOLDERNAMES[item], data.filter(node => node?.id).map(node => node.id), false);
-        } else
+            if(item === "/trash"){
+                saveIdList(FOLDERNAMES[item], data.filter(node => node?.id).map(node => node.id))
+            }else{
+                saveNodeList(FOLDERNAMES[item], data);
+            }
+        } else{
+            console.log(res)
             console.error(`failed fetching files ${res.status}`)
+        }
         onClose();
     }
 
@@ -47,22 +53,22 @@ export default function SideBar({ visible, onClose = () => { }, onTabUpdate = ()
 
         const content = await response.text();
         // console.log("content:" + JSON.stringify(content))
-        const body =  JSON.stringify({
-                    name: file.assets[0].name,
-                    content: content,
-                    type: 'FILE', //not supporting folder uploads
-                });
-                console.log(body)
+        const body = JSON.stringify({
+            name: file.assets[0].name,
+            content: content,
+            type: 'FILE', //not supporting folder uploads
+        });
+        console.log(body)
         try {
             const res = await fetchFromWebServer(`${SERVER_URL}/api/files`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: body,
             });
-            if (!res.ok){
-                 console.log(res)
-                 throw new Error(`failed to fetch ${res.status}`);
-                }
+            if (!res.ok) {
+                console.log(res)
+                throw new Error(`failed to fetch ${res.status}`);
+            }
 
         } catch (e) {
             console.error("Failed to submit:", e);

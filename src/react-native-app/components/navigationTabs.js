@@ -14,11 +14,11 @@ export default function NavTabs({ onTabUpdate = () => { } }) {
     const { scheme, setScheme } = useTheme();
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
-    const [currentTab, setCurrentTab] = useState("home");
+    const [currentTab, setCurrentTab] = useState("Home");
     const FOLDERNAMES = {
-        "/starred": "star",
-        "/mydrive": "myDrive",
-        "/shared": "shared"
+        "/starred": "Starred",
+        "/mydrive": "My Drive",
+        "/shared": "Shared"
     };
     async function OnItemPress(item) {
         const url = `${SERVER_URL}/api/folders/0${item}`;
@@ -28,8 +28,8 @@ export default function NavTabs({ onTabUpdate = () => { } }) {
         });
         if (res.ok) {
             const data = await res.json();
-            setCurrentTab(FOLDERNAMES[item] ?? "home");
-            onTabUpdate(FOLDERNAMES[item] ?? "home", data.filter(node => node?.id).map(node => node.id), false);
+            setCurrentTab(FOLDERNAMES[item] ?? "Home");
+            onTabUpdate(FOLDERNAMES[item] ?? "Home", data.filter(node => node?.id).map(node => node.id), false);
         } else
             console.error("failed fetching files")
 
@@ -41,10 +41,10 @@ export default function NavTabs({ onTabUpdate = () => { } }) {
                 onPress={() => OnItemPress("")}
                 style={styles.tab}
             >
-                <View style={[styles.iconPart, currentTab === "home" && styles.activeTab]}>
+                <View style={[styles.iconPart, currentTab === "Home" && styles.activeTab]}>
                     <IconHome color={theme.colors.text} />
                 </View>
-                <Text style={styles.text} >home</Text>
+                <Text style={styles.text} >Home</Text>
             </Pressable>
             <Pressable
                 onPress={() => OnItemPress("/starred")}

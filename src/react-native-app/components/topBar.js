@@ -17,8 +17,9 @@ import { fetchFromWebServer } from "../api/api";
 import { SERVER_URL } from "../config";
 // If you use react-native-svg-transformer, these imports work:
 import SearchBarWithResults from "./searchBar";
+import SideBar from "./sideBar";
 
-export default function TopBar({ onListChange = (nodes) => { } }) {
+export default function TopBar({ onListChange = () => { }, saveNodeList = () => { }, saveIdList = () => { } }) {
   const router = useRouter();
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
@@ -26,6 +27,7 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
 
   const [searchValue, setSearchValue] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sideBarOpen, setSideBarOpen] = useState(false);
 
   // placeholder user data
   const [user, setUser] = useState({
@@ -64,8 +66,9 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
 
 
   // empty functions (as requested)
-  const onHamburgerPress = () => { };
-  const onSearchPress = () => { };
+  const onHamburgerPress = () => {
+    setSideBarOpen(true);
+  };
   async function onLogout() {
     try {
       const url = `${SERVER_URL}/api/users/logout`;
@@ -140,6 +143,8 @@ export default function TopBar({ onListChange = (nodes) => { } }) {
           </Pressable>
         </View>
       )}
+      {/*sideBar*/}
+      <SideBar visible={sideBarOpen} onClose={() => setSideBarOpen(false)} saveNodeList={saveNodeList} saveIdList={saveIdList}/>
     </View>
   );
 }
