@@ -67,23 +67,23 @@ export default function MainPage() {
     }, [searchValueFolder]);
 
 
-    const [page, setPage] = useState("bin");
+    const [page, setPage] = useState("home");
 
     function saveNodeList(folder, nodes, saveMemory = true) {
         if (saveMemory) {
             folderStackRef.current.push({ ids: idList, folder: page });
         }
         let ids;
+        setPage(folder);
         ids = nodes.filter(node => node?.id && !node?.isInTrash)
             .map(node => node.id);
-        if (page === "star")
+        if (folder === "star")
             ids = nodes.filter(node => node?.id && node?.isStarred && !node?.isInTrash).map(node => node.id);
-        else if (page !== "bin")
+        else if (folder !== "bin")
             ids = nodes.filter(node => node?.id && !node?.isInTrash).map(node => node.id);
-        if (page === "bin")
+        if (folder === "bin")
             ids = nodes.filter(node => node?.id && node?.isInTrash).map(node => node.id);
         setIdlist(ids);
-        setPage(folder);
     }
     function saveIdList(folder, ids, saveMemory = true) {//to be used by the tabs
         if (saveMemory) {
