@@ -16,18 +16,19 @@ Our app is a file compression & backup system, like google drive.
 we divided work between the three of us at the start. we did mongo migration, and worked simultaneously on the react-native. it was very similar to the previous exercise, so we had to think less about what goes where and the likes.
 
 ### How To Run The App
+
+We use windows.
 On the main folder (Advanced-System-Programming-Project), run:
 
 ```
-for linux:
-SERVERIP=[host machine ip] docker-compose up -d --build
-for windows:
-$env:SERVERIP="[host machine ip]"; docker-compose up -d --build
-
+$env:IP="<value>"
+docker compose up react-native-app
 ```
 building may take a minute.
 
-[host machine ip] is the ip of the machine on which the containers are running. 
-note that using 127.0.0.1 won't work even when running all containers on one pc because that refers to the ip of the containers themselves. check the ip the server is running on (for example on windows use ipconfig or on wsl use hostname -I, it is different from the ip of the windows machine).
+if youre running on the emulator of android studio, use IP="10.0.2.2"
+if youre running on a phone, set value to be your PC's LAN IPv4 adress.
+
+if youre using linux, we dont even know how you managed to install android studio. gl!
 
 ## More Info At The Wiki!
