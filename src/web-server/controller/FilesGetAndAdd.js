@@ -1,46 +1,85 @@
-const { singletonMetadataModel, NodeType } = require("../model/metadataModel");
 const {createFile} = require("../model/FileModel");
-const { singletonUsersModel } = require("../model/usersModel");
+const {getUser, addUser, updateUserTokenVersion, getUsertokenVersion, isFileAccessedByUser} = require("../services/usersServices");
 
-function getFileController(req, res) {
+const {NodeType} = require("../model/metadataModelMongo");
+const { ensureRootExists, toClientNode, getFileNode, listChildIds, listChildren, addFileNode, deleteFileNode,updateLastAccess,renameFileNode,searchFileIdByName,isAbaleTo,getFilePermissionsForUser,getFilePermission,setFilePermission,setUserFilePermission,setStarredStatus,setTrashStatus,setSize,getAllFolderNodes,getAllBaseNodes,getAllMetadata,getAllNodes} = require("../services/metadataServices");
+const { get } = require("mongoose");
+
+async function getFileController(req, res) {
   let loggedInUsername = req.user.username;
-  const data = singletonMetadataModel.getAllBaseNodes();
-  filteredByPermissions = data.filter(item => singletonMetadataModel.isAbaleTo(loggedInUsername, item.id, "READ"));
-  const metadata = filteredByPermissions.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
+  const data = await getAllBaseNodes();
+  const filteredByPermissions = (
+    await Promise.all(
+      data.map(async (item) => {
+        const allowed = await isAbaleTo(loggedInUsername, item.id, "READ");
+        return allowed ? item : null;
+      })
+    )
+  ).filter(Boolean);
+  const metadata = await Promise.all(
+    filteredByPermissions.map((item) =>
+      getAllMetadata(item, loggedInUsername)
+    )
+  );
   res.status(200).json(metadata);
 }
 
-function getFolderFileController(req, res, filter = undefined) {
+async function getFolderFileController(req, res, filter = undefined) {
   const loggedInUsername = req.user.username;
   let folderId = req.params.id;
-  if (folderId == "0")//because we are dumb and store root as number 0
-    folderId = 0;
-  let Folder = singletonMetadataModel.map.get(folderId);
-    if(folderId === undefined || folderId === null)
-      return res.status(400).json({ error: "bad request, folder id is invalid1" });
-    if(Folder === undefined || Folder.type !== NodeType.FOLDER)
-      return res.status(404).json({ error: "folder does not exist or is a file" });
+  let Folder = await getFileNode(folderId);
+  if(folderId === undefined || folderId === null)
+    return res.status(400).json({ error: "bad request, folder id is invalid1" });
+  if(Folder === undefined || Folder.type !== NodeType.FOLDER)
+    return res.status(404).json({ error: "folder does not exist or is a file" });
   
-  const data = singletonMetadataModel.getAllFolderNodes(folderId);
-  filteredByPermissions = data.filter(item => singletonMetadataModel.isAbaleTo(loggedInUsername, item.id, "READ"));
-  let metadata = filteredByPermissions.map(item => singletonMetadataModel.getAllMetadata(item, loggedInUsername));
-  if(filter !== undefined)
+  const data = await getAllFolderNodes(folderId);
+  const filteredByPermissions = (
+    await Promise.all(
+      data.map(async (item) => {
+        const allowed = await isAbaleTo(loggedInUsername, item.id, "READ");
+        return allowed ? item : null;
+      })
+    )
+  ).filter(Boolean);
+  let metadata = await Promise.all(
+    filteredByPermissions.map((item) =>
+      getAllMetadata(item, loggedInUsername)
+    )
+  );
+  
+  if(filter !== undefined) // help me
     metadata = metadata.filter(filter(req));//apply additional filter
   res.status(200).json(metadata);
 }
 
-function getSharedNodes(req,res){
+async function getSharedNodes(req,res){
   const loggedInUsername = req.user.username;
-  let list = singletonMetadataModel.getAllNodes(loggedInUsername,"READ");
+  let list = await getAllNodes(loggedInUsername,"READ");
   if(!list){
     return res.status(200).json([]);
   }
-  list = list.filter(id => singletonMetadataModel.map.has(id));
-  list = list.map(id => singletonMetadataModel.getAllMetadata({id: id},loggedInUsername)).filter(data => data.uid !== loggedInUsername);
-  return res.status(200).json(list);
+  const existingNodes = (
+    await Promise.all(
+      list.map(async (id) => {
+        const node = await getFileNode(id);
+        return node ? id : null;
+      })
+    )
+  ).filter(Boolean);
+
+  const metadata = (
+    await Promise.all(
+      existingNodes.map((id) =>
+        getAllMetadata({ id }, loggedInUsername)
+      )
+    )
+  ).filter((data) => data.uid !== loggedInUsername);
+
+  return res.status(200).json(metadata);
 }
 
-function createFileController(req, res) {
+async function createFileController(req, res) {
   let { name, type, parent, content} = req.body;
   const loggedInUsername = req.user.username;
   const uid = loggedInUsername;
@@ -55,10 +94,10 @@ function createFileController(req, res) {
     return res.status(400).json({ error: "bad request, type must be FILE or FOLDER" });
   }
 
-  if (!singletonMetadataModel.map.has(parent)) {
+  if (!(await getFileNode(parent))) {
     return res.status(404).json({ error: "parent folder does not exist" });
   }
-  if (parent !== 0 && !singletonMetadataModel.isAbaleTo(loggedInUsername, parent, "WRITE")) {
+  if (parent !== 0 && !(await isAbaleTo(loggedInUsername, parent, "WRITE"))) {
     return res.status(401).json({ error: "user hase no WRITE permissions to parent folder" });
   }
 
@@ -70,32 +109,40 @@ function createFileController(req, res) {
     let id;
     try 
     {
-      id = singletonMetadataModel.addFileNode(name, type, parent, uid);
+      id = await addFileNode(name, type, parent, uid);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
-    createFile(id, content)
-      .then(response => {
-        console.log(response)
-        singletonMetadataModel.setSize(id,content.length);
-        return res.status(201).json([{
-          id: id,
-          name: name
-        }]);
-      })
-      .catch(err => {
-        try { singletonMetadataModel.deleteFileNode(id); } catch (_) {
-          console.log("prob")
-        } //rollback metadata creation
-        return  res.status(500).json({ error: err.message });
-      });
+    try {
+      const response = await createFile(id, content);
+      console.log(response);
+
+      await setSize(id, content.length);
+
+      return res.status(201).json([
+        {
+          id,
+          name
+        }
+      ]);
+    } catch (err) {
+      // rollback metadata creation
+      try {
+        await deleteFileNode(id);
+      } catch (_) {
+        console.log("prob");
+      }
+
+      return res.status(500).json({ error: err.message });
+    }
+
     return;
   }
 
   //for folder type, we just create the metadata node
 
   try {
-    let id = singletonMetadataModel.addFileNode(name, type, parent, uid);
+    let id = await addFileNode(name, type, parent, uid);
     return res.status(201).json([{
           id: id,
           name: name
@@ -117,8 +164,8 @@ function myDriveFilter(req) {
 function sharedWithMeFilter(req) {
   return item => item.uid !== req.user.username;
 }
-function recentFilter(req) {
-  return item => singletonUsersModel.isFileAccessedByUser(req.user.username, item.id) || singletonMetadataModel.getFileNode(item.id).uid === req.user.username; 
+async function recentFilter(req) {
+  return async item => isFileAccessedByUser(req.user.username, item.id) || getFileNode(item.id).uid === req.user.username; 
 }//if the user is the owner and just created it, it might not be in the accessed list yet
 function trashFilter(_req) {
   return item => item.isInTrash === true;

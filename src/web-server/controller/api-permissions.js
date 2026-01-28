@@ -1,22 +1,26 @@
-const {singletonMetadataModel, PermissionType, AbilityRequirement} = require("../model/metadataModel");
-const { singletonUsersModel } = require("../model/usersModel");
+const {PermissionType} = require("../model/metadataModelMongo");
 
-function getFilePermissionController(req, res){
+const {getUser, addUser, updateUserTokenVersion, getUsertokenVersion, isFileAccessedByUser} = require("../services/usersServices");
+
+const { ensureRootExists, toClientNode, getFileNode, listChildIds, listChildren, addFileNode, deleteFileNode,updateLastAccess,renameFileNode,searchFileIdByName,isAbaleTo,getFilePermissionsForUser,getFilePermission,setFilePermission,setUserFilePermission,setStarredStatus,setTrashStatus,setSize,getAllFolderNodes,getAllBaseNodes,getAllMetadata,getAllNodes} = require("../services/metadataServices");
+
+
+async function getFilePermissionController(req, res){
     const {id} = req.params;
-    const permissions = singletonMetadataModel.getFilePermission(id);
+    const permissions = await getFilePermission(id);
     if(permissions === undefined || permissions === null){
         return res.status(404).json({ error: "file/folder doesn't exist" });//check if file/folder exists
     }
 
     const loggedInUsername = req.user.username;
-    if (!singletonMetadataModel.isAbaleTo(loggedInUsername, id, "READ_PERMISSIONS")) {
+    if (!(await isAbaleTo(loggedInUsername, id, "READ_PERMISSIONS"))) {
         return res.status(401).json({ error: "user does not have READ_PERMISSIONS permission for this file" });
     }
 
     return res.status(200).json({ filePermissions: Object.keys(PermissionType).find(key => PermissionType[key] === permissions.filePermissions)});
 }
 
-function setFilePermissionController(req, res){
+async function setFilePermissionController(req, res){
     const {id} = req.params;
     const {filePermission} = req.body;
     if(id === undefined || filePermission === undefined){
@@ -25,17 +29,19 @@ function setFilePermissionController(req, res){
     if(!Object.keys(PermissionType).includes(filePermission)){
         return res.status(400).json({ error: "invalid permission type" });//invalid permission type
     }
+
+    const fileNode = await getFileNode(id);
     
-    if (!singletonMetadataModel.map.has(id)) {
+    if (fileNode === undefined) {
         return res.status(404).json({ error: "file/folder doesn't exists" });
     }
 
     const loggedInUsername = req.user.username;
-    if (!singletonMetadataModel.isAbaleTo(loggedInUsername, id, "CHANGE_FILE_PERMISSIONS")) {
+    if (!(await isAbaleTo(loggedInUsername, id, "CHANGE_FILE_PERMISSIONS"))) {
         return res.status(401).json({ error: "user does not have CHANGE_FILE_PERMISSIONS permission for this file" });
     }
 
-    singletonMetadataModel.setFilePermission(id, PermissionType[filePermission]);
+    await setFilePermission(id, PermissionType[filePermission]);
     return res.status(200).json({ message: "file/folder permission updated successfully" });
 
     /*
@@ -51,7 +57,7 @@ function setFilePermissionController(req, res){
         */
 }
 
-function patchFilePermissionController(req, res){
+async function patchFilePermissionController(req, res){
     const {id,pid} = req.params;
     const {filePermission} = req.body;
 
@@ -62,11 +68,13 @@ function patchFilePermissionController(req, res){
         return res.status(400).json({ error: "bad request, invalid permission type" });
     }
 
-    if (!singletonUsersModel.map.has(pid)) {
+    const requestedUser = await getUser(pid);
+
+    if (requestedUser === undefined) {
         return res.status(400).json({ error: "person with id pid does not exist" });
     }
 
-    const Node = singletonMetadataModel.getFileNode(id)
+    const Node = await getFileNode(id)
     if(Node === undefined){
         return res.status(404).json({ error: "file/folder doesn't exist" });
     }
@@ -74,20 +82,20 @@ function patchFilePermissionController(req, res){
 
     const loggedInUsername = req.user.username;
     
-    if (singletonMetadataModel.isAbaleTo(loggedInUsername, id, "CHANGE_ALL_USER_PERMISSIONS")) { // if user is owner allow
-        singletonMetadataModel.setUserFilePermission(id, pid, PermissionType[filePermission]);
+    if (await isAbaleTo(loggedInUsername, id, "CHANGE_ALL_USER_PERMISSIONS")) { // if user is owner allow
+        await setUserFilePermission(id, pid, PermissionType[filePermission]);
         return res.status(200).json({ message: "file/folder permission updated successfully" });
     }
 
-    if (singletonMetadataModel.isAbaleTo(pid, id, "CHANGE_FILE_PERMISSIONS")) { // if trying to set for FILE_MANAGER dont allow
+    if (await isAbaleTo(pid, id, "CHANGE_FILE_PERMISSIONS")) { // if trying to set for FILE_MANAGER dont allow
         return res.status(401).json({ error: "non-owner cannot change permissions of a file manager" });
     }
 
-    if (!singletonMetadataModel.isAbaleTo(loggedInUsername, id, "CHANGE_REGULAR_USER_PERMISSIONS")) {
+    if (!await isAbaleTo(loggedInUsername, id, "CHANGE_REGULAR_USER_PERMISSIONS")) {
         return res.status(401).json({ error: "user does not have CHANGE_REGULAR_USER_PERMISSIONS for this file" });
     }
 
-    singletonMetadataModel.setUserFilePermission(id, pid, PermissionType[filePermission]);
+    await setUserFilePermission(id, pid, PermissionType[filePermission]);
     return res.status(200).json({ message: "file/folder permission updated successfully" });
     
     /*
@@ -98,34 +106,35 @@ function patchFilePermissionController(req, res){
     } */
 }
 
-function deleteFilePermissionController(req, res){
+async function deleteFilePermissionController(req, res){
     const {id, pid} = req.params;
 
     if(id === undefined || pid === undefined){
         return res.status(400).json({ error: "bad request, missing fields" });
     }
     try{
-        if (!singletonMetadataModel.map.has(id)) {
+        const fileNode = await getFileNode(id);
+        if (fileNode === undefined) {
             return res.status(404).json({ error: "file/folder doesn't exists" });
         }
 
         const loggedInUsername = req.user.username;
 
             
-        if (singletonMetadataModel.isAbaleTo(loggedInUsername, id, "CHANGE_ALL_USER_PERMISSIONS")) { // if user is owner allow
-            singletonMetadataModel.setUserFilePermission(id, pid, PermissionType[0]);
+        if (await isAbaleTo(loggedInUsername, id, "CHANGE_ALL_USER_PERMISSIONS")) { // if user is owner allow
+            await setUserFilePermission(id, pid, PermissionType[0]);
             return res.status(200).json({ message: "file/folder permission updated successfully" });
         }
 
-        if (singletonMetadataModel.isAbaleTo(pid, id, "CHANGE_FILE_PERMISSIONS")) { // if trying to set for FILE_MANAGER dont allow
+        if (await isAbaleTo(pid, id, "CHANGE_FILE_PERMISSIONS")) { // if trying to set for FILE_MANAGER dont allow
             return res.status(401).json({ error: "non-owner cannot change permissions of a file manager" });
         }
 
-        if (!singletonMetadataModel.isAbaleTo(loggedInUsername, id, "CHANGE_REGULAR_USER_PERMISSIONS")) {
+        if (!(await isAbaleTo(loggedInUsername, id, "CHANGE_REGULAR_USER_PERMISSIONS"))) {
             return res.status(401).json({ error: "user does not have CHANGE_REGULAR_USER_PERMISSIONS for this file" });
         }
 
-        singletonMetadataModel.setUserFilePermission(id, pid, PermissionType[0]);
+        await setUserFilePermission(id, pid, PermissionType[0]);
         return res.status(200).json({ message: "file/folder permission updated successfully" });
         
     } catch (err) {

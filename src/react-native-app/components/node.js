@@ -1,24 +1,21 @@
 // app/node/[id].jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Image, Pressable } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { useColorScheme } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { getTheme } from "../styles/Theme";
 import { createStyles } from "../styles/nodeHeader.styles";
 import NodeDots from "./NodeDots";
 import { fetchFromWebServer } from "../api/api";
 import { SERVER_URL } from "../config";
 import StarSvg from "../assets/icons/star.svg";
-import FolderDarkSvg from "../assets/folderDark.svg";
 import FolderLightSvg from "../assets/folderLight.svg";
-import FileDarkSvg from "../assets/fileDark.svg";
 import FileLightSvg from "../assets/fileLight.svg";
 import { useTheme } from "../scheme";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 //on list update activates when the list needs a refresh i.e moved to trash... yea i think that is all the rest
 //of the instances only the item needs a refresh like while staring
 export default function Node({ id, onListUpdate = () => { }, onFolderUpdate = () => { } }) {
+  const router = useRouter();
   const { scheme, setScheme } = useTheme();
   const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -92,7 +89,10 @@ export default function Node({ id, onListUpdate = () => { }, onFolderUpdate = ()
   }, [id]);
   async function OnItemPress(node) {
     if (node?.type === "FILE") {
-      //TO DO by who ever is doing the file edit
+      router.push({
+        pathname: "/(edit)/[id]",
+        params: { id: node.id },
+      });
     } else {
       const url = `${SERVER_URL}/api/folders/${node?.id}`;
       const res = await fetchFromWebServer(url, {
@@ -102,7 +102,7 @@ export default function Node({ id, onListUpdate = () => { }, onFolderUpdate = ()
       if (res.ok) {
         const data = await res.json();
         console.log(data);
-        onFolderUpdate(data);
+        onFolderUpdate(node.id,data);
       } else
         console.error("failed fetching children")
     }

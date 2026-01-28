@@ -2,15 +2,16 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BackHandler, View } from "react-native";
 import { useRouter } from "expo-router";
-
+import { useFocusEffect } from "@react-navigation/native";
 import { createStyles } from "../../styles/itemList.styles";
-import { useTheme } from "../../scheme";
+import { useSearchValueFolder, useTheme } from "../../scheme";
 import { getTheme } from "../../styles/Theme";
 import NodeList from "../../components/itemList";
 import NavTabs from "../../components/navigationTabs";
 import { SERVER_URL } from "../../config";
 import { fetchFromWebServer } from "../../api/api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import TopBar from "../../components/tobBar";
 
 
 export default function MainPage() {
@@ -21,7 +22,7 @@ export default function MainPage() {
     const theme = useMemo(() => getTheme(scheme === "dark" ? "dark" : "light"), [scheme]);
     const styles = useMemo(() => createStyles(theme), [theme]);
     const [idList, setIdlist] = useState([]);
-
+    const { searchValueFolder, setSearchValueFolder } = useSearchValueFolder("");//to be used by the TopBar
     useEffect(() => {
         let cancelled = false;
 
@@ -46,7 +47,24 @@ export default function MainPage() {
 
         return () => { cancelled = true; };
     }, []);
-
+    useEffect(() => {
+        if(searchValueFolder==="" || searchValueFolder === undefined) return;
+        console.log("searchValueFolder changed:", searchValueFolder);
+        async function update() {
+            const url = `${SERVER_URL}/api/folders/${searchValueFolder}`;
+            const res = await fetchFromWebServer(url, {
+                method: "GET",
+                headers: { Accept: "application/json", access: "false" },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                console.log(data);
+                saveNodeList(searchValueFolder,data);
+            } else
+                console.error("failed fetching children")
+        }
+        update()
+    }, [searchValueFolder]);
 
 
     const [page, setPage] = useState("home");
@@ -84,20 +102,26 @@ export default function MainPage() {
         return false;
     }, []);
 
-    useEffect(() => {
-        const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-            const handled = goBackFolder();
-            if (handled) return true;
-            return false; // let router/system handle
-        });
-        return () => sub.remove();
-    }, [goBackFolder]);
+    useFocusEffect(
+        useCallback(() => {
+            const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+                const handled = goBackFolder();
+                return handled; // true = handled, false = let system/router handle
+            });
 
+            return () => sub.remove();
+        }, [goBackFolder])
+    );
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1, backgroundColor:styles.page.backgroundColor }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: styles.page.backgroundColor }}>
                 <View style={{ flex: 1 }}>
-                    <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
+                    <View style={{ zIndex: 1000, elevation: 1000, position: "relative" }}>
+                        <TopBar onListChange={(nodes) => saveNodeList(page, nodes)} />
+                    </View>
+                    <View style={{ flex: 1, zIndex: 0, elevation: 0, position: "relative" }}>
+                        <NodeList ids={idList} page={page} SaveNodeList={saveNodeList} SaveIdList={saveIdList} />
+                    </View>
                 </View>
                 <View style={{height: "8%"}}>
                     <NavTabs onTabUpdate={saveIdList}/>
