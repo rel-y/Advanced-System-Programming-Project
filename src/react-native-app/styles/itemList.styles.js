@@ -11,6 +11,13 @@ export function createStyles(theme) {
     listContent: {
       paddingVertical: theme.spacing.md,
     },
+title: {
+  fontSize: 20,
+  fontWeight: "600",
+  marginTop: 12,
+  paddingHorizontal: 16,
+  color: theme.colors.text, // or similar
+},
 
     separator: {
       height: 8,

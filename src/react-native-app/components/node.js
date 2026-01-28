@@ -102,7 +102,7 @@ export default function Node({ id, onListUpdate = () => { }, onFolderUpdate = ()
       if (res.ok) {
         const data = await res.json();
         console.log(data);
-        onFolderUpdate(data);
+        onFolderUpdate(node.id,data);
       } else
         console.error("failed fetching children")
     }
