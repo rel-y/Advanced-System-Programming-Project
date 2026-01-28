@@ -51,7 +51,6 @@ export default function AddItemButton({ page = "home", AddNode = (node) => { } }
             console.log("create node response:", res);
             if (res.ok) {
                 const data = await res.json();
-                console.log("created node:", data);
                 AddNode(data[0]);
                 close();
             } else {
@@ -78,7 +77,7 @@ export default function AddItemButton({ page = "home", AddNode = (node) => { } }
                         style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
                     >
                         <Text style={styles.menuText}>Folder</Text>
-                        <FolderIcon width={18} height={18} />
+                        <FolderIcon width={18} height={18} fill={"#90D5FF"}/>
                     </Pressable>
 
                     <View style={styles.divider} />
@@ -88,7 +87,7 @@ export default function AddItemButton({ page = "home", AddNode = (node) => { } }
                         style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
                     >
                         <Text style={styles.menuText}>File</Text>
-                        <FileIcon width={18} height={18} />
+                        <FileIcon width={18} height={18} fill={"#90D5FF"}/>
                     </Pressable>
                 </View>
             )}
@@ -98,7 +97,7 @@ export default function AddItemButton({ page = "home", AddNode = (node) => { } }
                 onPress={() => setOpen((v) => !v)}
                 style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
             >
-                <Text style={styles.plus}>+</Text>
+                <Text style={styles.plus}>{open ? "−" : "+"}</Text>
             </Pressable>
         </View>
     );
