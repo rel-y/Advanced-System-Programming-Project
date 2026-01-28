@@ -52,7 +52,7 @@ export default function TopBar({ page, onListChange = () => { }, saveNodeList = 
           setUser({
             name: data.username || "No Name",
             nickname: data.nickname || "No Nickname",
-            photoUri: data.photo.uri || null,
+            photoUri: data.photo || null,
           });
         } else {
           console.error("Failed to fetch user data");
